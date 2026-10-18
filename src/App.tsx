@@ -23,6 +23,7 @@ import { Mods } from './pages/Mods';
 import { ModsHub } from './pages/ModsHub';
 import { BedrockHub } from './pages/BedrockHub';
 import { BedrockCatalog } from './pages/BedrockCatalog';
+import { BedrockResourceDetail } from './pages/BedrockResourceDetail';
 import { Skins } from './pages/Skins';
 import { SearchPage } from './pages/SearchPage';
 import { DownloadsPage } from './pages/DownloadsPage';
@@ -70,6 +71,7 @@ export default function App() {
                 <Route path="/mods" element={<ModsHub />} />
                 <Route path="/bedrock" element={<BedrockHub />} />
                 <Route path="/bedrock/catalog" element={<BedrockCatalog />} />
+                <Route path="/bedrock/resource/:id" element={<BedrockResourceDetail />} />
                 <Route path="/skins" element={<Skins />} />
                 <Route path="/mods/catalog" element={<Catalog category="mods" />} />
                 <Route path="/mods/:slug" element={<ModrinthDetail category="mods" />} />
