@@ -19,7 +19,23 @@ const CATEGORIES: { id: Category; label: string; icon: typeof Boxes; description
   { id: 'textures', label: 'Texture packs', icon: Palette, description: 'Textures, UI and visual packs' },
   { id: 'shaders', label: 'Shaders', icon: Sun, description: 'Visual effects and lighting' },
   { id: 'skins', label: 'Skins', icon: User, description: 'Character skins and skin packs' },
-];
+ ];
+
+function inferCategory(item: BedrockItem): Exclude<Category, 'all'> | 'other' {
+  const explicit = String(item.category || '').toLowerCase().replace(/[ _-]+/g, '');
+  if (['addons', 'addon', 'behaviorpacks', 'behaviourpacks'].includes(explicit)) return 'addons';
+  if (['maps', 'worlds', 'world'].includes(explicit)) return 'maps';
+  if (['textures', 'texturepacks', 'resourcepacks', 'resourcepack'].includes(explicit)) return 'textures';
+  if (['shaders', 'shader'].includes(explicit)) return 'shaders';
+  if (['skins', 'skinpacks', 'skin'].includes(explicit)) return 'skins';
+  const text = [item.name, item.summary, item.categoryLabel, ...(item.categories || [])].filter(Boolean).join(' ').toLowerCase();
+  if (/\b(shader|lighting|render dragon|deferred rendering)\b/.test(text)) return 'shaders';
+  if (/\b(skin|skin pack|character creator)\b/.test(text)) return 'skins';
+  if (/\b(map|world|adventure|skyblock|parkour|survival world|minigame)\b/.test(text)) return 'maps';
+  if (/\b(texture|resource pack|visual pack|ui pack|faithful|pbr)\b/.test(text)) return 'textures';
+  if (/\b(add.?on|behavior pack|behaviour pack|mob|creature|weapon|item|dimension|furniture|gameplay)\b/.test(text)) return 'addons';
+  return 'other';
+}
 
 export function BedrockCatalog() {
   const [params, setParams] = useSearchParams();
@@ -56,14 +72,15 @@ export function BedrockCatalog() {
     const out: Record<Category, number> = { all: 0, addons: 0, maps: 0, textures: 0, shaders: 0, skins: 0 };
     for (const item of data?.resources || []) {
       out.all++;
-      if (item.category && item.category in out) out[item.category as Exclude<Category, 'all'>]++;
+      const inferred = inferCategory(item);
+      if (inferred !== 'other') out[inferred]++;
     }
     return out;
   }, [data]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (data?.resources || []).filter(m => {
-      const categoryMatches = category === 'all' || m.category === category;
+      const categoryMatches = category === 'all' || inferCategory(m) === category;
       const queryMatches = !q || m.name.toLowerCase().includes(q) || m.summary.toLowerCase().includes(q) || (m.categories || []).some(c => c.toLowerCase().includes(q)) || (m.authors || []).some(a => a.toLowerCase().includes(q));
       return categoryMatches && queryMatches;
     });
@@ -97,7 +114,7 @@ export function BedrockCatalog() {
         {filtered.map((m, i) => <motion.article key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * .012, .18) }} className="group flex flex-col overflow-hidden rounded-2xl border border-mc-border bg-mc-surface hover:border-emerald-500/45 hover:-translate-y-1 transition-all duration-200">
           <Link to={`/bedrock/resource/${m.id}`} className="relative aspect-[16/10] bg-mc-gray flex items-center justify-center overflow-hidden">
             {m.logo ? <img src={m.logo} alt={`${m.name} icon`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" /> : <Package className="w-12 h-12 text-mc-muted" />}
-            <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-black/65 text-emerald-300 backdrop-blur">{CATEGORIES.find(c => c.id === m.category)?.label || m.categoryLabel || 'Bedrock'}</span>
+            <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-black/65 text-emerald-300 backdrop-blur">{CATEGORIES.find(c => c.id === inferCategory(m))?.label || m.categoryLabel || 'Bedrock'}</span>
           </Link>
           <div className="p-4 flex flex-col flex-1">
             <h2 className="font-bold text-mc-white text-sm line-clamp-2 min-h-10">{m.name}</h2>

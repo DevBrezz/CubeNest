@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, UploadCloud, ShieldCheck, Gamepad2, Zap, Download } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
-import { SolarSystemBackground } from '../components/SolarSystemBackground';
 
 const portals = [
   { to: '/servers', icon: Server, number: '01', title: 'Server Hub', text: 'Find your next world: survival, SMP, PvP, minigames and more.', tags: ['Java', 'Bedrock', 'Multiplayer'], tint: 'from-sky-500/20' },
@@ -34,9 +33,10 @@ export function Home() {
   return (
     <div className="relative overflow-hidden">
       <section className="relative min-h-[620px] sm:min-h-[690px] flex items-center pt-20 overflow-hidden">
-        <SolarSystemBackground className="absolute inset-0 w-full h-full opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-mc-black via-mc-black/90 to-mc-black/35 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-mc-black via-transparent to-mc-black/30 pointer-events-none" />
+        <img src="https://i.imgur.com/rvzwjx1.gif" alt="" aria-hidden="true" width="500" height="387" className="absolute inset-0 h-full w-full object-cover object-center" loading="eager" />
+        <div className="absolute inset-0 bg-black/45 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-mc-black/90 via-mc-black/65 to-mc-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-mc-black via-transparent to-mc-black/20 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 w-full">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, ease: 'easeOut' }} className="max-w-3xl lg:max-w-[58%]">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-300/20 text-[11px] sm:text-xs text-emerald-300 mb-6 backdrop-blur-md">
@@ -63,16 +63,6 @@ export function Home() {
             </div>
           </motion.div>
         </div>
-        <motion.div aria-label="CubeNest featured Minecraft banner" className="hidden lg:block absolute right-[5%] xl:right-[7%] top-[23%] w-[min(32vw,390px)] overflow-hidden rounded-[2rem] border border-emerald-200/25 bg-mc-surface/60 p-2 shadow-[0_24px_100px_rgba(16,185,129,.16)] backdrop-blur-sm" initial={{ opacity: 0, x: 24, y: 8 }} animate={{ opacity: 1, x: 0, y: 0 }} transition={{ duration: .8, delay: .15 }}>
-          <div className="relative overflow-hidden rounded-[1.5rem] bg-black/30">
-            <img src="https://i.imgur.com/rvzwjx1.gif" alt="CubeNest Minecraft featured animation" width="500" height="387" className="block w-full h-auto object-contain" loading="eager" />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent px-4 pb-4 pt-12">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-200"><Sparkles className="w-3 h-3" /> Featured world</span>
-              <p className="mt-2 text-lg font-extrabold text-white">Your next Minecraft upgrade.</p>
-              <p className="mt-1 text-xs text-white/70">Mods, textures and add-ons in one place.</p>
-            </div>
-          </div>
-        </motion.div>
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
