@@ -1,45 +1,83 @@
 import { FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, ExternalLink, Boxes, Map, Palette, Sun, UserRound, Download, ArrowUpRight, ShieldCheck, Gamepad2 } from 'lucide-react';
+import { Search, ExternalLink, Boxes, Map, Palette, Sun, User, AlertCircle, Download } from 'lucide-react';
 
+/** Bedrock category shortcuts into the local CubeNest catalog. */
 const CATEGORIES = [
-  { id: 'addons', title: 'Add-ons', desc: 'New mobs, items and gameplay mechanics.', icon: Boxes, href: '/bedrock/catalog?q=addon' },
-  { id: 'maps', title: 'Worlds & Maps', desc: 'Adventure maps, parkour and survival worlds.', icon: Map, href: '/bedrock/catalog?q=map' },
-  { id: 'textures', title: 'Texture Packs', desc: 'Change the look of blocks and items.', icon: Palette, href: '/bedrock/catalog?q=texture' },
-  { id: 'shaders', title: 'Visuals', desc: 'Visual enhancements and atmosphere packs.', icon: Sun, href: '/bedrock/catalog?q=shader' },
-  { id: 'skins', title: 'Skins', desc: 'Find a new look for your character.', icon: UserRound, href: '/skins' },
+  { id: 'addons', title: 'Mods / Add-ons', category: 'addons', icon: Boxes, q: 'addon' },
+  { id: 'maps', title: 'Maps', category: 'maps', icon: Map, q: 'map' },
+  { id: 'textures', title: 'Texture packs', category: 'textures', icon: Palette, q: 'texture' },
+  { id: 'shaders', title: 'Shaders', category: 'shaders', icon: Sun, q: 'shader' },
+  { id: 'skins', title: 'Skin packs', category: 'skins', icon: User, q: 'skin' },
 ];
 
 export function BedrockHub() {
   const [q, setQ] = useState('');
-  const navigate = useNavigate();
-  const onSearch = (e: FormEvent) => { e.preventDefault(); navigate(`/bedrock/catalog${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`); };
+
+  const searchUrl = (query: string) =>
+    `/bedrock/catalog?q=${encodeURIComponent(query)}`;
+
+  const onSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const term = q.trim();
+    if (!term) return;
+    window.location.assign(searchUrl(term));
+  };
 
   return (
-    <div className="pt-20 pb-16 min-h-screen mc-grid-bg overflow-hidden">
-      <section className="relative border-b border-mc-border/70 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-cyan-500/5" />
-        <div className="absolute -right-24 -top-20 w-80 h-80 rounded-full bg-emerald-400/[.07] blur-3xl" />
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-[10px] font-bold tracking-[.18em] text-emerald-200 uppercase"><Gamepad2 className="w-3.5 h-3.5"/> Bedrock edition library</div>
-            <h1 className="mt-5 text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.04] text-mc-white">Make Bedrock<br/><span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">feel brand new.</span></h1>
-            <p className="mt-5 max-w-2xl text-sm sm:text-base leading-relaxed text-mc-muted">Browse add-ons, worlds, textures and more for Minecraft Bedrock. CubeNest indexes public project information and links you to available official downloads.</p>
-            <form onSubmit={onSearch} className="mt-7 max-w-2xl"><div className="flex items-center gap-2 rounded-2xl border border-mc-border bg-mc-surface/90 p-2 shadow-xl shadow-black/20 focus-within:border-emerald-300/50 transition-colors"><Search className="w-5 h-5 ml-2 text-mc-muted shrink-0"/><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search Bedrock add-ons, maps, textures..." className="min-w-0 flex-1 bg-transparent py-3 text-sm text-mc-white outline-none placeholder:text-mc-muted"/><button type="submit" className="rounded-xl bg-emerald-400 px-4 sm:px-5 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-300">Search</button></div></form>
-            <div className="mt-5 flex flex-wrap gap-2">{['Add-ons', 'Maps', 'Textures', 'Shaders'].map((term) => <button key={term} type="button" onClick={() => navigate(`/bedrock/catalog?q=${encodeURIComponent(term.toLowerCase())}`)} className="rounded-full border border-white/10 bg-white/[.035] px-3 py-1.5 text-xs text-mc-muted hover:text-white hover:border-emerald-300/40 transition-colors">{term}</button>)}</div>
-          </motion.div>
+    <div className="pt-20 pb-12 min-h-screen mc-grid-bg">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          <h1 className="text-2xl font-bold text-mc-white">Bedrock content</h1>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-emerald-500/20 text-emerald-400">Bedrock</span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-mc-gray text-mc-muted border border-mc-border">CurseForge</span>
         </div>
-      </section>
+        <p className="text-sm text-mc-muted max-w-2xl mb-5">
+          Browse Bedrock add-ons, maps, texture packs, shaders and skins in CubeNest. Each category opens its own filtered catalog, with direct downloads when the publisher provides a file URL.
+        </p>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5"><div><p className="text-[10px] uppercase tracking-[.2em] font-bold text-emerald-300">Explore by type</p><h2 className="text-2xl font-bold text-mc-white mt-2">Find your next download</h2></div><p className="max-w-sm text-xs text-mc-muted leading-relaxed">Downloads are provided by each source. File availability and format depend on the project publisher.</p></div>
+        <form onSubmit={onSearch} className="mb-6 max-w-xl">
+          <div className="flex items-center gap-2 bg-mc-surface border border-mc-border rounded-xl p-1.5 focus-within:border-emerald-500/50">
+            <Search className="w-4 h-4 text-mc-muted ml-2" />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search Bedrock resources..."
+              className="flex-1 bg-transparent border-0 outline-none text-sm text-mc-white py-2 placeholder:text-mc-muted" />
+            <button type="submit" className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 inline-flex items-center gap-1">
+              Search <Search className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </form>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {CATEGORIES.map((c, i) => <motion.div key={c.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .05 }}><Link to={c.href} className="group flex items-start gap-4 h-full rounded-2xl border border-mc-border bg-mc-surface/80 p-5 transition-all hover:-translate-y-1 hover:border-emerald-300/40 hover:shadow-lg hover:shadow-black/20"><span className="w-12 h-12 shrink-0 rounded-xl border border-emerald-300/10 bg-emerald-300/10 text-emerald-200 grid place-items-center group-hover:scale-105 transition-transform"><c.icon className="w-5 h-5"/></span><span className="flex-1"><span className="flex items-center gap-2 font-bold text-mc-white">{c.title}<ArrowUpRight className="w-3.5 h-3.5 text-mc-muted group-hover:text-emerald-300"/></span><span className="block text-xs leading-relaxed text-mc-muted mt-2">{c.desc}</span><span className="inline-flex items-center gap-1 mt-4 text-[11px] font-semibold text-emerald-300">Browse collection <Download className="w-3 h-3"/></span></span></Link></motion.div>)}
-          <motion.a href="https://www.curseforge.com/minecraft-bedrock" target="_blank" rel="noopener noreferrer" initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: .25 }} className="group flex items-start gap-4 h-full rounded-2xl border border-mc-border bg-gradient-to-br from-orange-500/10 to-mc-surface p-5 transition-all hover:-translate-y-1 hover:border-orange-300/40"><span className="w-12 h-12 shrink-0 rounded-xl bg-orange-400/10 text-orange-200 grid place-items-center"><ExternalLink className="w-5 h-5"/></span><span><span className="font-bold text-mc-white">More on CurseForge</span><span className="block text-xs leading-relaxed text-mc-muted mt-2">Open the official Bedrock project library to explore more content.</span><span className="inline-flex items-center gap-1 mt-4 text-[11px] font-semibold text-orange-200">Open source <ArrowUpRight className="w-3 h-3"/></span></span></motion.a>
+          {CATEGORIES.map((c, i) => {
+            const Icon = c.icon;
+            const href = `/bedrock/catalog?category=${c.category}`;
+            return (
+              <motion.a key={c.id} href={href}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                className="bg-mc-surface border border-mc-border rounded-xl p-4 hover:border-emerald-500/45 transition-colors group block">
+                <Icon className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-110 transition-transform" />
+                <h2 className="font-semibold text-mc-white text-sm flex items-center gap-1">{c.title} <ExternalLink className="w-3 h-3 text-mc-muted" /></h2>
+                <p className="text-xs text-mc-muted mt-1">Browse matching resources in CubeNest</p>
+                <span className="inline-flex items-center gap-1 mt-3 text-[11px] text-emerald-400"><Download className="w-3 h-3" /> Browse downloads</span>
+              </motion.a>
+            );
+          })}
         </div>
-      </section>
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pb-4"><div className="flex items-start gap-3 rounded-xl border border-mc-border bg-mc-surface/60 p-4 text-xs text-mc-muted leading-relaxed"><ShieldCheck className="w-4 h-4 shrink-0 text-emerald-300 mt-0.5"/><p><strong className="text-mc-white">Safer source links.</strong> CubeNest does not claim to host files that it has not stored itself. When a project provides a direct file URL, the catalogue can offer a direct download; otherwise, use the publisher’s official project page.</p></div></section>
+
+        <div className="mt-6">
+          <Link to="/bedrock/catalog" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500">
+            Browse all Bedrock downloads in CubeNest
+          </Link>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2 text-xs text-mc-muted bg-mc-surface border border-mc-border rounded-xl p-3">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+          <p>
+            Direct download depends on whether CurseForge exposes a valid file URL for that resource. If it does not, CubeNest uses the official project page instead. Third-party files are not copied onto CubeNest servers. Player skins (PNG) are available under <Link to="/skins" className="text-mc-red hover:underline">Skins</Link>.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
