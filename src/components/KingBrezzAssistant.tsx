@@ -1,47 +1,199 @@
 import { useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bot, Bug, ChevronDown, ExternalLink, Heart, LifeBuoy, MessageCircle, Search, Sparkles, X } from 'lucide-react';
+import { Bot, ExternalLink, LifeBuoy, Search, Sparkles, X } from 'lucide-react';
 import { assistantKnowledge, type AssistantItem } from '../data/assistantKnowledge';
+import './KingBrezzAssistant.css';
 
-import './CubeNestAssistant.css';
+export function KingBrezzAssistant({ page = false }: { page?: boolean }) {
+  return <CubeNestAssistant page={page} />;
+}
 
-const ui = {
-  en: { all:'All topics', general:'General', projects:'Projects', minecraft:'Minecraft & Servers', optimization:'Server Optimization', development:'Development', troubleshooting:'Troubleshooting', bug:'Bug Reports', contact:'Contact', donate:'Donations', privacy:'Privacy', title:'Assistant', status:'Offline help center', welcome:'Hi! What can I help you with?', intro:'Choose a question or search by topic. I’ll guide you to the right page.', search:'Search help, e.g. server lag...', popular:'POPULAR QUESTIONS', answer:'ASSISTANT ANSWER', placeholder:'Choose a question on the left', placeholderText:'The answer and relevant action will appear here.', empty:'No matching answer. Try another keyword or contact support.', support:'Contact support', note:'Based on the local help guide. Always verify technical details against the relevant project.', local:'LOCAL KNOWLEDGE BASE', page:'Open help center', report:'Report a bug', donateBtn:'Donate', contactBtn:'Contact', viewed:'Recently viewed', close:'Close assistant', open:'Open Assistant', routeTitle:'Help Center', routeDesc:'Practical help for server optimization, Minecraft plugins, development, troubleshooting, reports, contact and donations.', lang:'Language' },
-  id: { all:'Semua topik', general:'Umum', projects:'Proyek', minecraft:'Minecraft & Server', optimization:'Optimasi Server', development:'Pengembangan', troubleshooting:'Pemecahan Masalah', bug:'Laporan Bug', contact:'Kontak', donate:'Donasi', privacy:'Privasi', title:'Asisten CubeNest', status:'Pusat bantuan offline', welcome:'Halo! Ada yang bisa gue bantu?', intro:'Pilih pertanyaan atau cari berdasarkan topik. Gue arahkan ke halaman yang tepat.', search:'Cari bantuan, mis. server lag...', popular:'PERTANYAAN POPULER', answer:'JAWABAN ASISTEN', placeholder:'Pilih pertanyaan di sebelah kiri', placeholderText:'Jawaban dan tombol terkait akan muncul di sini.', empty:'Belum ada jawaban yang cocok. Coba kata lain atau hubungi CubeNest.', support:'Hubungi support', note:'Berdasarkan panduan lokal. Pastikan detail teknis tetap dicek pada proyek terkait.', local:'PUSAT PENGETAHUAN LOKAL', page:'Buka pusat bantuan', report:'Laporkan bug', donateBtn:'Donasi', contactBtn:'Kontak', viewed:'Baru dilihat', close:'Tutup asisten', open:'Buka Asisten CubeNest', routeTitle:'Pusat Bantuan CubeNest', routeDesc:'Bantuan praktis untuk optimasi server, plugin Minecraft, pengembangan, troubleshooting, laporan, kontak, dan donasi.', lang:'Bahasa' },
-  zh: { all:'所有主题', general:'常见问题', projects:'项目', minecraft:'Minecraft 与服务器', optimization:'服务器优化', development:'开发', troubleshooting:'故障排除', bug:'错误报告', contact:'联系', donate:'捐赠', privacy:'隐私', title:'CubeNest 助手', status:'离线帮助中心', welcome:'你好！需要什么帮助？', intro:'选择问题或搜索主题，我会引导你前往合适的页面。', search:'搜索帮助，例如服务器卡顿...', popular:'热门问题', answer:'助手回答', placeholder:'请从左侧选择问题', placeholderText:'答案和相关操作会显示在这里。', empty:'没有找到匹配答案。请尝试其他关键词或联系 CubeNest。', support:'联系支持', note:'内容基于本地帮助指南。技术细节请以对应项目资料为准。', local:'本地知识库', page:'打开帮助中心', report:'报告错误', donateBtn:'捐赠', contactBtn:'联系', viewed:'最近查看', close:'关闭助手', open:'打开 CubeNest 助手', routeTitle:'CubeNest 帮助中心', routeDesc:'提供服务器优化、Minecraft 插件、开发、故障排除、错误报告、联系与捐赠方面的帮助。', lang:'语言' },
-  nl: { all:'Alle onderwerpen', general:'Algemeen', projects:'Projecten', minecraft:'Minecraft & servers', optimization:'Serveroptimalisatie', development:'Ontwikkeling', troubleshooting:'Probleemoplossing', bug:'Bugmeldingen', contact:'Contact', donate:'Donaties', privacy:'Privacy', title:'CubeNest-assistent', status:'Offline helpcentrum', welcome:'Hallo! Waarmee kan ik helpen?', intro:'Kies een vraag of zoek op onderwerp. Ik verwijs je naar de juiste pagina.', search:'Zoek hulp, bijvoorbeeld serverlag...', popular:'VEELGESTELDE VRAGEN', answer:'ANTWOORD VAN DE ASSISTENT', placeholder:'Kies links een vraag', placeholderText:'Het antwoord en de bijbehorende actie verschijnen hier.', empty:'Geen passend antwoord. Probeer een ander zoekwoord of neem contact op met CubeNest.', support:'Contact opnemen', note:'Gebaseerd op de lokale hulpgids. Controleer technische details bij het betreffende project.', local:'LOKALE KENNISBANK', page:'Open helpcentrum', report:'Bug melden', donateBtn:'Doneren', contactBtn:'Contact', viewed:'Recent bekeken', close:'Assistent sluiten', open:'CubeNest-assistent openen', routeTitle:'CubeNest-helpcentrum', routeDesc:'Praktische hulp bij serveroptimalisatie, Minecraft-plugins, ontwikkeling, probleemoplossing, bugs, contact en donaties.', lang:'Taal' }
-} as const;
-
-const categoryKeys: Record<string, keyof typeof ui.en> = { General:'general', Projects:'projects', Minecraft:'minecraft', Troubleshooting:'troubleshooting', 'Bug Report':'bug', 'Server Optimization':'optimization', Development:'development', Contact:'contact', Donate:'donate', Privacy:'privacy' };
-
-// The existing knowledge base is kept intact; labels and every assistant control follow the site's shared language setting.
 export function CubeNestAssistant({ page = false }: { page?: boolean }) {
-  const location = useLocation();
-  const t = ui.en;
-  const [open, setOpen] = useState(page);
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<AssistantItem | null>(null);
-  const [history, setHistory] = useState<AssistantItem[]>([]);
-  const categories = useMemo(() => ['All', ...Array.from(new Set(assistantKnowledge.map((item) => item.category)))], []);
+  const [category, setCategory] = useState<string>('all');
+
+  const categories = useMemo(() => {
+    const set = new Set(assistantKnowledge.map((item: AssistantItem) => item.category));
+    return ['all', ...Array.from(set)];
+  }, []);
+
   const filtered = useMemo(() => {
-    const q = query.trim().toLocaleLowerCase();
-    return assistantKnowledge.filter((item) => (category === 'All' || item.category === category) && (!q || `${item.question} ${item.answer} ${item.category}`.toLocaleLowerCase().includes(q))).slice(0, 20);
+    const q = query.trim().toLowerCase();
+    return assistantKnowledge.filter((item: AssistantItem) => {
+      if (category !== 'all' && item.category !== category) return false;
+      if (!q) return true;
+      return (
+        item.question.toLowerCase().includes(q) ||
+        item.answer.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      );
+    });
   }, [query, category]);
-  const choose = (item: AssistantItem) => { setSelected(item); setHistory((old) => [item, ...old.filter((entry) => entry.id !== item.id)].slice(0, 4)); };
+
+  const choose = (item: AssistantItem) => setSelected(item);
   const closeAnswer = () => setSelected(null);
-  if (!page && location.pathname === '/assistant') return null;
-  const panel = <div className={page ? 'kb-assistant-page' : 'kb-assistant-panel'}>
-    <div className="kb-assistant-head"><div className="kb-assistant-avatar"><Bot size={21}/><span/></div><div className="kb-assistant-headcopy"><strong>{t.title}</strong><span><i/> {t.status} · {assistantKnowledge.length}+ answers</span></div>{!page && <button className="kb-assistant-iconbtn" onClick={() => setOpen(false)} aria-label={t.close}><X size={18}/></button>}</div>
-    <div className="kb-assistant-welcome"><div className="kb-assistant-spark"><Sparkles size={15}/> {t.local}</div><h2>{t.welcome}</h2><p>{t.intro}</p><div className="kb-assistant-shortcuts"><Link to="/report" onClick={() => !page && setOpen(false)}><Bug size={14}/> {t.report}</Link><Link to="/donate" onClick={() => !page && setOpen(false)}><Heart size={14}/> {t.donateBtn}</Link><Link to="/contact" onClick={() => !page && setOpen(false)}><MessageCircle size={14}/> {t.contactBtn}</Link></div></div>
-    <label className="kb-assistant-search"><Search size={16}/><input value={query} onChange={(e) => {setQuery(e.target.value); setSelected(null);}} placeholder={t.search}/><span>{filtered.length}</span></label>
-    <div className="kb-assistant-categories">{categories.map((item) => <button key={item} className={category === item ? 'active' : ''} onClick={() => {setCategory(item); setSelected(null);}}>{item === 'All' ? t.all : t[categoryKeys[item] ?? 'general']}</button>)}</div>
-    <div className="kb-assistant-content"><div className="kb-assistant-questions"><div className="kb-assistant-sectionlabel">{t.popular}<span>{filtered.length}</span></div>{filtered.length ? filtered.map((item) => <button key={item.id} className={`kb-assistant-question ${selected?.id === item.id ? 'selected' : ''}`} onClick={() => choose(item)}><span><small>{t[categoryKeys[item.category] ?? 'general']}</small><strong>{item.question}</strong></span><ChevronDown size={15}/></button>) : <div className="kb-assistant-empty">{t.empty}<Link to="/contact" onClick={() => !page && setOpen(false)}>{t.support} <ExternalLink size={13}/></Link></div>}</div>
-      <div className="kb-assistant-answer"><div className="kb-answer-placeholder"><div><LifeBuoy size={25}/></div><strong>{t.placeholder}</strong><p>{t.placeholderText}</p>{history.length > 0 && <div className="kb-recent"><span>{t.viewed}</span>{history.slice(0,2).map((item) => <button key={item.id} onClick={() => choose(item)}>{item.question}</button>)}</div>}</div></div></div>
-    <div className="kb-assistant-foot"><Link to="/assistant" onClick={() => !page && setOpen(false)}>{t.page} <ExternalLink size={12}/></Link></div>
-    <AnimatePresence>{selected && <motion.div className="kb-answer-overlay" role="presentation" onClick={closeAnswer} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}><motion.section className="kb-answer-modal" role="dialog" aria-modal="true" aria-labelledby="kb-answer-title" onClick={(event) => event.stopPropagation()} initial={{opacity:0,y:12,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:8,scale:.98}}><div className="kb-answer-modal-head"><span className="kb-answer-tag"><Sparkles size={13}/> {t.answer}</span><button className="kb-assistant-iconbtn" onClick={closeAnswer} aria-label={t.close}><X size={18}/></button></div><h3 id="kb-answer-title">{selected.question}</h3><p>{selected.answer}</p>{selected.action && <Link className="kb-answer-action" to={selected.action.to} onClick={() => { closeAnswer(); if (!page) setOpen(false); }}>{selected.action.label}<ExternalLink size={14}/></Link>}<p className="kb-answer-note">{t.note}</p></motion.section></motion.div>}</AnimatePresence>
-  </div>;
-  if (page) return <main className="kb-assistant-route"><div className="kb-assistant-route-intro"><span><Sparkles size={15}/> {t.title}</span><h1>{t.routeTitle}</h1><p>{t.routeDesc}</p></div>{panel}</main>;
-  return <div className="kb-assistant-floating"><AnimatePresence>{open && <motion.div className="kb-assistant-popover" initial={{opacity:0,y:12,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:8,scale:.98}} transition={{duration:.18}}>{panel}</motion.div>}</AnimatePresence><button className={`kb-assistant-launcher ${open ? 'is-open' : ''}`} onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? t.close : t.open}>{open ? <X size={19}/> : <><Bot size={20}/><span>{t.title}</span><i/></>}</button></div>;
+
+  const panel = (
+    <div className="kb-assistant-panel">
+      <div className="kb-assistant-head">
+        <div>
+          <strong>CubeNest Assistant</strong>
+          <span>Help center</span>
+        </div>
+        {!page && (
+          <button type="button" className="kb-assistant-iconbtn" onClick={() => setOpen(false)} aria-label="Close">
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      <p className="kb-assistant-intro">Ask how to search, download, install, or report issues on CubeNest.</p>
+
+      <div className="kb-assistant-search">
+        <Search size={16} />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search help, e.g. download mod..."
+          aria-label="Search help"
+        />
+      </div>
+
+      <div className="kb-assistant-cats">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            className={category === cat ? 'is-active' : ''}
+            onClick={() => setCategory(cat)}
+          >
+            {cat === 'all' ? 'All topics' : cat}
+          </button>
+        ))}
+      </div>
+
+      <div className="kb-assistant-list">
+        {filtered.length === 0 ? (
+          <p className="kb-assistant-empty">No matching answer. Try another keyword or contact the team.</p>
+        ) : (
+          filtered.map((item: AssistantItem) => (
+            <button key={item.id} type="button" className="kb-assistant-q" onClick={() => choose(item)}>
+              <span>{item.category}</span>
+              {item.question}
+            </button>
+          ))
+        )}
+      </div>
+
+      <div className="kb-assistant-foot">
+        <Link to="/assistant" onClick={() => !page && setOpen(false)}>
+          Open help center <ExternalLink size={12} />
+        </Link>
+        <Link to="/report" onClick={() => !page && setOpen(false)}>
+          Report a bug
+        </Link>
+      </div>
+
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            className="kb-answer-overlay"
+            role="presentation"
+            onClick={closeAnswer}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.section
+              className="kb-answer-modal"
+              role="dialog"
+              aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, y: 12, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            >
+              <div className="kb-answer-modal-head">
+                <span className="kb-answer-tag">
+                  <Sparkles size={13} /> Answer
+                </span>
+                <button type="button" className="kb-assistant-iconbtn" onClick={closeAnswer} aria-label="Close">
+                  <X size={18} />
+                </button>
+              </div>
+              <h3>{selected.question}</h3>
+              <p>{selected.answer}</p>
+              {selected.action && (
+                <Link
+                  className="kb-answer-action"
+                  to={selected.action.to}
+                  onClick={() => {
+                    closeAnswer();
+                    if (!page) setOpen(false);
+                  }}
+                >
+                  {selected.action.label}
+                  <ExternalLink size={14} />
+                </Link>
+              )}
+              <p className="kb-answer-note">Always verify install steps with the original project page.</p>
+            </motion.section>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
+  if (page) {
+    return (
+      <main className="kb-assistant-route">
+        <div className="kb-assistant-route-intro">
+          <span>
+            <Sparkles size={15} /> CubeNest Assistant
+          </span>
+          <h1>Help Center</h1>
+          <p>How to search, download, install content, join servers, and report issues.</p>
+        </div>
+        {panel}
+      </main>
+    );
+  }
+
+  return (
+    <div className="kb-assistant-floating">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="kb-assistant-popover"
+            initial={{ opacity: 0, y: 12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ duration: 0.18 }}
+          >
+            {panel}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        type="button"
+        className={`kb-assistant-launcher ${open ? 'is-open' : ''}`}
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? 'Close assistant' : 'Open assistant'}
+      >
+        {open ? (
+          <X size={19} />
+        ) : (
+          <>
+            <Bot size={20} />
+            <span>Assistant</span>
+            <i />
+          </>
+        )}
+      </button>
+    </div>
+  );
 }
