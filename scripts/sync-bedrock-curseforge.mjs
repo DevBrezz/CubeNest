@@ -1,9 +1,8 @@
 /**
- * Fetch Bedrock addons from CurseForge API (server-side only).
- * Usage: CURSEFORGE_API_KEY=xxx node scripts/sync-bedrock-curseforge.mjs
- * Writes public/data/bedrock-curseforge.json
+ * Sync Minecraft Bedrock add-ons from the CurseForge Core API.
+ * The API key must stay in GitHub Actions secrets (never VITE_* / browser code).
  */
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -11,115 +10,97 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'public/data');
 const outFile = join(outDir, 'bedrock-curseforge.json');
 const API = 'https://api.curseforge.com/v1';
-const KEY = process.env.CURSEFORGE_API_KEY || process.env.VITE_CURSEFORGE_API_KEY || '';
-
-// Try common game IDs for Minecraft Bedrock on CurseForge
-const GAME_CANDIDATES = [69076, 432, 297];
+const KEY = process.env.CURSEFORGE_API_KEY || '';
+const MINECRAFT_GAME_ID = 432;
+// CurseForge's Minecraft Bedrock Addons class.
+const BEDROCK_ADDONS_CLASS_ID = 4559;
 
 async function cf(path, params = {}) {
   const url = new URL(API + path);
-  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
-  const res = await fetch(url, {
-    headers: {
-      Accept: 'application/json',
-      'x-api-key': KEY,
-      'User-Agent': 'CubeNest-Sync/1.0',
-    },
-  });
-  const text = await res.text();
-  if (!res.ok) throw new Error(`CurseForge ${res.status}: ${text.slice(0, 200)}`);
-  return JSON.parse(text);
-}
-
-async function resolveGameId() {
-  for (const id of GAME_CANDIDATES) {
-    try {
-      const r = await cf('/mods/search', { gameId: id, pageSize: 1, index: 0 });
-      if (r?.data) {
-        console.log(`Using gameId=${id} (${r.pagination?.totalCount ?? '?'} total)`);
-        return id;
-      }
-    } catch (e) {
-      console.warn(`gameId ${id} failed:`, e.message);
-    }
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value));
   }
-  throw new Error('No working CurseForge gameId');
+  const response = await fetch(url, {
+    headers: { Accept: 'application/json', 'x-api-key': KEY, 'User-Agent': 'CubeNest-Sync/1.1' },
+  });
+  const body = await response.text();
+  if (!response.ok) {
+    const hint = response.status === 401 || response.status === 403
+      ? ' Check that CURSEFORGE_API_KEY is the actual API key and that its access is enabled.'
+      : '';
+    throw new Error(`CurseForge API ${response.status} at ${url.pathname}: ${body.slice(0, 240)}.${hint}`);
+  }
+  try { return JSON.parse(body); }
+  catch { throw new Error(`CurseForge returned invalid JSON from ${url.pathname}`); }
 }
 
 async function main() {
-  if (!KEY || KEY.includes('your_')) {
-    console.error('Set CURSEFORGE_API_KEY or VITE_CURSEFORGE_API_KEY');
-    // Keep previous file if any
-    if (!existsSync(outFile)) {
-      mkdirSync(outDir, { recursive: true });
-      writeFileSync(outFile, JSON.stringify({ lastSynced: null, gameId: null, resources: [], error: 'missing_api_key' }, null, 2));
-    }
-    process.exit(0);
-  }
+  if (!KEY) throw new Error('Missing GitHub Actions secret CURSEFORGE_API_KEY.');
 
-  const gameId = await resolveGameId();
-  const resources = [];
+  // Validate both credentials and game access before replacing the catalogue.
+  const game = await cf(`/games/${MINECRAFT_GAME_ID}`);
+  if (!game?.data?.id) throw new Error(`API key cannot access Minecraft game ${MINECRAFT_GAME_ID}.`);
+  console.log(`Authenticated; game=${game.data.name} (${game.data.id})`);
+
+  const unique = new Map();
+  const searches = ['', 'addon', 'add-on', 'map', 'texture', 'shader', 'behavior pack', 'resource pack'];
   const pageSize = 50;
-  // First pages of popular + a few search seeds for variety
-  const queries = ['', 'addon', 'map', 'texture', 'shader'];
-
-  for (const q of queries) {
-    for (let index = 0; index < 100 && resources.length < 200; index += pageSize) {
-      const r = await cf('/mods/search', {
-        gameId,
-        searchFilter: q,
-        pageSize,
-        index,
-        sortField: 2,
-        sortOrder: 'desc',
-      });
-      const batch = r.data || [];
-      for (const m of batch) {
-        if (resources.some((x) => x.id === m.id)) continue;
-        resources.push({
-          id: m.id,
-          slug: m.slug,
-          name: m.name,
-          summary: m.summary || '',
-          downloadCount: m.downloadCount || 0,
-          logo: m.logo?.thumbnailUrl || m.logo?.url || null,
-          url: m.links?.websiteUrl || `https://www.curseforge.com/minecraft-bedrock/addons/${m.slug}`,
-          // CurseForge includes recent files on many search results. Use a publisher-provided
-          // direct URL when present; never guess a CDN URL or expose the API key in the client.
-          downloadUrl: m.latestFiles?.find((file) => file.isAvailable !== false && file.downloadUrl)?.downloadUrl || null,
-          fileName: m.latestFiles?.find((file) => file.isAvailable !== false && file.downloadUrl)?.fileName || null,
-          authors: (m.authors || []).map((a) => a.name),
-          categories: (m.categories || []).map((c) => c.name),
+  for (const term of searches) {
+    // Keep total API work bounded; each search is scoped to the Bedrock Addons class.
+    const result = await cf('/mods/search', {
+      gameId: MINECRAFT_GAME_ID,
+      classId: BEDROCK_ADDONS_CLASS_ID,
+      searchFilter: term,
+      pageSize,
+      index: 0,
+      sortField: 2,
+      sortOrder: 'desc',
+    });
+    for (const mod of result.data || []) {
+      if (!unique.has(mod.id)) {
+        const latest = (mod.latestFiles || []).find((file) => file.downloadUrl) || (mod.latestFiles || [])[0];
+        unique.set(mod.id, {
+          id: mod.id,
+          slug: mod.slug || String(mod.id),
+          name: mod.name || 'Untitled resource',
+          summary: mod.summary || '',
+          downloadCount: mod.downloadCount || 0,
+          logo: mod.logo?.thumbnailUrl || mod.logo?.url || null,
+          url: mod.links?.websiteUrl || `https://www.curseforge.com/minecraft-bedrock/addons/${mod.slug || mod.id}`,
+          // Only use a direct file URL when the API actually provides one.
+          downloadUrl: latest?.downloadUrl || null,
+          latestFileId: latest?.id || null,
+          authors: (mod.authors || []).map((author) => author.name).filter(Boolean),
+          categories: (mod.categories || []).map((category) => category.name).filter(Boolean),
+          source: 'CurseForge',
         });
       }
-      if (batch.length < pageSize) break;
-      if (!q && index >= 50) break; // limit empty query
     }
+  }
+
+  const resources = [...unique.values()];
+  if (!resources.length) {
+    throw new Error(`CurseForge returned zero Bedrock add-ons for gameId=${MINECRAFT_GAME_ID}, classId=${BEDROCK_ADDONS_CLASS_ID}. Refusing to overwrite the catalogue with an empty result.`);
   }
 
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(
-    outFile,
-    JSON.stringify(
-      {
-        lastSynced: new Date().toISOString(),
-        gameId,
-        source: 'curseforge-api',
-        resources,
-      },
-      null,
-      2
-    )
-  );
-  console.log(`Wrote ${resources.length} Bedrock resources → ${outFile}`);
+  writeFileSync(outFile, JSON.stringify({
+    lastSynced: new Date().toISOString(),
+    gameId: MINECRAFT_GAME_ID,
+    classId: BEDROCK_ADDONS_CLASS_ID,
+    source: 'curseforge-api',
+    count: resources.length,
+    resources,
+  }, null, 2) + '\n');
+  console.log(`Wrote ${resources.length} Bedrock resources to ${outFile}; ${resources.filter((item) => item.downloadUrl).length} have direct file URLs.`);
 }
 
-main().catch((e) => {
-  console.error(e.message || e);
-  // Do not wipe existing good data
+main().catch((error) => {
+  console.error(`Bedrock sync failed: ${error.message || error}`);
+  // Keep the last known-good catalogue; do not create an empty replacement.
   if (!existsSync(outFile)) {
     mkdirSync(outDir, { recursive: true });
-    writeFileSync(outFile, JSON.stringify({ lastSynced: null, resources: [], error: String(e.message || e) }, null, 2));
+    writeFileSync(outFile, JSON.stringify({ lastSynced: null, resources: [], error: 'sync_failed_check_github_actions_logs' }, null, 2) + '\n');
   }
-  process.exit(1);
+  process.exitCode = 1;
 });
