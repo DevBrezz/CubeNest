@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
-import { EarthBackground } from '../components/EarthBackground';
+import { SolarSystemBackground } from '../components/SolarSystemBackground';
 
 const categories = [
   { to: '/mods', icon: Boxes, title: 'Mods', text: 'Gameplay and content mods from Modrinth.' },
@@ -42,7 +42,7 @@ export function Home() {
     <div className="relative">
       {/* Hero with Earth */}
       <section className="relative min-h-[88vh] flex items-center pt-16 overflow-hidden">
-        <EarthBackground className="absolute inset-0 w-full h-full" />
+        <SolarSystemBackground className="absolute inset-0 w-full h-full" />
         <div className="absolute inset-0 bg-gradient-to-r from-mc-black via-mc-black/85 to-mc-black/40 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-mc-black via-transparent to-mc-black/50 pointer-events-none" />
 

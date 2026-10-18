@@ -1,24 +1,27 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Download, Package } from 'lucide-react';
+import { Search, Package } from 'lucide-react';
 import { useResources, useFilteredResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
 import type { SortOption, PlatformFilter } from '../types/resource';
 
-/** Plugins catalog: local SpigotMC + Modrinth plugin-type resources from resources.json */
+type PluginSource = 'global' | 'spigot' | 'modrinth';
+
+/** Plugins: Global (default) = all sources, or Spigot / Modrinth only */
 export function Plugins() {
   const { resources, loading, error, data } = useResources();
   const [search, setSearch] = useState('');
-  const [platform, setPlatform] = useState<PlatformFilter>('all');
+  const [source, setSource] = useState<PluginSource>('global');
   const [sort, setSort] = useState<SortOption>('updated');
 
-  // Treat all catalog entries as server plugins (Spigot/Paper ecosystem + Modrinth plugins published by the author)
   const pluginResources = useMemo(
     () => resources.filter((r) => !r.hidden && (r.platform === 'spigot' || r.platform === 'modrinth')),
     [resources]
   );
 
-  const filtered = useFilteredResources(pluginResources, search, platform, 'all', sort);
+  const platformFilter: PlatformFilter =
+    source === 'global' ? 'all' : source === 'spigot' ? 'spigot' : 'modrinth';
+
+  const filtered = useFilteredResources(pluginResources, search, platformFilter, 'all', sort);
 
   return (
     <div className="pt-24 pb-16 min-h-screen mc-grid-bg">
@@ -26,7 +29,7 @@ export function Plugins() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-mc-white">Plugins</h1>
           <p className="text-mc-muted mt-1 text-sm">
-            Server plugins from SpigotMC and Modrinth. {pluginResources.length} in catalogue
+            Server plugins — Global combines SpigotMC and Modrinth. {pluginResources.length} in catalogue
             {data?.lastSynced ? ` · Synced ${new Date(data.lastSynced).toLocaleString()}` : ''}
           </p>
         </div>
@@ -43,18 +46,35 @@ export function Plugins() {
             />
           </div>
           <div className="flex flex-wrap gap-2 items-center">
-            <select value={platform} onChange={(e) => setPlatform(e.target.value as PlatformFilter)} className="px-3 py-1.5 rounded-lg bg-mc-gray border border-mc-border text-xs text-mc-text">
-              <option value="all">All sources</option>
-              <option value="spigot">SpigotMC</option>
-              <option value="modrinth">Modrinth</option>
-            </select>
-            <select value={sort} onChange={(e) => setSort(e.target.value as SortOption)} className="px-3 py-1.5 rounded-lg bg-mc-gray border border-mc-border text-xs text-mc-text">
+            {([
+              { id: 'global' as const, label: 'Global' },
+              { id: 'spigot' as const, label: 'SpigotMC' },
+              { id: 'modrinth' as const, label: 'Modrinth' },
+            ]).map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setSource(opt.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${
+                  source === opt.id
+                    ? 'bg-mc-red border-mc-red text-white'
+                    : 'bg-mc-gray border-mc-border text-mc-text hover:border-mc-red/40'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOption)}
+              className="px-3 py-1.5 rounded-lg bg-mc-gray border border-mc-border text-xs text-mc-text ml-auto"
+            >
               <option value="updated">Recently updated</option>
               <option value="newest">Newest</option>
               <option value="downloads">Downloads</option>
               <option value="alphabetical">Alphabetical</option>
             </select>
-            <span className="text-xs text-mc-muted ml-auto">{filtered.length} results</span>
+            <span className="text-xs text-mc-muted">{filtered.length} results</span>
           </div>
         </div>
 
@@ -68,6 +88,7 @@ export function Plugins() {
           <div className="text-center py-20 text-mc-muted">
             <Package className="w-10 h-10 mx-auto mb-3 opacity-50" />
             <p>No plugins match your filters.</p>
+            <p className="text-xs mt-2">If this is empty on the live site, ensure /data/resources.json is deployed (GitHub Actions build).</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -76,7 +97,7 @@ export function Plugins() {
         )}
 
         <p className="mt-8 text-xs text-mc-muted text-center">
-          Downloads and files are hosted by SpigotMC or Modrinth. CubeNest links to official release pages.
+          Downloads are hosted by SpigotMC or Modrinth. CubeNest links to official release pages.
         </p>
       </div>
     </div>
