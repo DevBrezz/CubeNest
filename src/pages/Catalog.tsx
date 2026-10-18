@@ -145,7 +145,12 @@ export function Catalog({ category }: { category: keyof typeof TYPE_META }) {
                       {h.icon_url ? (
                         <img src={h.icon_url} alt="" className="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                       ) : <Package className="w-10 h-10 text-mc-muted" />}
-                      <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-600/90 text-white">Modrinth</span>
+                      <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-600/90 text-white">Modrinth</span>
+                        {platform === 'bedrock' && <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-500/90 text-white">Bedrock</span>}
+                        {platform === 'java' && <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-red-600/90 text-white">Java</span>}
+                        {!platform && <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-mc-gray/90 text-mc-muted border border-mc-border">Java-first</span>}
+                      </div>
                     </div>
                     <div className="p-3.5">
                       <h3 className="font-semibold text-mc-white text-sm line-clamp-1 group-hover:text-mc-red-bright">{h.title}</h3>

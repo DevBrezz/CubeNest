@@ -28,7 +28,7 @@ export function Donate() {
           <div className="donate-thanks"><Coins size={18}/><p>No pressure to donate. Using the plugins, sharing feedback, and reporting bugs also support the project.</p></div>
         </motion.div>
       </section>
-      <p className="donate-footer-note">KingBrezz · Built with the community, one release at a time.</p>
+      <p className="donate-footer-note">CubeNest · Built with the community, one release at a time.</p>
     </div>
   </main>;
 }
