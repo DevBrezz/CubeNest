@@ -2,25 +2,72 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Home } from './pages/Home';
-import { Catalog, ResourceDetail } from './pages/cubenest/Catalog';
-import { ServerHub } from './pages/cubenest/ServerHub';
-import { Upload } from './pages/cubenest/Upload';
-import { InfoPage } from './pages/cubenest/Info';
-import { useEffect } from 'react';
-import './cubenest.css';
+import { Projects } from './pages/Projects';
+import { ProjectDetail } from './pages/ProjectDetail';
+import { About } from './pages/About';
+import { Contact } from './pages/Contact';
+import { Donate } from './pages/Donate';
+import { BootScreen } from './components/BootScreen';
+import { useEffect, useState } from 'react';
+import { Report } from './pages/Report';
+import { LanguageProvider } from './lib/i18n';
+import { KingBrezzAssistant } from './components/KingBrezzAssistant';
+import { VisitorBadge } from './components/VisitorBadge';
+import { Catalog } from './pages/Catalog';
+import { ModrinthDetail } from './pages/ModrinthDetail';
+import { Plugins } from './pages/Plugins';
+import { Servers } from './pages/Servers';
+import { Mods } from './pages/Mods';
 
 export default function App() {
-  useEffect(() => { document.title = 'CubeNest — Minecraft, connected'; }, []);
-  return <BrowserRouter><div className="cn-shell"><Navbar/><main className="cn-main"><Routes>
-    <Route path="/" element={<Home/>}/>
-    <Route path="/servers" element={<ServerHub/>}/>
-    <Route path="/resources" element={<Catalog kind="resources"/>}/>
-    <Route path="/mods" element={<Catalog kind="resources"/>}/>
-    <Route path="/plugins" element={<Catalog kind="plugins"/>}/>
-    <Route path="/resource/:id" element={<ResourceDetail/>}/>
-    <Route path="/search" element={<Catalog kind="resources"/>}/>
-    <Route path="/upload" element={<Upload/>}/>
-    <Route path="/dashboard" element={<InfoPage/>}/><Route path="/admin" element={<InfoPage/>}/><Route path="/creators" element={<InfoPage/>}/><Route path="/terms" element={<InfoPage/>}/><Route path="/privacy" element={<InfoPage/>}/><Route path="/report" element={<InfoPage/>}/>
-    <Route path="*" element={<Home/>}/>
-  </Routes></main><Footer/></div></BrowserRouter>;
+  const [showBoot, setShowBoot] = useState(false);
+  useEffect(() => {
+    let alreadyShown = false;
+    try { alreadyShown = sessionStorage.getItem('cubenest-boot-shown') === '1'; } catch { /* storage may be unavailable */ }
+    if (alreadyShown) return;
+    setShowBoot(true);
+    try { sessionStorage.setItem('cubenest-boot-shown', '1'); } catch { /* storage may be unavailable */ }
+    const timer = window.setTimeout(() => setShowBoot(false), 2300);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <LanguageProvider>
+      <BrowserRouter>
+        <div className="min-h-screen flex flex-col bg-mc-black text-mc-text">
+          <Navbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/plugins" element={<Plugins />} />
+              <Route path="/servers" element={<Servers />} />
+              <Route path="/mods" element={<Catalog category="mods" />} />
+              <Route path="/mods/:slug" element={<ModrinthDetail category="mods" />} />
+              <Route path="/resourcepacks" element={<Catalog category="resourcepacks" />} />
+              <Route path="/resourcepacks/:slug" element={<ModrinthDetail category="resourcepacks" />} />
+              <Route path="/shaders" element={<Catalog category="shaders" />} />
+              <Route path="/shaders/:slug" element={<ModrinthDetail category="shaders" />} />
+              <Route path="/modpacks" element={<Catalog category="modpacks" />} />
+              <Route path="/modpacks/:slug" element={<ModrinthDetail category="modpacks" />} />
+              <Route path="/datapacks" element={<Catalog category="datapacks" />} />
+              <Route path="/datapacks/:slug" element={<ModrinthDetail category="datapacks" />} />
+              <Route path="/curseforge-mods" element={<Mods />} />
+              <Route path="/project/:id" element={<ProjectDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/report" element={<Report />} />
+              <Route path="/assistant" element={<KingBrezzAssistant page />} />
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </main>
+          <Footer />
+          <KingBrezzAssistant />
+          <VisitorBadge />
+          {showBoot && <BootScreen />}
+        </div>
+      </BrowserRouter>
+    </LanguageProvider>
+  );
 }

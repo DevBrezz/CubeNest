@@ -558,3 +558,22 @@ header.fixed nav button.md\:hidden{display:grid;place-items:center;width:43px;he
 .home-donate-float{bottom:18px!important;right:max(16px,calc((100vw - 1280px)/2))!important;z-index:60!important}
 @media(max-width:767px){header.fixed nav{height:62px}header.fixed nav .hidden.md\:flex{display:none}.kb-assistant-floating{right:12px!important;bottom:82px!important}.home-donate-float{right:12px!important;bottom:12px!important}}
 @media(prefers-reduced-motion:reduce){.dirt-cube{animation:none!important;transform:rotateX(-25deg) rotateY(0deg)}header.fixed nav>a,.language-trigger{transition:none}}
+
+/* CubeNest Earth background */
+.earth-bg-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Brand logo sizing used across navbar/footer */
+.brand-logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.35rem;
+}
+.brand-logo-small {
+  width: 1.5rem;
+  height: 1.5rem;
+}
