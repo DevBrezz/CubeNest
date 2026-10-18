@@ -84,6 +84,10 @@ async function main() {
           downloadCount: m.downloadCount || 0,
           logo: m.logo?.thumbnailUrl || m.logo?.url || null,
           url: m.links?.websiteUrl || `https://www.curseforge.com/minecraft-bedrock/addons/${m.slug}`,
+          // CurseForge includes recent files on many search results. Use a publisher-provided
+          // direct URL when present; never guess a CDN URL or expose the API key in the client.
+          downloadUrl: m.latestFiles?.find((file) => file.isAvailable !== false && file.downloadUrl)?.downloadUrl || null,
+          fileName: m.latestFiles?.find((file) => file.isAvailable !== false && file.downloadUrl)?.fileName || null,
           authors: (m.authors || []).map((a) => a.name),
           categories: (m.categories || []).map((c) => c.name),
         });
