@@ -21,7 +21,7 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
   const languages = [
     { code: 'en' as const, flag: '🇬🇧', label: 'English' },
@@ -50,9 +50,13 @@ export function Navbar() {
     )}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2 group shrink-0">
-          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="brand-logo" />
+          <img
+            src={`${import.meta.env.BASE_URL}images/cubenest-logo.png`}
+            alt="CubeNest"
+            className="w-8 h-8 rounded-lg object-contain"
+          />
           <span className="font-semibold text-mc-white tracking-tight">
-            Cube<span className="text-mc-red">Nest</span>
+            Cube<span className="text-emerald-400">Nest</span>
           </span>
         </Link>
 
@@ -63,14 +67,14 @@ export function Navbar() {
               to={l.to}
               className={cn(
                 'px-2.5 py-2 rounded-md text-xs font-medium transition-colors relative whitespace-nowrap',
-                location.pathname === l.to || location.pathname.startsWith(l.to + '/')
+                location.pathname === l.to || (l.to !== '/' && location.pathname.startsWith(l.to))
                   ? 'text-mc-white'
                   : 'text-mc-muted hover:text-mc-white'
               )}
             >
               {l.label}
               {(location.pathname === l.to || (l.to !== '/' && location.pathname.startsWith(l.to))) && (
-                <motion.div layoutId="nav-indicator" className="absolute bottom-0 left-1 right-1 h-0.5 bg-mc-red rounded-full" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
+                <motion.div layoutId="nav-indicator" className="absolute bottom-0 left-1 right-1 h-0.5 bg-emerald-400 rounded-full" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
               )}
             </Link>
           ))}
@@ -82,7 +86,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to="/mods" className="hidden sm:inline-flex p-2 text-mc-muted hover:text-mc-white" aria-label="Search mods">
+          <Link to="/mods" className="hidden sm:inline-flex p-2 text-mc-muted hover:text-mc-white" aria-label="Browse mods">
             <Search className="w-4 h-4" />
           </Link>
           <div className="relative hidden md:block">

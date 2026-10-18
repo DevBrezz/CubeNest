@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="brand-logo brand-logo-small" />
+              <img src={`${import.meta.env.BASE_URL}images/cubenest-logo.png`} alt="" className="brand-logo brand-logo-small" />
               <span className="font-semibold text-mc-white">CubeNest</span>
             </div>
             <p className="text-sm text-mc-muted leading-relaxed">
