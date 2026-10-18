@@ -67,7 +67,13 @@ export function BedrockHub() {
           })}
         </div>
 
-        <div className="mt-6 flex items-start gap-2 text-xs text-mc-muted bg-mc-surface border border-mc-border rounded-xl p-3">
+        <div className="mt-6">
+          <Link to="/bedrock/catalog" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500">
+            Browse CurseForge catalog in CubeNest
+          </Link>
+        </div>
+
+        <div className="mt-4 flex items-start gap-2 text-xs text-mc-muted bg-mc-surface border border-mc-border rounded-xl p-3">
           <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <p>
             CubeNest cannot legally re-host or proxy MCPEDL files (no public API + Cloudflare protection).

@@ -14,11 +14,11 @@ const JAVA_CATS = [
 ];
 
 const BEDROCK_CATS = [
-  { id: 'all', title: 'MCPEDL hub', desc: 'All Bedrock categories & search', to: '/bedrock', icon: Boxes },
-  { id: 'addons', title: 'Mods / Add-ons', desc: 'MCPEDL add-ons — download there', to: '/bedrock', icon: Boxes },
-  { id: 'maps', title: 'Maps', desc: 'MCPEDL maps', to: '/bedrock', icon: Map },
-  { id: 'textures', title: 'Textures', desc: 'MCPEDL texture packs', to: '/bedrock', icon: Palette },
-  { id: 'shaders', title: 'Shaders', desc: 'MCPEDL shaders', to: '/bedrock', icon: Sun },
+  { id: 'all', title: 'MCPEDL hub', desc: 'All Bedrock categories & search', to: '/bedrock/catalog', icon: Boxes },
+  { id: 'addons', title: 'Mods / Add-ons', desc: 'MCPEDL add-ons — download there', to: '/bedrock/catalog', icon: Boxes },
+  { id: 'maps', title: 'Maps', desc: 'MCPEDL maps', to: '/bedrock/catalog', icon: Map },
+  { id: 'textures', title: 'Textures', desc: 'MCPEDL texture packs', to: '/bedrock/catalog', icon: Palette },
+  { id: 'shaders', title: 'Shaders', desc: 'MCPEDL shaders', to: '/bedrock/catalog', icon: Sun },
   { id: 'skins', title: 'Skins', desc: 'MCPEDL packs + PNG lookup', to: '/skins', icon: User },
 ];
 

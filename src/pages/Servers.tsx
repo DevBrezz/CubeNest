@@ -22,19 +22,24 @@ function reactionsKey(id: string) {
   return `cubenest-react-${id}`;
 }
 
-function loadReactions(id: string): Record<string, number> {
+/** One reaction per server per device — no spam. */
+function loadReaction(id: string): string | null {
   try {
-    return JSON.parse(localStorage.getItem(reactionsKey(id)) || '{}');
+    const raw = localStorage.getItem(reactionsKey(id));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { emoji?: string } | string;
+    if (typeof parsed === 'string') return parsed;
+    return parsed.emoji || null;
   } catch {
-    return {};
+    return null;
   }
 }
 
-function saveReaction(id: string, emoji: string) {
-  const cur = loadReactions(id);
-  cur[emoji] = (cur[emoji] || 0) + 1;
-  localStorage.setItem(reactionsKey(id), JSON.stringify(cur));
-  return cur;
+/** Returns false if already reacted (blocked). */
+function saveReactionOnce(id: string, emoji: string): boolean {
+  if (loadReaction(id)) return false;
+  localStorage.setItem(reactionsKey(id), JSON.stringify({ emoji, at: Date.now() }));
+  return true;
 }
 
 export function Servers() {
@@ -109,7 +114,8 @@ export function Servers() {
   };
 
   const onReact = (id: string, emoji: string) => {
-    saveReaction(id, emoji);
+    const ok = saveReactionOnce(id, emoji);
+    if (!ok) return; // already reacted once
     setReactTick((x) => x + 1);
   };
 
@@ -170,7 +176,7 @@ export function Servers() {
               const players = s.primaryConnection?.latest?.playersOnline;
               const max = s.primaryConnection?.latest?.playersMax;
               const ed = s.primaryConnection?.edition || 'java';
-              const reacts = loadReactions(s.id);
+              const myReact = loadReaction(s.id);
               void reactTick;
               return (
                 <motion.article key={s.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -205,13 +211,18 @@ export function Servers() {
                       </a>
                     </div>
                   )}
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {EMOJIS.map((em) => (
-                      <button key={em} type="button" onClick={() => onReact(s.id, em)}
-                        className="px-2 py-0.5 rounded-md bg-mc-gray border border-mc-border text-xs hover:border-mc-red/40">
-                        {em} {(reacts[em] || 0) > 0 ? reacts[em] : ''}
-                      </button>
-                    ))}
+                  <div className="mt-3 flex flex-wrap gap-1 items-center">
+                    {myReact ? (
+                      <span className="text-xs text-mc-muted">Your reaction: <span className="text-base">{myReact}</span></span>
+                    ) : (
+                      EMOJIS.map((em) => (
+                        <button key={em} type="button" onClick={() => onReact(s.id, em)}
+                          className="px-2 py-0.5 rounded-md bg-mc-gray border border-mc-border text-xs hover:border-mc-red/40"
+                          title="One reaction only">
+                          {em}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </motion.article>
               );
