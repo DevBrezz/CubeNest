@@ -14,8 +14,8 @@ const links = [
   { to: '/shaders', label: 'Shaders' },
   { to: '/modpacks', label: 'Modpacks' },
   { to: '/projects', label: 'Projects' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/about', label: 'About CubeNest' },
+  { to: '/contact', label: 'Contact team' },
 ];
 
 export function Navbar() {

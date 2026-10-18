@@ -12,13 +12,13 @@ export function BootScreen() {
     nl: { eyebrow: 'GEMAAKT VOOR JE VOLGENDE IDEE', title: 'Hulp nodig bij je volgende', titleAccent: 'Minecraft-idee?', body: 'Ontdek handige plugins, slimmere servertools en ideeën om je wereld beter te laten draaien.', footer: 'TOOLS · WERELDEN · MOGELIJKHEDEN', entering: 'WELKOM BIJ KINGBREZZ' },
   }[language];
   return (
-    <motion.section className="boot-screen" role="status" aria-label="Welcome to KingBrezz"
+    <motion.section className="boot-screen" role="status" aria-label="Welcome to CubeNest"
       initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className="boot-stars" aria-hidden="true" />
       <div className="boot-aurora boot-aurora-a" aria-hidden="true" />
       <div className="boot-aurora boot-aurora-b" aria-hidden="true" />
       <div className="boot-content">
-        <div className="boot-brand"><span className="boot-brand-mark">K</span><span>KingBrezz</span><span className="boot-online"><i /> ONLINE</span></div>
+        <div className="boot-brand"><span className="boot-brand-mark">K</span><span>CubeNest</span><span className="boot-online"><i /> ONLINE</span></div>
         <div className="dirt-stage" aria-hidden="true">
           <div className="dirt-cube">
             <div className="dirt-face dirt-top"><span /></div>

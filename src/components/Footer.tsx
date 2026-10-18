@@ -32,8 +32,8 @@ export function Footer() {
             <h4 className="text-xs font-semibold uppercase tracking-wider text-mc-muted mb-3">Platform</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/projects" className="text-mc-text hover:text-mc-red transition-colors">Projects</Link></li>
-              <li><Link to="/about" className="text-mc-text hover:text-mc-red transition-colors">About</Link></li>
-              <li><Link to="/contact" className="text-mc-text hover:text-mc-red transition-colors">Contact</Link></li>
+              <li><Link to="/about" className="text-mc-text hover:text-mc-red transition-colors">About CubeNest</Link></li>
+              <li><Link to="/contact" className="text-mc-text hover:text-mc-red transition-colors">Contact team</Link></li>
               <li><Link to="/donate" className="text-mc-text hover:text-mc-red transition-colors">Donate</Link></li>
             </ul>
           </div>
