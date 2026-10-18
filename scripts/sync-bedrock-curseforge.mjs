@@ -31,19 +31,27 @@ function bucketFor(name = '') {
   return 'other';
 }
 
-async function resolveGameId() {
-  for (const id of GAME_CANDIDATES) {
-    try {
-      const r = await cf('/mods/search', { gameId: id, pageSize: 1, index: 0 });
-      if (Array.isArray(r.data)) return id;
-    } catch (e) { console.warn(`gameId ${id}: ${e.message}`); }
-  }
-  throw new Error('No supported CurseForge gameId responded successfully');
-}
-
 async function getClasses(gameId) {
   const r = await cf('/categories', { gameId, classesOnly: true });
   return (r.data || []).map(c => ({ id: c.id, name: c.name, bucket: bucketFor(c.name) }));
+}
+
+async function resolveGameId() {
+  // Search is the source of truth for whether a game ID is accessible.
+  // Categories can return 404 for some API/game configurations, so they must
+  // not prevent the catalog from loading when /mods/search is available.
+  for (const id of GAME_CANDIDATES) {
+    try {
+      const result = await cf('/mods/search', { gameId: id, pageSize: 1, index: 0 });
+      if (Array.isArray(result.data)) {
+        console.log(`Using CurseForge gameId ${id} (search endpoint responded successfully).`);
+        return id;
+      }
+    } catch (e) {
+      console.warn(`gameId ${id} search unavailable: ${e.message}`);
+    }
+  }
+  throw new Error('Could not identify an accessible CurseForge gameId from /mods/search. Check CURSEFORGE_API_KEY permissions and the API response.');
 }
 
 async function searchPage(gameId, classId, index) {
@@ -58,32 +66,11 @@ async function getBestFile(mod) {
   let fileName = latest?.fileName || latest?.displayName || null;
   // Resolve a direct CDN URL on the server when CurseForge's search payload omits it.
   if (fileId && !downloadUrl) {
-    // CurseForge exposes a dedicated endpoint for the actual CDN download URL.
-    // This is more reliable than expecting the file metadata response to contain it.
-    try {
-      const result = await cf(`/mods/${mod.id}/files/${fileId}/download-url`);
-      downloadUrl = typeof result.data === 'string' ? result.data : (result.data?.downloadUrl || result.data?.url || null);
-    } catch (e) {
-      console.warn(`download-url endpoint unavailable for mod ${mod.id}, file ${fileId}: ${e.message}`);
-    }
-  }
-  if (fileId && !downloadUrl) {
     try {
       const file = await cf(`/mods/${mod.id}/files/${fileId}`);
       downloadUrl = file.data?.downloadUrl || null;
       fileName = file.data?.fileName || fileName;
-    } catch (e) {
-      console.warn(`file metadata unavailable for mod ${mod.id}, file ${fileId}: ${e.message}`);
-    }
-  }
-  // Only publish a valid HTTP(S) URL as a direct download.
-  if (downloadUrl) {
-    try {
-      const parsed = new URL(downloadUrl);
-      if (!['https:', 'http:'].includes(parsed.protocol)) downloadUrl = null;
-    } catch {
-      downloadUrl = null;
-    }
+    } catch (e) { console.warn(`file metadata unavailable for mod ${mod.id}: ${e.message}`); }
   }
   return { fileId, downloadUrl, fileName };
 }
@@ -92,10 +79,15 @@ async function main() {
   if (!KEY) throw new Error('Missing CURSEFORGE_API_KEY GitHub Actions secret');
   const gameId = await resolveGameId();
   let classes = [];
-  try { classes = await getClasses(gameId); } catch (e) { console.warn(`Could not load classes: ${e.message}`); }
+  try {
+    classes = await getClasses(gameId);
+  } catch (e) {
+    // Categories are useful for grouping but are not required to fetch resources.
+    console.warn(`Could not load classes (${e.message}); continuing with unfiltered resource search.`);
+  }
   const classList = classes.filter(c => c.bucket !== 'other');
   if (!classList.length) {
-    // Still allow generic projects but mark them honestly; UI filtering uses resource categories.
+    // Search without classId; categorization falls back to project category/name.
     classList.push({ id: null, name: 'All Bedrock resources', bucket: 'addons' });
   }
 
@@ -143,12 +135,13 @@ async function main() {
     }));
   }
 
+  if (!resources.length) {
+    throw new Error(`CurseForge returned zero resources for validated gameId ${gameId}; existing catalog was preserved. Check API key access and search filters.`);
+  }
   mkdirSync(outDir, { recursive: true });
   const direct = resources.filter(r => r.downloadUrl).length;
-  if (!resources.length) throw new Error('CurseForge returned zero resources; existing catalog was preserved');
   writeFileSync(outFile, JSON.stringify({ lastSynced: new Date().toISOString(), gameId, source: 'CurseForge API', total: resources.length, directDownloads: direct, categories: classes, resources }, null, 2));
   console.log(`Wrote ${resources.length} resources; ${direct} have direct download URLs.`);
-  if (!direct) console.warn('No direct file URLs resolved. Check API key permissions, file availability, and the CurseForge download-url endpoint response.');
 }
 
 main().catch(error => {
