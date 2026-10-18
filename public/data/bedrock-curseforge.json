@@ -1,0 +1,6 @@
+{
+  "lastSynced": null,
+  "gameId": null,
+  "resources": [],
+  "error": "Run scripts/sync-bedrock-curseforge.mjs with CURSEFORGE_API_KEY"
+}
