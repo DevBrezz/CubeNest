@@ -58,11 +58,32 @@ async function getBestFile(mod) {
   let fileName = latest?.fileName || latest?.displayName || null;
   // Resolve a direct CDN URL on the server when CurseForge's search payload omits it.
   if (fileId && !downloadUrl) {
+    // CurseForge exposes a dedicated endpoint for the actual CDN download URL.
+    // This is more reliable than expecting the file metadata response to contain it.
+    try {
+      const result = await cf(`/mods/${mod.id}/files/${fileId}/download-url`);
+      downloadUrl = typeof result.data === 'string' ? result.data : (result.data?.downloadUrl || result.data?.url || null);
+    } catch (e) {
+      console.warn(`download-url endpoint unavailable for mod ${mod.id}, file ${fileId}: ${e.message}`);
+    }
+  }
+  if (fileId && !downloadUrl) {
     try {
       const file = await cf(`/mods/${mod.id}/files/${fileId}`);
       downloadUrl = file.data?.downloadUrl || null;
       fileName = file.data?.fileName || fileName;
-    } catch (e) { console.warn(`file metadata unavailable for mod ${mod.id}: ${e.message}`); }
+    } catch (e) {
+      console.warn(`file metadata unavailable for mod ${mod.id}, file ${fileId}: ${e.message}`);
+    }
+  }
+  // Only publish a valid HTTP(S) URL as a direct download.
+  if (downloadUrl) {
+    try {
+      const parsed = new URL(downloadUrl);
+      if (!['https:', 'http:'].includes(parsed.protocol)) downloadUrl = null;
+    } catch {
+      downloadUrl = null;
+    }
   }
   return { fileId, downloadUrl, fileName };
 }
@@ -123,10 +144,11 @@ async function main() {
   }
 
   mkdirSync(outDir, { recursive: true });
-  writeFileSync(outFile, JSON.stringify({ lastSynced: new Date().toISOString(), gameId, source: 'CurseForge API', total: resources.length, categories: classes, resources }, null, 2));
   const direct = resources.filter(r => r.downloadUrl).length;
+  if (!resources.length) throw new Error('CurseForge returned zero resources; existing catalog was preserved');
+  writeFileSync(outFile, JSON.stringify({ lastSynced: new Date().toISOString(), gameId, source: 'CurseForge API', total: resources.length, directDownloads: direct, categories: classes, resources }, null, 2));
   console.log(`Wrote ${resources.length} resources; ${direct} have direct download URLs.`);
-  if (!resources.length) throw new Error('CurseForge returned zero resources; existing catalog should not be replaced');
+  if (!direct) console.warn('No direct file URLs resolved. Check API key permissions, file availability, and the CurseForge download-url endpoint response.');
 }
 
 main().catch(error => {
