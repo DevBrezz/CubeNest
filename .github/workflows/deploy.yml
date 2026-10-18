@@ -24,14 +24,24 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install
+      - name: Install dependencies
         run: npm install
 
-      - name: Build
+      - name: Build site
         run: npm run build
 
-      - name: SPA 404 fallback
-        run: cp dist/index.html dist/404.html
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || (echo "dist/index.html missing" && exit 1)
+          test -f dist/data/resources.json || (echo "dist/data/resources.json missing — plugins will not load" && exit 1)
+          # Must be built assets, not Vite dev entry
+          if grep -q 'src/main.tsx' dist/index.html; then
+            echo "ERROR: dist/index.html still points to /src/main.tsx (dev entry). Build failed."
+            exit 1
+          fi
+          cp dist/index.html dist/404.html
+          ls -la dist/
+          ls -la dist/data/ || true
 
       - uses: actions/upload-pages-artifact@v3
         with:
