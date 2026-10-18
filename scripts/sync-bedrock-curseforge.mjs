@@ -74,12 +74,24 @@ async function main() {
   const unique = new Map();
   const searches = ['', 'addon', 'add-on', 'map', 'texture', 'shader', 'behavior pack', 'resource pack'];
 
+  function inferCategory(mod) {
+    const names = (mod.categories || []).map((category) => category.name || '').join(' ');
+    const text = `${mod.name || ''} ${mod.summary || ''} ${names}`.toLowerCase();
+    if (/\b(shader|lighting|render dragon|deferred rendering)\b/.test(text)) return { category: 'shaders', categoryLabel: 'Shaders' };
+    if (/\b(skin|skin pack|character creator)\b/.test(text)) return { category: 'skins', categoryLabel: 'Skins' };
+    if (/\b(map|world|adventure|skyblock|parkour|survival world|minigame)\b/.test(text)) return { category: 'maps', categoryLabel: 'Maps' };
+    if (/\b(texture|resource pack|visual pack|ui pack|faithful|pbr)\b/.test(text)) return { category: 'textures', categoryLabel: 'Texture packs' };
+    if (/\b(add.?on|behavior pack|behaviour pack|mob|creature|weapon|item|dimension|furniture|gameplay)\b/.test(text)) return { category: 'addons', categoryLabel: 'Add-ons' };
+    return { category: 'other', categoryLabel: 'Other' };
+  }
+
   function addMods(mods) {
     for (const mod of mods || []) {
       if (!mod?.id || unique.has(mod.id)) continue;
       const files = Array.isArray(mod.latestFiles) ? mod.latestFiles : [];
       const latest = files.find((file) => file?.isAvailable !== false && file?.downloadUrl) ||
         files.find((file) => file?.isAvailable !== false) || null;
+      const inferred = inferCategory(mod);
       unique.set(mod.id, {
         id: mod.id,
         slug: mod.slug || String(mod.id),
@@ -93,6 +105,8 @@ async function main() {
         fileName: latest?.fileName || null,
         authors: (mod.authors || []).map((author) => author.name).filter(Boolean),
         categories: (mod.categories || []).map((category) => category.name).filter(Boolean),
+        category: inferred.category,
+        categoryLabel: inferred.categoryLabel,
         source: 'CurseForge',
       });
     }
