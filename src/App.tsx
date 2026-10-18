@@ -19,6 +19,8 @@ import { Plugins } from './pages/Plugins';
 import { Servers } from './pages/Servers';
 import { Mods } from './pages/Mods';
 import { ModsHub } from './pages/ModsHub';
+import { BedrockHub } from './pages/BedrockHub';
+import { Skins } from './pages/Skins';
 
 export default function App() {
   const [showBoot, setShowBoot] = useState(false);
@@ -44,6 +46,8 @@ export default function App() {
               <Route path="/plugins" element={<Plugins />} />
               <Route path="/servers" element={<Servers />} />
               <Route path="/mods" element={<ModsHub />} />
+              <Route path="/bedrock" element={<BedrockHub />} />
+              <Route path="/skins" element={<Skins />} />
               <Route path="/mods/catalog" element={<Catalog category="mods" />} />
               <Route path="/mods/:slug" element={<ModrinthDetail category="mods" />} />
               <Route path="/resourcepacks" element={<Catalog category="resourcepacks" />} />
