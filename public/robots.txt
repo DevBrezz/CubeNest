@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kingbrezz.sytes.net/sitemap.xml
