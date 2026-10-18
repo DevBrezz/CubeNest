@@ -31,7 +31,6 @@ jobs:
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: node scripts/sync-bedrock-curseforge.mjs
-        continue-on-error: true
 
       - name: Build site
         run: npm run build

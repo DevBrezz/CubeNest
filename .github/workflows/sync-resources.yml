@@ -24,7 +24,7 @@ jobs:
         run: node scripts/sync-resources.mjs
       - name: Sync CurseForge creator resources
         run: node scripts/sync-curseforge.mjs
-      - name: Sync Bedrock resources from CurseForge
+      - name: Sync Bedrock CurseForge catalogue
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: node scripts/sync-bedrock-curseforge.mjs
