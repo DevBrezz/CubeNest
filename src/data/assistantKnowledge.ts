@@ -6,65 +6,76 @@ export type AssistantEntry = {
   action?: { label: string; to: string };
 };
 
+/** @deprecated alias for older imports */
+export type AssistantItem = AssistantEntry;
+
 /** CubeNest help — how to use the platform. No portfolio / author identity. */
 export const ASSISTANT_KNOWLEDGE: AssistantEntry[] = [
   {
     id: 'search-mods',
     category: 'Download',
     question: 'How do I search for mods?',
-    answer: 'Open Mods, choose Java or Bedrock, then pick a category (Mods, Maps, Textures, Shaders, Skins). Use the search box to query Modrinth. Open a project for versions and download links.',
+    answer: 'Open Mods, choose Java or Bedrock, then pick a category. Use the search box. Open a project for versions and download links from Modrinth or MCPEDL.',
     action: { label: 'Open Mods', to: '/mods' },
   },
   {
     id: 'download-mod',
     category: 'Download',
     question: 'How do I download a mod or pack?',
-    answer: 'Open the project page, check the Versions tab, and use Download. Files are hosted by Modrinth — CubeNest does not re-host files. Always match loader and game version to your client or server.',
+    answer: 'Open the project page, check Versions, and use Download. Files are hosted by Modrinth or MCPEDL — CubeNest does not re-host files. Match loader and game version.',
   },
   {
     id: 'java-vs-bedrock',
     category: 'Platform',
     question: 'What do the Java and Bedrock badges mean?',
-    answer: 'Java badge means content aimed at Minecraft Java Edition (often Fabric/Forge/NeoForge/Quilt). Bedrock badge means you are browsing the Bedrock path. Always verify compatibility on the project page before installing.',
+    answer: 'Java is for Minecraft Java Edition content (often Fabric/Forge/NeoForge/Quilt). Bedrock opens the MCPEDL path for Bedrock Edition content. Always verify compatibility on the project page.',
     action: { label: 'Browse by platform', to: '/mods' },
+  },
+  {
+    id: 'bedrock-mcpedl',
+    category: 'Download',
+    question: 'How do I get Bedrock content from MCPEDL?',
+    answer: 'Go to Mods → Bedrock (or /bedrock). Search or open a category. Downloads open on MCPEDL because they have no public API for embedding files on CubeNest.',
+    action: { label: 'Bedrock hub', to: '/bedrock' },
   },
   {
     id: 'plugins',
     category: 'Download',
     question: 'How do I find server plugins?',
-    answer: 'Go to Plugins. Default filter is Global (SpigotMC + Modrinth). Switch to SpigotMC or Modrinth only if you want one source. Open a card for details and the official download page.',
+    answer: 'Open Plugins. Default is Global (SpigotMC + Modrinth). Filter by source if needed, then open a card for the official download page.',
     action: { label: 'Open Plugins', to: '/plugins' },
   },
   {
     id: 'install-plugin',
     category: 'Install',
     question: 'How do I install a plugin on my server?',
-    answer: 'Download the jar from the official SpigotMC or Modrinth page. Stop the server, place the file in the plugins folder, then start the server. Read the project page for dependencies and version requirements. Back up first.',
+    answer: 'Download the jar from SpigotMC or Modrinth. Stop the server, put the file in the plugins folder, start the server. Check dependencies on the project page. Back up first.',
   },
   {
     id: 'install-mod',
     category: 'Install',
     question: 'How do I install a Java mod?',
-    answer: 'Install a mod loader (Fabric, Forge, NeoForge, or Quilt) that matches the mod. Download the correct game version from Modrinth, put the file in the mods folder, then launch the game.',
+    answer: 'Install a matching mod loader (Fabric, Forge, NeoForge, or Quilt). Download the correct game version, put the file in the mods folder, then launch.',
   },
   {
-    id: 'resourcepack',
-    category: 'Install',
-    question: 'How do I apply a resource pack or shader?',
-    answer: 'Download from the project page on Modrinth. For resource packs, use Options → Resource Packs. For shaders you typically need a shader loader compatible with your version. Follow the project instructions.',
+    id: 'skins',
+    category: 'Download',
+    question: 'How do I download a skin?',
+    answer: 'Open Skins, enter a Minecraft username, then Download PNG. You can also browse NameMC, Laby, or create a skin on Nova Skin.',
+    action: { label: 'Open Skins', to: '/skins' },
   },
   {
     id: 'servers',
     category: 'Servers',
     question: 'How do I join a server from the list?',
-    answer: 'Open Servers, find a listing, click Copy IP, then paste it in Minecraft multiplayer. Status and player counts come from public APIs when available and may not always be real-time.',
+    answer: 'Open Servers, find a listing, click Copy IP, paste it in Minecraft multiplayer. You can react with emoji or open the vote link on external server lists.',
     action: { label: 'Server list', to: '/servers' },
   },
   {
     id: 'upload',
     category: 'Publish',
-    question: 'How do I upload or publish my own mod/plugin?',
-    answer: 'CubeNest does not host uploads. Publish on Modrinth or SpigotMC following their guidelines. After your project is public there, it can appear in searches that use those platforms.',
+    question: 'How do I upload or publish my own content?',
+    answer: 'CubeNest does not host uploads. Publish on Modrinth, SpigotMC, or MCPEDL following their rules. Public projects can then appear in searches that use those platforms.',
   },
   {
     id: 'report-bug',
@@ -74,20 +85,30 @@ export const ASSISTANT_KNOWLEDGE: AssistantEntry[] = [
     action: { label: 'Report center', to: '/report' },
   },
   {
+    id: 'contact-team',
+    category: 'Help',
+    question: 'How do I contact the CubeNest team?',
+    answer: 'Open Contact team for general questions. Use Report center for bugs so the team gets structured details.',
+    action: { label: 'Contact team', to: '/contact' },
+  },
+  {
     id: 'empty-plugins',
     category: 'Troubleshooting',
     question: 'Why is the Plugins page empty?',
-    answer: 'The catalogue loads from /data/resources.json on the site. If that file is missing after deploy, the list stays empty. Try refresh, or contact the team if it persists.',
+    answer: 'The catalogue loads from /data/resources.json. If deploy only uploaded source files instead of the Vite build, that file is missing. Redeploy with GitHub Actions build.',
     action: { label: 'Contact team', to: '/contact' },
   },
   {
     id: 'download-fail',
     category: 'Troubleshooting',
     question: 'Download button does not work',
-    answer: 'Downloads point to Modrinth or SpigotMC. If a link fails, open the project on the original site from the detail page. Report broken links via Report center.',
+    answer: 'Downloads point to Modrinth, SpigotMC, or MCPEDL. If a link fails, open the project on the original site. Report broken links via Report center.',
     action: { label: 'Report issue', to: '/report' },
   },
 ];
+
+/** Alias used by the assistant UI */
+export const assistantKnowledge: AssistantEntry[] = ASSISTANT_KNOWLEDGE;
 
 export function searchAssistant(query: string): AssistantEntry[] {
   const q = query.toLowerCase().trim();
