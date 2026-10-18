@@ -28,8 +28,11 @@ export function BedrockHub() {
   return (
     <div className="pt-20 pb-12 min-h-screen mc-grid-bg">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-br from-emerald-950/80 via-mc-surface to-cyan-950/30 p-6 sm:p-9 mb-7">
+          <div className="absolute -right-10 -top-16 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
+          <div className="relative max-w-3xl">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          <h1 className="text-2xl font-bold text-mc-white">Bedrock content</h1>
+          <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-mc-white">Bedrock <span className="text-emerald-300">Library</span></h1>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-emerald-500/20 text-emerald-400">Bedrock</span>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-mc-gray text-mc-muted border border-mc-border">CurseForge</span>
         </div>
@@ -47,15 +50,17 @@ export function BedrockHub() {
             </button>
           </div>
         </form>
+          </div>
+        </motion.section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {CATEGORIES.map((c, i) => {
             const Icon = c.icon;
             const href = `/bedrock/catalog?category=${c.category}`;
             return (
               <motion.a key={c.id} href={href}
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                className="bg-mc-surface border border-mc-border rounded-xl p-4 hover:border-emerald-500/45 transition-colors group block">
+                className="bg-gradient-to-br from-mc-surface to-emerald-950/20 border border-mc-border rounded-2xl p-5 sm:p-6 hover:border-emerald-500/45 hover:-translate-y-1 transition-all group block shadow-lg shadow-black/10">
                 <Icon className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-110 transition-transform" />
                 <h2 className="font-semibold text-mc-white text-sm flex items-center gap-1">{c.title} <ExternalLink className="w-3 h-3 text-mc-muted" /></h2>
                 <p className="text-xs text-mc-muted mt-1">Browse matching resources in CubeNest</p>
