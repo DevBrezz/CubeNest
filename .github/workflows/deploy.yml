@@ -27,14 +27,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Sync Bedrock CurseForge catalogue
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: node scripts/sync-bedrock-curseforge.mjs
+        continue-on-error: true
+
       - name: Build site
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Verify build output
         run: |
           test -f dist/index.html || (echo "dist/index.html missing" && exit 1)
           test -f dist/data/resources.json || (echo "dist/data/resources.json missing — plugins will not load" && exit 1)
-          # Must be built assets, not Vite dev entry
           if grep -q 'src/main.tsx' dist/index.html; then
             echo "ERROR: dist/index.html still points to /src/main.tsx (dev entry). Build failed."
             exit 1
