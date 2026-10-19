@@ -1,18 +1,18 @@
 const ALLOWED_HOSTS = [
-  'cdn.modrinth.com', 'cdn-raw.modrinth.com', 'api.modrinth.com',
-  'api.spiget.org', 'www.spigotmc.org', 'spigotmc.org',
-  'poggit.pmmp.io', 'github.com', 'objects.githubusercontent.com',
+  'cdn.modrinth.com', 'cdn-raw.modrinth.com', 'api.spiget.org',
+  'www.spigotmc.org', 'spigotmc.org', 'poggit.pmmp.io',
+  'github.com', 'githubusercontent.com', 'objects.githubusercontent.com',
+  'release-assets.githubusercontent.com', 'github-releases.githubusercontent.com',
 ];
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
-const POGGIT_CATALOGUES = [
-  'https://poggit.pmmp.io/plugins.min.json',
-  'https://poggit.pmmp.io/releases.min.json',
-  'https://poggit.pmmp.io/plugins.json',
-];
+const DEFAULT_ORIGIN = 'https://cubenest.sytes.net';
 
-function corsHeaders(origin, allowedOrigin) {
+function corsHeaders(origin, env) {
+  // The Worker is a public download proxy with strict upstream host allowlisting.
+  // Reflect the requesting website origin to avoid breaking CubeNest custom domains,
+  // GitHub Pages previews, and domain migrations because of a stale ALLOWED_ORIGIN var.
   return {
-    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Origin': origin || '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Expose-Headers': 'Content-Disposition, Content-Length',
@@ -21,167 +21,118 @@ function corsHeaders(origin, allowedOrigin) {
     'X-Content-Type-Options': 'nosniff',
   };
 }
-function json(data, status, allowedOrigin) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders('', allowedOrigin), 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=60' },
-  });
+function json(data, status, origin, env) {
+  return new Response(JSON.stringify(data), { status, headers: {
+    ...corsHeaders(origin, env), 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store'
+  }});
 }
 function isAllowed(url) {
   if (url.protocol !== 'https:') return false;
   const host = url.hostname.toLowerCase();
   return ALLOWED_HOSTS.some(allowed => host === allowed || host.endsWith(`.${allowed}`));
 }
-function safeFilename(value, fallback = 'download.bin') {
-  const cleaned = String(value || fallback).replace(/[\\/\r\n"<>:|?*\x00-\x1f]/g, '_').trim().slice(0, 150);
-  return cleaned || fallback;
+function safeFilename(value) {
+  const cleaned = String(value || 'download.bin').replace(/[\\/\r\n"<>:|?*\x00-\x1f]/g, '_').trim().slice(0, 150);
+  return cleaned || 'download.bin';
 }
-function records(payload) {
-  if (Array.isArray(payload)) return payload;
-  if (!payload || typeof payload !== 'object') return [];
-  for (const key of ['plugins', 'data', 'results', 'items', 'resources', 'releases']) {
-    const value = payload[key];
-    if (Array.isArray(value)) return value;
-    if (value && typeof value === 'object') return Object.values(value);
-  }
-  return Object.values(payload).filter(v => v && typeof v === 'object');
+async function fetchPoggitList(search) {
+  const api = new URL('https://poggit.pmmp.io/plugins.min.json');
+  api.searchParams.set('latest-only', 'on');
+  if (search) api.searchParams.set('name', search.slice(0, 100));
+  const response = await fetch(api.toString(), { headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' } });
+  if (!response.ok) throw new Error(`Poggit API returned HTTP ${response.status}`);
+  const payload = await response.json();
+  if (!Array.isArray(payload)) throw new Error('Poggit API returned an unexpected catalogue format');
+  return payload;
 }
-function pluginName(item) {
-  return String(item?.name ?? item?.plugin_name ?? item?.project_name ?? item?.title ?? item?.slug ?? '');
-}
-function pluginId(item) {
-  return String(item?.project_id ?? item?.id ?? item?.resource_id ?? item?.slug ?? '');
-}
-async function fetchPoggitCatalogue() {
-  let lastError;
-  for (const endpoint of POGGIT_CATALOGUES) {
-    try {
-      const response = await fetch(endpoint, { headers: { Accept: 'application/json', 'User-Agent': 'CubeNest-Download-Proxy/1.1' } });
-      if (!response.ok) throw new Error(`Poggit returned HTTP ${response.status}`);
-      const list = records(await response.json()).filter(item => item && typeof item === 'object' && pluginName(item));
-      if (list.length) return list;
-    } catch (error) { lastError = error; }
-  }
-  throw lastError || new Error('Poggit catalogue is empty.');
-}
-async function fetchFile(url) {
+async function streamDownload(target, filename, origin, env) {
+  if (!isAllowed(target)) return json({ error: 'This file host is not supported by CubeNest.' }, 403, origin, env);
   let upstream;
-  for (let hop = 0; hop <= 6; hop++) {
-    if (!isAllowed(url)) throw new Error('Redirected file host is not supported.');
-    upstream = await fetch(url.toString(), {
-      redirect: 'manual',
-      headers: { 'User-Agent': 'CubeNest-Download-Proxy/1.1', Accept: '*/*' },
-    });
-    if (!REDIRECT_STATUSES.has(upstream.status)) break;
-    const location = upstream.headers.get('Location');
-    if (!location) throw new Error('File host returned a redirect without a destination.');
-    if (hop === 6) throw new Error('Too many redirects from file host.');
-    url = new URL(location, url);
-    await upstream.body?.cancel();
+  try {
+    for (let hop = 0; hop <= 7; hop++) {
+      if (!isAllowed(target)) return json({ error: 'The download redirected to an unsupported host.' }, 403, origin, env);
+      upstream = await fetch(target.toString(), { redirect: 'manual', headers: { 'User-Agent': 'CubeNest-Download-Proxy/1.0', 'Accept': '*/*' } });
+      if (!REDIRECT_STATUSES.has(upstream.status)) break;
+      const location = upstream.headers.get('Location');
+      if (!location) return json({ error: 'The file host returned a redirect without a destination.' }, 502, origin, env);
+      if (hop === 7) return json({ error: 'Too many redirects from the file host.' }, 502, origin, env);
+      target = new URL(location, target);
+      await upstream.body?.cancel();
+    }
+  } catch (error) {
+    return json({ error: `Could not reach the file host: ${error instanceof Error ? error.message : 'network error'}` }, 502, origin, env);
   }
-  if (!upstream?.ok) {
+  if (!upstream || !upstream.ok) {
     await upstream?.body?.cancel();
-    throw new Error(`File host returned HTTP ${upstream?.status || 502}.`);
+    return json({ error: `The file host returned HTTP ${upstream?.status || 502}.` }, 502, origin, env);
   }
-  const type = (upstream.headers.get('Content-Type') || 'application/octet-stream').toLowerCase();
-  if (type.includes('text/html') || type.includes('application/json')) {
+  const contentType = (upstream.headers.get('Content-Type') || '').toLowerCase();
+  if (contentType.includes('text/html') || contentType.includes('application/json') || contentType.includes('text/plain')) {
     await upstream.body?.cancel();
-    throw new Error('Source returned a webpage instead of a file.');
+    return json({ error: 'The source returned a web page or metadata instead of a plugin binary.' }, 502, origin, env);
   }
-  return upstream;
+  const name = safeFilename(filename);
+  const headers = new Headers({
+    ...corsHeaders(origin, env), 'Content-Type': 'application/octet-stream',
+    'Content-Disposition': `attachment; filename="${name}"; filename*=UTF-8''${encodeURIComponent(name)}`,
+    'Cache-Control': 'no-store',
+  });
+  const length = upstream.headers.get('Content-Length');
+  if (length) headers.set('Content-Length', length);
+  return new Response(upstream.body, { status: 200, headers });
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env = {}) {
     const requestUrl = new URL(request.url);
     const origin = request.headers.get('Origin') || '';
-    const allowedOrigin = env.ALLOWED_ORIGIN || 'https://cubenest.sytes.net';
-    if (origin && origin !== allowedOrigin) return json({ error: 'Origin not allowed.' }, 403, allowedOrigin);
-    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(origin, allowedOrigin) });
-    if (request.method !== 'GET') return json({ error: 'Only GET is supported.' }, 405, allowedOrigin);
-    const path = requestUrl.pathname;
+    const path = requestUrl.pathname.replace(/\/+$/, '') || '/';
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(origin, env) });
+    if (request.method !== 'GET') return json({ error: 'Only GET is supported.' }, 405, origin, env);
 
-    if (path === '/' && !requestUrl.searchParams.has('url')) {
-      return json({ success: true, service: 'CubeNest Download Proxy', status: 'online', providers: { modrinth: true, curseforge: false, poggit: true }, endpoints: ['/api/modrinth/search?q=world', '/api/curseforge/search?q=world', '/api/poggit/plugins?name=world', '/api/poggit/apis', '/download/modrinth?url=FILE_URL&filename=FILE_NAME', '/download/curseforge?modId=ID&fileId=ID', '/download/poggit?id=RESOURCE_ID&filename=plugin.phar'] }, 200, allowedOrigin);
-    }
-
-    if (path === '/api/poggit/apis') {
-      return json({ success: true, provider: 'Poggit', apis: POGGIT_CATALOGUES }, 200, allowedOrigin);
+    if (path === '/' || path === '/health' || path === '/api') {
+      return json({ success: true, service: 'CubeNest Download Proxy', status: 'online', providers: { modrinth: true, spigot: true, poggit: true }, endpoints: ['/api/poggit/plugins?name=world', '/api/poggit/apis', '/download/poggit?url=POGGIT_ARTIFACT_URL&filename=plugin.phar', '/?url=FILE_URL&filename=FILE_NAME'] }, 200, origin, env);
     }
     if (path === '/api/poggit/plugins') {
       try {
-        const query = (requestUrl.searchParams.get('name') || '').trim().toLowerCase();
-        const all = await fetchPoggitCatalogue();
-        const filtered = query ? all.filter(item => `${pluginName(item)} ${item.description || item.summary || ''} ${(item.authors || []).toString()}`.toLowerCase().includes(query)) : all;
-        return json({ success: true, provider: 'Poggit', total: filtered.length, plugins: filtered.slice(0, 100) }, 200, allowedOrigin);
+        const records = await fetchPoggitList(requestUrl.searchParams.get('name') || '');
+        return json(records, 200, origin, env);
       } catch (error) {
-        return json({ success: false, provider: 'Poggit', error: error instanceof Error ? error.message : 'Poggit catalogue unavailable', total: 0, plugins: [] }, 502, allowedOrigin);
+        return json({ error: error instanceof Error ? error.message : 'Poggit catalogue unavailable', plugins: [] }, 502, origin, env);
       }
     }
-    if (path === '/api/modrinth/search') {
-      const query = (requestUrl.searchParams.get('q') || '').trim();
-      if (!query) return json({ success: true, hits: [], total_hits: 0 }, 200, allowedOrigin);
-      const api = new URL('https://api.modrinth.com/v2/search');
-      api.searchParams.set('query', query);
-      api.searchParams.set('limit', '30');
-      api.searchParams.set('facets', JSON.stringify([['project_type:mod'], ['categories:bukkit', 'categories:paper', 'categories:spigot']]));
+    if (path === '/api/poggit/apis') {
       try {
-        const response = await fetch(api, { headers: { Accept: 'application/json', 'User-Agent': 'CubeNest/1.0 (download proxy)' } });
-        if (!response.ok) return json({ error: `Modrinth returned HTTP ${response.status}` }, 502, allowedOrigin);
-        return json(await response.json(), 200, allowedOrigin);
-      } catch (error) { return json({ error: error instanceof Error ? error.message : 'Modrinth search failed' }, 502, allowedOrigin); }
+        const response = await fetch('https://poggit.pmmp.io/pmapis.min', { headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0' } });
+        if (!response.ok) throw new Error(`Poggit API returned HTTP ${response.status}`);
+        return new Response(await response.text(), { status: 200, headers: { ...corsHeaders(origin, env), 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+      } catch (error) { return json({ error: error instanceof Error ? error.message : 'Poggit API versions unavailable' }, 502, origin, env); }
     }
 
-    let target = null;
-    let filename = safeFilename(requestUrl.searchParams.get('filename'));
-    if (path === '/download/modrinth' || (path === '/' && requestUrl.searchParams.has('url'))) {
-      const raw = requestUrl.searchParams.get('url');
-      try { target = raw ? new URL(raw) : null; } catch { target = null; }
-      if (!target || !isAllowed(target)) return json({ error: 'Invalid or unsupported download URL.' }, 400, allowedOrigin);
-    } else if (path === '/download/poggit') {
-      const id = requestUrl.searchParams.get('id') || '';
-      if (!id) return json({ error: 'Missing Poggit resource ID.' }, 400, allowedOrigin);
-      try {
-        const all = await fetchPoggitCatalogue();
-        const item = all.find(entry => pluginId(entry) === id || String(entry.project_id || '') === id || String(entry.id || '') === id || String(entry.slug || '') === id);
-        if (!item) return json({ error: 'Poggit plugin ID was not found. Refresh the PocketMine catalogue and try again.' }, 404, allowedOrigin);
-        const latest = item.latest_release || item.latestRelease || item.release || {};
-        const candidate = item.artifact_url || item.download_url || item.downloadUrl || item.phar_url || item.file_url || latest.artifact_url || latest.download_url || latest.url;
-        if (candidate) { try { target = new URL(candidate); } catch { target = null; } }
-        if (!target && Array.isArray(item.versions)) {
-          const version = item.versions.find(v => v?.artifact_url || v?.download_url || v?.url) || item.versions[0];
-          const candidateUrl = version?.artifact_url || version?.download_url || version?.url;
-          if (candidateUrl) { try { target = new URL(candidateUrl); } catch { target = null; } }
-        }
-        if (!target && Array.isArray(item.releases)) {
-          const release = item.releases.find(v => v?.artifact_url || v?.download_url || v?.url) || item.releases[0];
-          const candidateUrl = release?.artifact_url || release?.download_url || release?.url;
-          if (candidateUrl) { try { target = new URL(candidateUrl); } catch { target = null; } }
-        }
-        if (!target || !isAllowed(target)) return json({ error: 'Poggit did not expose a direct downloadable PHAR for this resource.' }, 502, allowedOrigin);
-        filename = safeFilename(filename, `${pluginName(item).toLowerCase().replace(/[^a-z0-9._-]+/g, '-') || 'plugin'}.phar`);
-        if (!filename.toLowerCase().endsWith('.phar')) filename = filename.replace(/\.[^.]+$/, '') + '.phar';
-      } catch (error) { return json({ error: error instanceof Error ? error.message : 'Could not resolve Poggit release.' }, 502, allowedOrigin); }
-    } else if (path === '/download/curseforge') {
-      return json({ error: 'CurseForge downloads are not enabled on this Worker yet. Use an available provider.' }, 501, allowedOrigin);
-    } else {
-      return json({ error: 'Unknown endpoint.' }, 404, allowedOrigin);
+    if (path === '/download/poggit') {
+      let raw = requestUrl.searchParams.get('url');
+      if (!raw) {
+        const id = requestUrl.searchParams.get('id');
+        if (!id || !/^\d+$/.test(id)) return json({ error: 'Provide a Poggit artifact URL or numeric release ID.' }, 400, origin, env);
+        try {
+          const api = new URL('https://poggit.pmmp.io/releases.min.json'); api.searchParams.set('id', id);
+          const response = await fetch(api.toString(), { headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0' } });
+          if (!response.ok) throw new Error(`Poggit API returned HTTP ${response.status}`);
+          const records = await response.json();
+          raw = Array.isArray(records) ? records.find(item => String(item.id) === id)?.artifact_url : '';
+        } catch (error) { return json({ error: error instanceof Error ? error.message : 'Could not resolve Poggit release' }, 502, origin, env); }
+      }
+      let target;
+      try { target = new URL(raw); } catch { return json({ error: 'Invalid Poggit artifact URL.' }, 400, origin, env); }
+      if (target.hostname !== 'poggit.pmmp.io' && !target.hostname.endsWith('.poggit.pmmp.io')) return json({ error: 'Poggit downloads must use a verified Poggit artifact URL.' }, 403, origin, env);
+      return streamDownload(target, requestUrl.searchParams.get('filename') || 'plugin.phar', origin, env);
     }
 
-    try {
-      const upstream = await fetchFile(target);
-      const headers = new Headers({
-        ...corsHeaders(origin, allowedOrigin),
-        'Content-Type': upstream.headers.get('Content-Type') || 'application/octet-stream',
-        'Content-Disposition': `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
-        'Cache-Control': 'no-store',
-      });
-      const length = upstream.headers.get('Content-Length');
-      if (length) headers.set('Content-Length', length);
-      return new Response(upstream.body, { status: 200, headers });
-    } catch (error) {
-      return json({ error: error instanceof Error ? error.message : 'Download failed.' }, 502, allowedOrigin);
-    }
-  },
+    // Generic allowlisted file proxy for Modrinth and Spigot downloads.
+    const raw = requestUrl.searchParams.get('url');
+    if (!raw) return json({ error: 'Unknown endpoint or missing url parameter.' }, 404, origin, env);
+    let target;
+    try { target = new URL(raw); } catch { return json({ error: 'Invalid file URL.' }, 400, origin, env); }
+    return streamDownload(target, requestUrl.searchParams.get('filename') || 'download.bin', origin, env);
+  }
 };
-    
