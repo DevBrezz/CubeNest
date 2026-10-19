@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, UploadCloud, ShieldCheck, Gamepad2, Zap, Download } from 'lucide-react';
+import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, ShieldCheck, Gamepad2, Zap, Download } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
 
@@ -59,7 +59,6 @@ export function Home() {
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-mc-muted">
               <span className="inline-flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-300" /> Source-aware downloads</span>
               <span className="inline-flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-300" /> Fast discovery</span>
-              <span className="inline-flex items-center gap-2"><UploadCloud className="w-4 h-4 text-emerald-300" /> Creator-friendly</span>
             </div>
           </motion.div>
         </div>
