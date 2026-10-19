@@ -14,7 +14,7 @@ const KEY = process.env.CURSEFORGE_API_KEY || '';
 const GAME_CANDIDATES = [432, 69076, 297];
 const BEDROCK_CLASS_ID = 4559;
 const PAGE_SIZE = 50;
-const MAX_RESOURCES = 200;
+const MAX_RESOURCES = 800;
 
 async function cf(path, params = {}) {
   const url = new URL(API + path);

@@ -15,8 +15,8 @@ const outFile = join(outDir, '9minecraft-bedrock.json');
 const UA = 'CubeNest-9Minecraft-Sync/1.0 (+resource catalogue)';
 const API = 'https://www.9minecraft.net/wp-json/wp/v2';
 const PER_PAGE = 20;
-const MAX_PAGES_PER_CAT = 3; // 60 per category max
-const DETAIL_CONCURRENCY = 4;
+const MAX_PAGES_PER_CAT = 12; // up to 240 posts per Bedrock category
+const DETAIL_CONCURRENCY = 5;
 
 const CATEGORIES = [
   { id: 6734, key: 'addons', label: 'Add-ons' },
