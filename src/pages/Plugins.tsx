@@ -30,17 +30,33 @@ function normalizeModrinth(h: ModrinthHit): Plugin {
     author: h.author || 'Modrinth creator', sourceName: 'Modrinth', raw: h };
 }
 function normalizePoggit(item: any, index = 0): Plugin {
-  const latest = item.latest_release || item.latestRelease || item.release || {};
-  const id = String(item.project_id ?? item.projectId ?? item.plugin_id ?? item.id ?? item.name ?? item.plugin_name ?? item.project_name ?? item.slug ?? `poggit-${index}`);
-  const name = String(item.name ?? item.plugin_name ?? item.project_name ?? item.title ?? item.slug ?? `PocketMine plugin ${id}`);
-  return { id: `poggit-${id}`, platform: 'custom', platformId: id, slug: id, title: name,
-    description: String(item.description || item.summary || 'No description provided.'), body: String(item.description || item.summary || ''), icon: typeof item.icon === 'string' ? item.icon : null,
-    gallery: [], categories: [], loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.mcpe_version) ? item.mcpe_version.map(String) : item.mcpe_version ? [String(item.mcpe_version)] : [],
-    version: String(item.version || latest.version || latest.name || ''), downloads: Number(item.downloads || latest.downloads) || 0, published: '', updated: '', url: String(item.plugin_url || item.url || `https://poggit.pmmp.io/plugins`),
-    downloadUrl: String(item.artifact_url || item.download_url || item.downloadUrl || latest.artifact_url || latest.download_url || latest.url || ''), featured: false, hidden: false,
-    filename: String(item.filename || latest.filename || `${name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.phar`),
-    author: Array.isArray(item.authors) ? item.authors.map((a: any) => typeof a === 'string' ? a : a.name || '').filter(Boolean).join(', ') : String(item.authors || 'Poggit author'),
-    sourceName: 'PocketMine-MP / Poggit' };
+  // Poggit's API is release-oriented: `id` identifies a release/build, while
+  // `project_id` identifies the project. Keep the release ID for downloads.
+  const releaseId = String(item.id ?? item.release_id ?? item.releaseId ?? item.build_id ?? `poggit-${index}`);
+  const projectId = String(item.project_id ?? item.projectId ?? item.plugin_id ?? item.slug ?? releaseId);
+  const name = String(item.project_name ?? item.plugin_name ?? item.name ?? item.title ?? item.slug ?? `PocketMine plugin ${projectId}`);
+  const artifact = String(item.artifact_url ?? item.download_url ?? item.downloadUrl ?? item.latest_release?.artifact_url ?? '');
+  const canonicalUrl = String(item.html_url ?? item.plugin_url ?? item.url ?? `https://poggit.pmmp.io/plugins`);
+  const authors = item.producers ?? item.authors ?? item.author;
+  const author = Array.isArray(authors)
+    ? authors.map((a: any) => typeof a === 'string' ? a : a?.name || '').filter(Boolean).join(', ')
+    : String(authors || 'Poggit creator');
+  const filenameFromUrl = artifact ? (artifact.split('?')[0].split('/').pop() || '') : '';
+  const filename = String(item.filename || filenameFromUrl || `${name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.phar`);
+  const version = String(item.version ?? item.version_name ?? item.tagline ?? '');
+  return {
+    id: `poggit-${releaseId}`, platform: 'custom', platformId: releaseId, slug: projectId,
+    title: name, description: String(item.tagline || item.description || item.summary || 'No description provided.'),
+    body: String(item.description || item.tagline || ''), icon: item.icon_url || (typeof item.icon === 'string' ? item.icon : null),
+    gallery: [], categories: Array.isArray(item.categories) ? item.categories.map((c: any) => String(c.category_name || c)) : [],
+    loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.api) ? item.api.map(String) : item.api ? [String(item.api)] : [],
+    version, downloads: Number(item.downloads) || 0,
+    published: item.submission_date ? new Date(Number(item.submission_date) * 1000).toISOString() : '',
+    updated: item.last_state_change_date ? new Date(Number(item.last_state_change_date) * 1000).toISOString() : '',
+    url: canonicalUrl, downloadUrl: artifact, featured: false, hidden: false,
+    filename: filename.toLowerCase().endsWith('.phar') ? filename : `${filename}.phar`,
+    author, sourceName: 'PocketMine-MP / Poggit'
+  };
 }
 
 function normalizeSpiget(item: any): Plugin {
@@ -74,7 +90,7 @@ function extractRecords(payload: any, provider: 'poggit' | 'spigot'): any[] {
 
 function usableRecords(records: any[], provider: 'poggit' | 'spigot') {
   return records.filter((item: any) => item && typeof item === 'object' &&
-    (provider === 'poggit' ? Boolean(item.name || item.id || item.plugin_name || item.project_name || item.project_id || item.title || item.slug || item.versions || item.version_name) : Boolean(item.id && item.name)));
+    (provider === 'poggit' ? Boolean(item.name || item.id || item.plugin_name || item.project_name || item.project_id || item.title || item.slug || item.versions || item.version_name || item.artifact_url || item.html_url) : Boolean(item.id && item.name)));
 }
 
 async function fetchRecordsWithFallback(url: string, fallbackPath: string, signal: AbortSignal, provider: 'poggit' | 'spigot') {
@@ -226,9 +242,10 @@ export function Plugins() {
       if (proxyUrl.protocol !== 'https:') throw new Error('The CubeNest download service must use HTTPS.');
       let downloadEndpoint: URL;
       if (plugin.id.startsWith('poggit-') || plugin.sourceName.includes('Poggit')) {
-        // Poggit's proxy resolves the resource ID to a release PHAR server-side.
+        if (!url) throw new Error('Poggit did not provide a downloadable release artifact for this entry. Try another release.');
+        // The Worker fetches the .phar server-side and streams it back; the browser stays on CubeNest.
         downloadEndpoint = new URL('/download/poggit', DOWNLOAD_PROXY_URL);
-        downloadEndpoint.searchParams.set('id', String(plugin.platformId || plugin.slug));
+        downloadEndpoint.searchParams.set('url', url);
         filename = plugin.filename || `${(plugin.slug || plugin.title || 'plugin').toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.phar`;
       } else if (plugin.platform === 'modrinth') {
         if (!url) throw new Error('No downloadable Modrinth release file was found.');
