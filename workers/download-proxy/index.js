@@ -1,5 +1,5 @@
 const ALLOWED_HOSTS = [
-  'cdn.modrinth.com', 'cdn-raw.modrinth.com', 'api.spiget.org',
+  'cdn.modrinth.com', 'cdn-raw.modrinth.com', 'api.spiget.org', 'cdn.spiget.org', 'spiget.org',
   'www.spigotmc.org', 'spigotmc.org', 'poggit.pmmp.io',
   'github.com', 'githubusercontent.com', 'objects.githubusercontent.com',
   'release-assets.githubusercontent.com', 'github-releases.githubusercontent.com',
@@ -36,15 +36,47 @@ function safeFilename(value) {
   return cleaned || 'download.bin';
 }
 async function fetchPoggitList(search) {
-  const api = new URL('https://poggit.pmmp.io/plugins.min.json');
+  // Poggit's documented releases endpoint returns one record per release and
+  // includes artifact_url. Do not use GitHub repository/archive metadata as plugins.
+  const api = new URL('https://poggit.pmmp.io/releases.min.json');
   api.searchParams.set('latest-only', 'on');
+  api.searchParams.set('min-state', '5');
   if (search) api.searchParams.set('name', search.slice(0, 100));
-  const response = await fetch(api.toString(), { headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' } });
+  const response = await fetch(api.toString(), {
+    headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
+  });
   if (!response.ok) throw new Error(`Poggit API returned HTTP ${response.status}`);
   const payload = await response.json();
   if (!Array.isArray(payload)) throw new Error('Poggit API returned an unexpected catalogue format');
-  return payload;
+  return payload.filter(item => {
+    if (!item || !item.id || !item.project_name || !item.artifact_url) return false;
+    const project = String(item.project_name || '').toLowerCase();
+    const repo = String(item.repo_name || '').toLowerCase();
+    const artifact = String(item.artifact_url || '');
+    // Exclude PocketMine-MP itself and Poggit's release-archive repository.
+    if (project === 'pocketmine-mp' || repo.includes('release-archive')) return false;
+    try {
+      const u = new URL(artifact);
+      return u.protocol === 'https:' && (u.hostname === 'poggit.pmmp.io' || u.hostname.endsWith('.poggit.pmmp.io'));
+    } catch { return false; }
+  });
 }
+
+async function fetchSpigetResources(search) {
+  const api = search
+    ? new URL(`https://api.spiget.org/v2/search/resources/${encodeURIComponent(search.slice(0, 100))}`)
+    : new URL('https://api.spiget.org/v2/resources');
+  api.searchParams.set('size', '36');
+  api.searchParams.set('sort', '-downloads');
+  const response = await fetch(api.toString(), {
+    headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
+  });
+  if (!response.ok) throw new Error(`Spiget API returned HTTP ${response.status}`);
+  const payload = await response.json();
+  const records = Array.isArray(payload) ? payload : (Array.isArray(payload?.resources) ? payload.resources : []);
+  return records.filter(item => item && /^\d+$/.test(String(item.id || '')) && item.name);
+}
+
 async function streamDownload(target, filename, origin, env) {
   if (!isAllowed(target)) return json({ error: 'This file host is not supported by CubeNest.' }, 403, origin, env);
   let upstream;
@@ -91,7 +123,7 @@ export default {
     if (request.method !== 'GET') return json({ error: 'Only GET is supported.' }, 405, origin, env);
 
     if (path === '/' || path === '/health' || path === '/api') {
-      return json({ success: true, service: 'CubeNest Download Proxy', status: 'online', providers: { modrinth: true, spigot: true, poggit: true }, endpoints: ['/api/poggit/plugins?name=world', '/api/poggit/apis', '/download/poggit?url=POGGIT_ARTIFACT_URL&filename=plugin.phar', '/?url=FILE_URL&filename=FILE_NAME'] }, 200, origin, env);
+      return json({ success: true, service: 'CubeNest Download Proxy', status: 'online', providers: { modrinth: true, spigot: true, poggit: true }, endpoints: ['/api/spigot/resources', '/api/spigot/search?q=world', '/api/poggit/plugins?name=world', '/api/poggit/apis', '/download/spigot?id=123', '/download/poggit?url=POGGIT_ARTIFACT_URL&filename=plugin.phar', '/?url=FILE_URL&filename=FILE_NAME'] }, 200, origin, env);
     }
     if (path === '/api/poggit/plugins') {
       try {
@@ -101,6 +133,23 @@ export default {
         return json({ error: error instanceof Error ? error.message : 'Poggit catalogue unavailable', plugins: [] }, 502, origin, env);
       }
     }
+    if (path === '/api/spigot/resources' || path === '/api/spigot/search') {
+      try {
+        const records = await fetchSpigetResources(requestUrl.searchParams.get('q') || '');
+        return json(records, 200, origin, env);
+      } catch (error) {
+        return json({ error: error instanceof Error ? error.message : 'Spigot catalogue unavailable', resources: [] }, 502, origin, env);
+      }
+    }
+
+    if (path === '/download/spigot') {
+      const id = requestUrl.searchParams.get('id') || '';
+      if (!/^\d+$/.test(id)) return json({ error: 'A numeric Spigot resource ID is required.' }, 400, origin, env);
+      // Spiget returns a redirect to its CDN for hosted resources. Follow and
+      // stream it here so browser CORS and external-page navigation are avoided.
+      return streamDownload(new URL(`https://api.spiget.org/v2/resources/${id}/download`), requestUrl.searchParams.get('filename') || `spigot-${id}.jar`, origin, env);
+    }
+
     if (path === '/api/poggit/apis') {
       try {
         const response = await fetch('https://poggit.pmmp.io/pmapis.min', { headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0' } });
