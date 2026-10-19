@@ -118,6 +118,7 @@ export function Plugins() {
   const [source, setSource] = useState<Source>('all');
   const [sort, setSort] = useState<'relevance'|'newest'|'downloads'|'alphabetical'>('relevance');
   const [page, setPage] = useState(0);
+  const [modrinthHasMore, setModrinthHasMore] = useState(true);
   const [remote, setRemote] = useState<Plugin[]>([]);
   const [total, setTotal] = useState(0);
   const [remoteLoading, setRemoteLoading] = useState(false);
@@ -135,6 +136,7 @@ export function Plugins() {
     setRemoteLoading(true); setRemoteError('');
     try {
       if (source === 'pocketmine') {
+        setModrinthHasMore(false);
         let list: any[] = [];
         let lastLiveError = '';
         // Use CubeNest's Worker first: the browser never calls Poggit directly, avoiding CORS failures.
@@ -165,6 +167,7 @@ export function Plugins() {
         setRemote(plugins); setTotal(plugins.length);
         if (!plugins.length) setRemoteError(`No PocketMine plugins matched “${search.trim()}”. Try another search.`);
       } else if (source === 'spigot') {
+        setModrinthHasMore(false);
         const query = search.trim();
         const url = query ? `${SPIGET_SEARCH_API}?q=${encodeURIComponent(query)}` : SPIGET_API;
         const list = await fetchRecordsWithFallback(url, 'data/spigot-plugins.json', signal, 'spigot');
@@ -172,23 +175,88 @@ export function Plugins() {
         const plugins = list.map(normalizeSpiget).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
         setRemote(plugins); setTotal(plugins.length);
         if (!plugins.length) setRemoteError('No matching SpigotMC resources were found in the live results or synced catalogue. Try another search or run Sync Resources in GitHub Actions.');
-      } else if (source === 'modrinth' || source === 'all') {
+      } else if (source === 'all') {
+        const query = search.trim();
+        const modrinthTask = searchProjects({
+          query: query || undefined,
+          projectType: 'plugin',
+          index: sort === 'relevance' ? 'relevance' : sort === 'downloads' ? 'downloads' : sort === 'newest' ? 'newest' : 'relevance',
+          offset: page * 24,
+          limit: 24,
+          signal,
+        });
+        const spigotTask = (async () => {
+          const endpoint = query ? `${SPIGET_SEARCH_API}?q=${encodeURIComponent(query)}` : SPIGET_API;
+          return fetchRecordsWithFallback(endpoint, 'data/spigot-plugins.json', signal, 'spigot');
+        })();
+        const poggitTask = (async () => {
+          const endpoint = `${DOWNLOAD_PROXY_URL}/api/poggit/plugins${query ? `?name=${encodeURIComponent(query)}` : ''}`;
+          try {
+            const response = await fetch(endpoint, { signal, headers: { Accept: 'application/json' }, credentials: 'omit' });
+            if (!response.ok) throw new Error(`CubeNest Poggit proxy returned HTTP ${response.status}`);
+            const payload = await response.json();
+            const records = usableRecords(extractRecords(payload, 'poggit'), 'poggit');
+            if (records.length) return records;
+            throw new Error('Poggit proxy returned no usable release records.');
+          } catch (error) {
+            if (signal.aborted) throw error;
+            const fallback = await fetch(`${import.meta.env.BASE_URL}data/poggit-plugins.json`, { signal, headers: { Accept: 'application/json' } });
+            if (!fallback.ok) throw error;
+            const records = usableRecords(extractRecords(await fallback.json(), 'poggit'), 'poggit');
+            if (!records.length) throw error;
+            return records;
+          }
+        })();
+
+        const [modrinthResult, spigotResult, poggitResult] = await Promise.allSettled([modrinthTask, spigotTask, poggitTask]);
+        if (signal.aborted) return;
+        const combined: Plugin[] = [];
+        const failures: string[] = [];
+
+        if (modrinthResult.status === 'fulfilled') {
+          combined.push(...modrinthResult.value.hits.map(normalizeModrinth));
+        } else {
+          failures.push(`Modrinth: ${modrinthResult.reason instanceof Error ? modrinthResult.reason.message : 'unavailable'}`);
+        }
+
+        if (spigotResult.status === 'fulfilled') {
+          const liveSpigot = spigotResult.value.map(normalizeSpiget);
+          combined.push(...liveSpigot);
+        } else {
+          const cachedSpigot = localSpigot.filter(item => !query || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(query.toLowerCase()));
+          combined.push(...cachedSpigot);
+          failures.push(`Spigot: ${spigotResult.reason instanceof Error ? spigotResult.reason.message : 'live search unavailable'}`);
+        }
+
+        if (poggitResult.status === 'fulfilled') {
+          combined.push(...poggitResult.value.map(normalizePoggit));
+        } else {
+          failures.push(`PocketMine: ${poggitResult.reason instanceof Error ? poggitResult.reason.message : 'catalogue unavailable'}`);
+        }
+
+        const seen = new Set<string>();
+        const unique = combined.filter(item => {
+          if (seen.has(item.id)) return false;
+          seen.add(item.id);
+          return !query || `${item.title} ${item.description} ${item.author || ''} ${item.categories.join(' ')}`.toLowerCase().includes(query.toLowerCase());
+        });
+        setRemote(unique);
+        const modrinthTotal = modrinthResult.status === 'fulfilled' ? modrinthResult.value.total_hits : 0;
+        setModrinthHasMore(modrinthTotal > (page + 1) * 24);
+        setTotal(modrinthTotal
+          + (spigotResult.status === 'fulfilled' ? spigotResult.value.length : 0)
+          + (poggitResult.status === 'fulfilled' ? poggitResult.value.length : 0));
+        if (failures.length && !unique.length) setRemoteError(`Some resource sources are unavailable. ${failures.join(' · ')}`);
+        else if (!unique.length) setRemoteError(query ? `No plugins matched “${query}”. Try another search.` : 'No plugin resources were returned by the selected sources.');
+        else if (failures.length) setRemoteError(`Some sources could not be loaded; available results are still shown. ${failures.join(' · ')}`);
+      } else if (source === 'modrinth') {
         const result = await searchProjects({ query: search.trim() || undefined, projectType: 'plugin', index: sort === 'relevance' ? 'relevance' : sort === 'downloads' ? 'downloads' : sort === 'newest' ? 'newest' : 'relevance', offset: page * 24, limit: 24, signal });
         const hits = result.hits.map(normalizeModrinth);
-        if (source === 'all') {
-          const local = localSpigot.filter(r => !search.trim() || `${r.title} ${r.description}`.toLowerCase().includes(search.trim().toLowerCase()));
-          let poggit: Plugin[] = [];
-          try {
-            const q = search.trim();
-            const response = await fetch(`${DOWNLOAD_PROXY_URL}/api/poggit/plugins${q ? `?name=${encodeURIComponent(q)}` : ''}`, { signal, headers: { Accept: 'application/json' }, credentials: 'omit' });
-            if (response.ok) {
-              const payload = await response.json();
-              poggit = usableRecords(extractRecords(payload, 'poggit'), 'poggit').map(normalizePoggit);
-            }
-          } catch (error) { if (signal.aborted) throw error; /* Keep other providers available when Poggit is offline. */ }
-          setRemote([...hits, ...local, ...poggit]); setTotal(result.total_hits + local.length + poggit.length);
-        } else { setRemote(hits); setTotal(result.total_hits); }
+        setModrinthHasMore(result.total_hits > (page + 1) * 24);
+        setRemote(hits); setTotal(result.total_hits);
+        if (!hits.length) setRemoteError(search.trim() ? `No Modrinth plugins matched “${search.trim()}”.` : 'Modrinth returned no plugins.');
       } else {
+        setModrinthHasMore(false);
         const local = localSpigot.filter(r => !search.trim() || `${r.title} ${r.description}`.toLowerCase().includes(search.trim().toLowerCase()));
         setRemote(local); setTotal(local.length);
         if (!local.length) setRemoteError('SpigotMC live discovery is unavailable without an approved API. Showing synced catalogue entries only.');
@@ -307,7 +375,7 @@ export function Plugins() {
         <button onClick={()=>void openDetail(p)} className="w-full text-left"><div className="flex gap-3"><div className="w-14 h-14 shrink-0 rounded-xl bg-mc-gray border border-mc-border overflow-hidden flex items-center justify-center">{p.icon?<img src={p.icon} alt="" loading="lazy" className="w-full h-full object-cover"/>:<Puzzle className="text-mc-red" size={24}/>}</div><div className="min-w-0"><h2 className="font-bold text-mc-white line-clamp-2">{p.title}</h2><p className="mt-1 text-xs text-mc-muted">{p.author || 'Community creator'}</p></div></div><p className="mt-4 text-sm text-mc-muted line-clamp-3">{textOnly(p.description || '') || 'No description provided.'}</p><div className="mt-4 flex flex-wrap gap-1.5">{p.loaders.slice(0,3).map(x=><span key={x} className="text-[10px] px-2 py-1 rounded-md bg-mc-gray text-mc-muted">{x}</span>)}<span className="text-[10px] px-2 py-1 rounded-md border border-mc-border text-mc-muted">{p.sourceName}</span></div></button>
         <div className="mt-4 pt-3 border-t border-mc-border flex items-center justify-between gap-2"><span className="text-xs text-mc-muted">{p.downloads.toLocaleString()} downloads</span><button onClick={()=>void openDetail(p)} className="text-xs font-semibold text-mc-red-bright hover:underline">View details</button></div>
       </article>)}</div>}
-      {(source==='modrinth'||source==='all') && <div className="flex justify-center gap-3 mt-7"><button disabled={page===0||remoteLoading} onClick={()=>setPage(p=>Math.max(0,p-1))} className="px-4 py-2 rounded-lg border border-mc-border disabled:opacity-40">Previous</button><span className="self-center text-xs text-mc-muted">Page {page+1}</span><button disabled={remoteLoading||displayed.length<24} onClick={()=>setPage(p=>p+1)} className="px-4 py-2 rounded-lg border border-mc-border disabled:opacity-40">Load more</button></div>}
+      {(source==='modrinth'||source==='all') && <div className="flex justify-center gap-3 mt-7"><button disabled={page===0||remoteLoading} onClick={()=>setPage(p=>Math.max(0,p-1))} className="px-4 py-2 rounded-lg border border-mc-border disabled:opacity-40">Previous</button><span className="self-center text-xs text-mc-muted">Page {page+1}</span><button disabled={remoteLoading||!modrinthHasMore} onClick={()=>setPage(p=>p+1)} className="px-4 py-2 rounded-lg border border-mc-border disabled:opacity-40">Load more</button></div>}
       <p className="mt-8 text-center text-xs text-mc-muted">Downloads stay inside CubeNest. Files are streamed through the CubeNest download service to avoid browser CORS restrictions.</p>
     </div>
     {selected && <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm p-3 sm:p-6 flex items-center justify-center" role="dialog" aria-modal="true" aria-label={`Details for ${selected.title}`} onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null)}}><div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-mc-border bg-mc-surface shadow-2xl">
