@@ -1,34 +1,121 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, ExternalLink, Package, CalendarDays, DownloadCloud, ShieldCheck, Tag, UserRound, AlertCircle } from 'lucide-react';
 import { formatNumber } from '../lib/utils';
 
 type BedrockItem = {
-  id: number; slug: string; name: string; summary: string; downloadCount: number;
+  id: number | string; slug: string; name: string; summary: string; downloadCount: number;
   logo: string | null; url: string; authors?: string[]; categories?: string[];
   category?: string; categoryLabel?: string; downloadUrl?: string | null;
   fileName?: string | null; fileId?: number | null; updated?: string | null;
+  source?: string;
 };
 type BedrockData = { lastSynced: string | null; resources: BedrockItem[]; error?: string };
+
+const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev')
+  .trim()
+  .replace(/\/$/, '');
+
+function isNineMinecraftUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host.includes('9minecraft.net') || host.includes('cdn9mc.com');
+  } catch {
+    return false;
+  }
+}
+
+async function downloadViaProxy(item: BedrockItem): Promise<void> {
+  if (!item.downloadUrl) {
+    throw new Error('No direct download URL is available for this resource. CubeNest will not open an external page as a fake download.');
+  }
+  if (!DOWNLOAD_PROXY_URL) throw new Error('CubeNest download proxy is not configured.');
+  const fromNine = item.source === '9Minecraft' || isNineMinecraftUrl(item.downloadUrl);
+  const endpoint = new URL(fromNine ? '/download/9minecraft' : '/download/curseforge', DOWNLOAD_PROXY_URL);
+  endpoint.searchParams.set('url', item.downloadUrl);
+  const filename = item.fileName || `${item.slug || item.id}.${fromNine ? 'mcaddon' : 'zip'}`;
+  endpoint.searchParams.set('filename', filename);
+  const response = await fetch(endpoint.toString(), { method: 'GET', credentials: 'omit' });
+  if (!response.ok) {
+    let detail = '';
+    try {
+      const payload = await response.json();
+      detail = typeof payload?.error === 'string' ? ` ${payload.error}` : '';
+    } catch { /* not JSON */ }
+    throw new Error(`Download failed (HTTP ${response.status}).${detail}`);
+  }
+  const blob = await response.blob();
+  if (blob.size < 32) throw new Error('The source returned an empty or incomplete file.');
+  const head = new TextDecoder().decode(await blob.slice(0, 64).arrayBuffer()).trimStart().toLowerCase();
+  if (head.startsWith('<!doctype') || head.startsWith('<html') || head.startsWith('{')) {
+    throw new Error('The source returned a web page or error instead of a resource file.');
+  }
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+}
 
 export function BedrockResourceDetail() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<BedrockData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json`, { signal: controller.signal, cache: 'no-store' })
-      .then(response => { if (!response.ok) throw new Error(`Catalog unavailable (${response.status})`); return response.json(); })
-      .then((json: BedrockData) => setData(json))
-      .catch(reason => { if (reason.name !== 'AbortError') setError(reason instanceof Error ? reason.message : 'Could not load resource details'); })
-      .finally(() => setLoading(false));
+    const bust = Date.now();
+    Promise.allSettled([
+      fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { signal: controller.signal, cache: 'no-store' }).then(async (response) => {
+        if (!response.ok) throw new Error(`Catalog unavailable (${response.status})`);
+        return response.json() as Promise<BedrockData>;
+      }),
+      fetch(`${import.meta.env.BASE_URL}data/9minecraft-bedrock.json?t=${bust}`, { signal: controller.signal, cache: 'no-store' }).then(async (response) => {
+        if (!response.ok) return { lastSynced: null, resources: [] } as BedrockData;
+        return response.json() as Promise<BedrockData>;
+      }),
+    ]).then((results) => {
+      const curse = results[0].status === 'fulfilled' ? results[0].value : null;
+      const nine = results[1].status === 'fulfilled' ? results[1].value : null;
+      const resources = [
+        ...(curse?.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' })),
+        ...(nine?.resources || []).map((item) => ({ ...item, source: item.source || '9Minecraft' })),
+      ];
+      if (!resources.length && results[0].status === 'rejected') {
+        setError(results[0].reason instanceof Error ? results[0].reason.message : 'Could not load resource details');
+        return;
+      }
+      setData({ lastSynced: curse?.lastSynced || nine?.lastSynced || null, resources });
+    }).catch((reason) => {
+      if (reason?.name !== 'AbortError') setError(reason instanceof Error ? reason.message : 'Could not load resource details');
+    }).finally(() => setLoading(false));
     return () => controller.abort();
   }, []);
 
   const item = useMemo(() => data?.resources?.find(resource => String(resource.id) === id), [data, id]);
+
+  const handleDownload = useCallback(async () => {
+    if (!item) return;
+    setDownloadBusy(true);
+    setDownloadMessage(null);
+    try {
+      await downloadViaProxy(item);
+      setDownloadMessage('Download started. You stayed on CubeNest.');
+    } catch (e) {
+      setDownloadMessage(e instanceof Error ? e.message : 'Download failed.');
+    } finally {
+      setDownloadBusy(false);
+    }
+  }, [item]);
+
   if (loading) return <div className="pt-28 pb-20 max-w-5xl mx-auto px-4"><div className="skeleton h-72 rounded-3xl mb-5" /><div className="skeleton h-8 w-2/3 mb-3" /><div className="skeleton h-4 w-full" /></div>;
   if (error || !item) return <div className="pt-28 pb-24 max-w-3xl mx-auto px-4 text-center"><AlertCircle className="w-10 h-10 mx-auto text-amber-400 mb-3" /><h1 className="text-2xl font-bold text-mc-white">Resource unavailable</h1><p className="text-sm text-mc-muted mt-2">{error || 'This resource is no longer in the current catalog.'}</p><Link to="/bedrock/catalog" className="inline-flex mt-6 px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm">Back to library</Link></div>;
 
@@ -52,9 +139,31 @@ export function BedrockResourceDetail() {
               {updated && !Number.isNaN(updated.getTime()) && <span className="inline-flex items-center gap-1.5 rounded-lg bg-black/20 px-3 py-2"><CalendarDays className="w-3.5 h-3.5" /> Updated {updated.toLocaleDateString()}</span>}
             </div>
             <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3">
-              {item.downloadUrl ? <a href={item.downloadUrl} download={item.fileName || undefined} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-950/30 hover:bg-emerald-300 transition-colors"><Download className="w-4 h-4" /> Download {item.fileName ? 'file' : 'latest'}</a> : <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-extrabold text-slate-950 hover:bg-emerald-300"><Download className="w-4 h-4" /> Get file from publisher</a>}
+              {item.downloadUrl ? (
+                <button
+                  type="button"
+                  disabled={downloadBusy}
+                  onClick={() => void handleDownload()}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-950/30 hover:bg-emerald-300 transition-colors disabled:opacity-60"
+                >
+                  <Download className="w-4 h-4" />
+                  {downloadBusy ? 'Downloading…' : `Download ${item.fileName ? 'file' : 'latest'}`}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="No direct file URL is available"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-mc-gray px-5 py-3 text-sm font-extrabold text-mc-muted cursor-not-allowed"
+                >
+                  <Download className="w-4 h-4" /> Download unavailable
+                </button>
+              )}
               <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/20 px-5 py-3 text-sm font-semibold text-mc-white hover:border-emerald-400/50">Publisher page <ExternalLink className="w-4 h-4" /></a>
             </div>
+            {downloadMessage && (
+              <p className="mt-4 text-sm text-emerald-200/90 max-w-xl mx-auto md:mx-0">{downloadMessage}</p>
+            )}
           </div>
         </div>
       </motion.section>
@@ -73,7 +182,7 @@ export function BedrockResourceDetail() {
             <div className="flex items-start justify-between gap-4"><dt className="text-mc-muted">Platform</dt><dd className="text-right text-mc-white">Minecraft Bedrock</dd></div>
             <div className="flex items-start justify-between gap-4"><dt className="text-mc-muted">Download count</dt><dd className="text-right text-mc-white">{formatNumber(item.downloadCount || 0)}</dd></div>
           </dl>
-          <p className="mt-5 flex items-start gap-2 border-t border-mc-border pt-4 text-xs leading-5 text-mc-muted"><ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" /> Downloads use the publisher's CDN when a direct file link is available. Otherwise, CubeNest sends you to the official publisher page.</p>
+          <p className="mt-5 flex items-start gap-2 border-t border-mc-border pt-4 text-xs leading-5 text-mc-muted"><ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" /> Downloads are streamed through the CubeNest download service when a direct file link is available. If the publisher does not expose a file URL, the download button stays disabled instead of sending you to an external site.</p>
         </aside>
       </div>
       <div className="mt-6 rounded-2xl border border-mc-border bg-mc-surface/70 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 className="font-bold text-mc-white">Ready to explore more?</h2><p className="text-sm text-mc-muted mt-1">Find another add-on, map, texture pack or shader.</p></div><Link to="/bedrock/catalog" className="inline-flex items-center justify-center rounded-xl border border-emerald-500/40 px-4 py-2.5 text-sm font-semibold text-emerald-300 hover:bg-emerald-500/10">Explore library <ArrowLeft className="ml-2 w-4 h-4 rotate-180" /></Link></div>

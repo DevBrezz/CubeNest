@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Download, ExternalLink, Package, AlertCircle, Palette, Map, Boxes, Sun, User, Layers } from 'lucide-react';
@@ -6,10 +6,11 @@ import { formatNumber } from '../lib/utils';
 
 type Category = 'all' | 'addons' | 'maps' | 'textures' | 'shaders' | 'skins';
 type BedrockItem = {
-  id: number; slug: string; name: string; summary: string; downloadCount: number;
+  id: number | string; slug: string; name: string; summary: string; downloadCount: number;
   logo: string | null; url: string; authors?: string[]; categories?: string[];
   category?: Exclude<Category, 'all'> | 'other'; categoryLabel?: string;
   downloadUrl?: string | null; fileName?: string | null; fileId?: number | null; updated?: string | null;
+  source?: string;
 };
 type BedrockData = { lastSynced: string | null; gameId?: number; total?: number; resources: BedrockItem[]; error?: string };
 const CATEGORIES: { id: Category; label: string; icon: typeof Boxes; description: string }[] = [
@@ -19,7 +20,11 @@ const CATEGORIES: { id: Category; label: string; icon: typeof Boxes; description
   { id: 'textures', label: 'Texture packs', icon: Palette, description: 'Textures, UI and visual packs' },
   { id: 'shaders', label: 'Shaders', icon: Sun, description: 'Visual effects and lighting' },
   { id: 'skins', label: 'Skins', icon: User, description: 'Character skins and skin packs' },
- ];
+];
+
+const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev')
+  .trim()
+  .replace(/\/$/, '');
 
 function inferCategory(item: BedrockItem): Exclude<Category, 'all'> | 'other' {
   const explicit = String(item.category || '').toLowerCase().replace(/[ _-]+/g, '');
@@ -37,6 +42,55 @@ function inferCategory(item: BedrockItem): Exclude<Category, 'all'> | 'other' {
   return 'other';
 }
 
+function isNineMinecraftUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host.includes('9minecraft.net') || host.includes('cdn9mc.com');
+  } catch {
+    return false;
+  }
+}
+
+/** Stream a file through the CubeNest worker; never navigate away. */
+async function downloadViaProxy(item: BedrockItem): Promise<void> {
+  if (!item.downloadUrl) {
+    throw new Error('No direct download URL is available for this resource. CubeNest will not open an external page as a fake download.');
+  }
+  if (!DOWNLOAD_PROXY_URL) {
+    throw new Error('CubeNest download proxy is not configured.');
+  }
+  const fromNine = item.source === '9Minecraft' || isNineMinecraftUrl(item.downloadUrl);
+  const path = fromNine ? '/download/9minecraft' : '/download/curseforge';
+  const endpoint = new URL(path, DOWNLOAD_PROXY_URL);
+  endpoint.searchParams.set('url', item.downloadUrl);
+  const filename = item.fileName || `${item.slug || item.id}.${fromNine ? 'mcaddon' : 'zip'}`;
+  endpoint.searchParams.set('filename', filename);
+  const response = await fetch(endpoint.toString(), { method: 'GET', credentials: 'omit' });
+  if (!response.ok) {
+    let detail = '';
+    try {
+      const payload = await response.json();
+      detail = typeof payload?.error === 'string' ? ` ${payload.error}` : '';
+    } catch { /* not JSON */ }
+    throw new Error(`Download failed (HTTP ${response.status}).${detail}`);
+  }
+  const blob = await response.blob();
+  if (blob.size < 32) throw new Error('The source returned an empty or incomplete file.');
+  const head = new TextDecoder().decode(await blob.slice(0, 64).arrayBuffer()).trimStart().toLowerCase();
+  if (head.startsWith('<!doctype') || head.startsWith('<html') || head.startsWith('{')) {
+    throw new Error('The source returned a web page or error instead of a resource file.');
+  }
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+}
+
 export function BedrockCatalog() {
   const [params, setParams] = useSearchParams();
   const [query, setQuery] = useState(params.get('q') || '');
@@ -45,14 +99,56 @@ export function BedrockCatalog() {
   const [data, setData] = useState<BedrockData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadBusyId, setDownloadBusyId] = useState<string | number | null>(null);
+  const [downloadMessage, setDownloadMessage] = useState<string | null>(null);
+
+  const handleDownload = useCallback(async (item: BedrockItem) => {
+    setDownloadBusyId(item.id);
+    setDownloadMessage(null);
+    try {
+      await downloadViaProxy(item);
+      setDownloadMessage(`Download started for “${item.name}”. You stayed on CubeNest.`);
+    } catch (e) {
+      setDownloadMessage(e instanceof Error ? e.message : 'Download failed.');
+    } finally {
+      setDownloadBusyId(null);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${Date.now()}`, { cache: 'no-store' })
-      .then(r => { if (!r.ok) throw new Error(`Catalog unavailable (${r.status})`); return r.json(); })
-      .then((j: BedrockData) => { if (!cancelled) { setData(j); setError(j.error || null); } })
-      .catch(e => { if (!cancelled) setError(e instanceof Error ? e.message : 'Could not load resource catalog'); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+    const bust = Date.now();
+    Promise.allSettled([
+      fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { cache: 'no-store' }).then(async (r) => {
+        if (!r.ok) throw new Error(`CurseForge catalog unavailable (${r.status})`);
+        return r.json() as Promise<BedrockData>;
+      }),
+      fetch(`${import.meta.env.BASE_URL}data/9minecraft-bedrock.json?t=${bust}`, { cache: 'no-store' }).then(async (r) => {
+        if (!r.ok) return { lastSynced: null, resources: [] } as BedrockData;
+        return r.json() as Promise<BedrockData>;
+      }),
+    ]).then((results) => {
+      if (cancelled) return;
+      const curse = results[0].status === 'fulfilled' ? results[0].value : null;
+      const nine = results[1].status === 'fulfilled' ? results[1].value : null;
+      const curseResources = (curse?.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' }));
+      const nineResources = (nine?.resources || []).map((item) => ({ ...item, source: item.source || '9Minecraft' }));
+      const merged = [...curseResources, ...nineResources];
+      if (!merged.length) {
+        setError(
+          curse?.error ||
+            (results[0].status === 'rejected' ? (results[0].reason instanceof Error ? results[0].reason.message : 'Catalog unavailable') : 'Catalog is empty'),
+        );
+        setData({ lastSynced: null, resources: [] });
+        return;
+      }
+      const timestamps = [curse?.lastSynced, nine?.lastSynced].filter(Boolean).map((value) => Date.parse(String(value))).filter((n) => Number.isFinite(n));
+      const lastSynced = timestamps.length ? new Date(Math.max(...timestamps)).toISOString() : curse?.lastSynced || nine?.lastSynced || null;
+      setData({ lastSynced, total: merged.length, resources: merged });
+      setError(null);
+    }).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
     return () => { cancelled = true; };
   }, []);
 
@@ -93,7 +189,7 @@ export function BedrockCatalog() {
         <div className="relative max-w-3xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-300">Minecraft Bedrock Edition</span>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-mc-white mt-4">Bedrock <span className="text-emerald-400">Library</span></h1>
-          <p className="text-sm sm:text-base text-mc-muted mt-3 max-w-2xl">Find add-ons, worlds, texture packs, shaders and skins in one catalog. Use the download button to get the latest file directly when the source provides a direct download URL.</p>
+          <p className="text-sm sm:text-base text-mc-muted mt-3 max-w-2xl">Find add-ons, worlds, texture packs, shaders and skins in one catalog. Downloads are streamed through CubeNest when a direct file URL is available.</p>
           <div className="flex flex-wrap gap-3 mt-5 text-xs text-mc-muted"><span className="rounded-lg bg-black/20 px-3 py-2">{formatNumber(data?.resources?.length || 0)} resources indexed</span>{data?.lastSynced && <span className="rounded-lg bg-black/20 px-3 py-2">Updated {new Date(data.lastSynced).toLocaleDateString()}</span>}</div>
         </div>
       </motion.section>
@@ -110,6 +206,7 @@ export function BedrockCatalog() {
       </div>
 
       {error && <div className="flex gap-2 text-sm text-amber-200 mb-5 bg-amber-900/20 border border-amber-800 rounded-xl p-3"><AlertCircle className="w-4 h-4 shrink-0" /><div><p>{error}</p><p className="mt-1 text-xs opacity-80">Check the GitHub Actions sync log. Keep the API key in GitHub Secrets, never in frontend code.</p></div></div>}
+      {downloadMessage && <div className="flex gap-2 text-sm text-emerald-100 mb-5 bg-emerald-900/20 border border-emerald-800 rounded-xl p-3"><AlertCircle className="w-4 h-4 shrink-0" /><p>{downloadMessage}</p></div>}
       {loading ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="skeleton h-64 rounded-2xl" />)}</div> : filtered.length === 0 ? <div className="text-center py-16 text-mc-muted bg-mc-surface border border-mc-border rounded-2xl"><Package className="w-10 h-10 mx-auto mb-3 opacity-50" /><p className="text-mc-white font-semibold">No resources in this category yet</p><p className="text-sm mt-1">Try another category or run the Bedrock sync workflow.</p><button onClick={() => { setCategory('all'); setQuery(''); }} className="text-sm text-emerald-400 mt-3">Show all resources</button></div> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((m, i) => <motion.article key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * .012, .18) }} className="group flex flex-col overflow-hidden rounded-2xl border border-mc-border bg-mc-surface hover:border-emerald-500/45 hover:-translate-y-1 transition-all duration-200">
           <Link to={`/bedrock/resource/${m.id}`} className="relative aspect-[16/10] bg-mc-gray flex items-center justify-center overflow-hidden">
@@ -119,16 +216,33 @@ export function BedrockCatalog() {
           <div className="p-4 flex flex-col flex-1">
             <h2 className="font-bold text-mc-white text-sm line-clamp-2 min-h-10">{m.name}</h2>
             <p className="text-xs text-mc-muted mt-2 line-clamp-3 flex-1">{m.summary || 'Minecraft Bedrock community resource.'}</p>
-            <div className="flex items-center justify-between text-[11px] text-mc-muted border-t border-mc-border pt-3 mt-4"><span>{formatNumber(m.downloadCount || 0)} downloads</span><span className="truncate max-w-24">{m.authors?.[0] || 'Community creator'}</span></div>
+            <div className="flex items-center justify-between text-[11px] text-mc-muted border-t border-mc-border pt-3 mt-4"><span>{m.source === '9Minecraft' ? '9Minecraft' : `${formatNumber(m.downloadCount || 0)} downloads`}</span><span className="truncate max-w-28">{m.source === '9Minecraft' ? (m.authors?.[0] || '9Minecraft') : (m.authors?.[0] || 'Community creator')}</span></div>
             <div className="grid grid-cols-2 gap-2 mt-3">
-              {m.downloadUrl ? <a href={m.downloadUrl} download={m.fileName || undefined} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-emerald-400 transition-colors"><Download className="w-3.5 h-3.5" /> Direct download</a> : <a href={m.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-emerald-400 transition-colors"><Download className="w-3.5 h-3.5" /> Get file</a>}
+              {m.downloadUrl ? (
+                <button
+                  type="button"
+                  disabled={downloadBusyId === m.id}
+                  onClick={() => void handleDownload(m)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-emerald-400 transition-colors disabled:opacity-60"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  {downloadBusyId === m.id ? 'Downloading…' : 'Direct download'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="No direct file URL is available for this resource"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-mc-gray px-3 py-2.5 text-xs font-bold text-mc-muted cursor-not-allowed"
+                >
+                  <Download className="w-3.5 h-3.5" /> Unavailable
+                </button>
+              )}
               <Link to={`/bedrock/resource/${m.id}`} className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-mc-border px-3 py-2.5 text-xs font-semibold text-mc-white hover:border-emerald-500/40"><ExternalLink className="w-3.5 h-3.5" /> Details</Link>
             </div>
           </div>
         </motion.article>)}
-      </div>}
-      <div className="mt-8 text-xs text-mc-muted flex items-start gap-2"><AlertCircle className="w-4 h-4 shrink-0" /><p>Files are served by their original publisher/CDN when a direct URL is available. Otherwise, Get file opens the publisher's official project page. CubeNest does not mirror third-party files.</p></div>
-      <div className="mt-5"><Link to="/bedrock" className="text-sm text-emerald-400 hover:underline">← Back to Bedrock hub</Link></div>
+      </div>
     </div>
   </div>;
 }
