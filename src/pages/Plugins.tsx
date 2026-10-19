@@ -7,7 +7,7 @@ import type { Resource } from '../types/resource';
 type Source = 'all' | 'modrinth' | 'spigot' | 'pocketmine';
 type Plugin = Resource & { author?: string; sourceName: string; raw?: ModrinthHit; full?: ModrinthProject; versions?: ModrinthVersion[]; currentFile?: string; filename?: string };
 const LOADING_GIF = 'https://i.imgur.com/cFLg43W.gif';
-const POGGIT_API = 'https://poggit.pmmp.io/plugins.json';
+const POGGIT_APIS = ['https://poggit.pmmp.io/plugins.min.json', 'https://poggit.pmmp.io/releases.min.json', 'https://poggit.pmmp.io/plugins.json'];
 const SPIGET_API = 'https://api.spiget.org/v2/resources?size=36&sort=-downloads';
 const SPIGET_SEARCH_API = 'https://api.spiget.org/v2/search/resources/';
 
@@ -29,8 +29,8 @@ function normalizeModrinth(h: ModrinthHit): Plugin {
     author: h.author || 'Modrinth creator', sourceName: 'Modrinth', raw: h };
 }
 function normalizePoggit(item: any, index = 0): Plugin {
-  const id = String(item.id ?? item.name ?? item.plugin_name ?? item.slug ?? `poggit-${index}`);
-  const name = String(item.name ?? item.plugin_name ?? item.title ?? item.slug ?? 'Untitled plugin');
+  const id = String(item.project_id ?? item.id ?? item.name ?? item.plugin_name ?? item.project_name ?? item.slug ?? `poggit-${index}`);
+  const name = String(item.name ?? item.plugin_name ?? item.project_name ?? item.title ?? item.slug ?? `PocketMine plugin ${id}`);
   return { id: `poggit-${id}`, platform: 'custom', platformId: id, slug: id, title: name,
     description: String(item.description || item.summary || 'No description provided.'), body: String(item.description || item.summary || ''), icon: typeof item.icon === 'string' ? item.icon : null,
     gallery: [], categories: [], loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.mcpe_version) ? item.mcpe_version.map(String) : item.mcpe_version ? [String(item.mcpe_version)] : [],
@@ -71,7 +71,7 @@ function extractRecords(payload: any, provider: 'poggit' | 'spigot'): any[] {
 
 function usableRecords(records: any[], provider: 'poggit' | 'spigot') {
   return records.filter((item: any) => item && typeof item === 'object' &&
-    (provider === 'poggit' ? Boolean(item.name || item.id || item.plugin_name || item.slug) : Boolean(item.id && item.name)));
+    (provider === 'poggit' ? Boolean(item.name || item.id || item.plugin_name || item.project_name || item.project_id || item.title || item.slug || item.versions || item.version_name) : Boolean(item.id && item.name)));
 }
 
 async function fetchRecordsWithFallback(url: string, fallbackPath: string, signal: AbortSignal, provider: 'poggit' | 'spigot') {
@@ -116,7 +116,18 @@ export function Plugins() {
     setRemoteLoading(true); setRemoteError('');
     try {
       if (source === 'pocketmine') {
-        const list = await fetchRecordsWithFallback(POGGIT_API, 'data/poggit-plugins.json', signal, 'poggit');
+        let list: any[] = [];
+        let lastLiveError = '';
+        for (const endpoint of POGGIT_APIS) {
+          try {
+            list = await fetchRecordsWithFallback(endpoint, 'data/poggit-plugins.json', signal, 'poggit');
+            if (list.length) break;
+          } catch (error) {
+            if (signal.aborted) throw error;
+            lastLiveError = error instanceof Error ? error.message : String(error);
+          }
+        }
+        if (!list.length) throw new Error(lastLiveError || 'Poggit catalogue is unavailable. Check the Sync Resources workflow logs.');
         const plugins = list.map(normalizePoggit);
         setRemote(plugins); setTotal(plugins.length);
       } else if (source === 'spigot') {
