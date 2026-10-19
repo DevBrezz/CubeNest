@@ -2315,13 +2315,15 @@
       "type": ".jar",
       "size": 2.2,
       "sizeUnit": "MB",
-      "url": "resources/better-teams.17129/download?version=649277"
+      "url": "resources/better-teams.17129/download?version=656764"
     },
     "contributors": "https://github.com/booksaw/BetterTeams/graphs/contributors",
-    "likes": 13,
+    "likes": 11,
     "testedVersions": [
       "1.21",
-      "26.1"
+      "26.1",
+      "26.2",
+      "26.3"
     ],
     "links": {
       "additionalInformation": "https://betterteams.booksaw.dev",
@@ -2333,8 +2335,8 @@
     "name": "Better Teams",
     "tag": "Create teams to fight to be the best",
     "version": {
-      "id": 649277,
-      "uuid": "023cbb3b-b03f-55a5-023e-850b4fbcacf6"
+      "id": 656764,
+      "uuid": "023cbb3b-b03f-55a6-023e-850b4fbfc5ef"
     },
     "author": {
       "id": 120955
@@ -2343,7 +2345,7 @@
       "id": 24
     },
     "rating": {
-      "count": 95,
+      "count": 91,
       "average": 4.3
     },
     "icon": {
@@ -2353,8 +2355,8 @@
       "hash": ""
     },
     "releaseDate": 1453014360,
-    "updateDate": 1786914382,
-    "downloads": 1117030,
+    "updateDate": 1792443903,
+    "downloads": 1117266,
     "existenceStatus": 1,
     "sourceCodeLink": "https://github.com/booksaw/BetterTeams",
     "premium": false,
