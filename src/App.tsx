@@ -25,6 +25,7 @@ import { BedrockHub } from './pages/BedrockHub';
 import { BedrockCatalog } from './pages/BedrockCatalog';
 import { BedrockResourceDetail } from './pages/BedrockResourceDetail';
 import { Skins } from './pages/Skins';
+import { SkinCreator } from './pages/SkinCreator';
 import { SearchPage } from './pages/SearchPage';
 import { DownloadsPage } from './pages/DownloadsPage';
 import { WhitelistPage } from './pages/WhitelistPage';
@@ -73,6 +74,7 @@ export default function App() {
                 <Route path="/bedrock/catalog" element={<BedrockCatalog />} />
                 <Route path="/bedrock/resource/:id" element={<BedrockResourceDetail />} />
                 <Route path="/skins" element={<Skins />} />
+                <Route path="/skin-creator" element={<SkinCreator />} />
                 <Route path="/mods/catalog" element={<Catalog category="mods" />} />
                 <Route path="/mods/:slug" element={<ModrinthDetail category="mods" />} />
                 <Route path="/resourcepacks" element={<Catalog category="resourcepacks" />} />
