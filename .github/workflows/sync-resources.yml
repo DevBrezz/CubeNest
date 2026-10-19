@@ -31,11 +31,14 @@ jobs:
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: node scripts/sync-bedrock-curseforge.mjs
+      - name: Sync 9Minecraft Bedrock catalogue
+        continue-on-error: true
+        run: node scripts/sync-9minecraft.mjs
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/resources.json public/data/curseforge.json public/data/bedrock-curseforge.json public/data/poggit-plugins.json public/data/spigot-plugins.json
+          git add public/data/resources.json public/data/curseforge.json public/data/bedrock-curseforge.json public/data/poggit-plugins.json public/data/spigot-plugins.json public/data/9minecraft-bedrock.json
           if git diff --staged --quiet; then
             echo "No changes"
           else

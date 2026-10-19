@@ -32,6 +32,10 @@ jobs:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: node scripts/sync-bedrock-curseforge.mjs
 
+      - name: Sync 9Minecraft Bedrock catalogue
+        continue-on-error: true
+        run: node scripts/sync-9minecraft.mjs
+
       - name: Build site
         run: npm run build
         env:
