@@ -8,7 +8,8 @@ type Source = 'all' | 'modrinth' | 'spigot' | 'pocketmine';
 type Plugin = Resource & { author?: string; sourceName: string; raw?: ModrinthHit; full?: ModrinthProject; versions?: ModrinthVersion[]; currentFile?: string; filename?: string };
 const LOADING_GIF = 'https://i.imgur.com/cFLg43W.gif';
 const POGGIT_API = 'https://poggit.pmmp.io/plugins.json';
-const SPIGET_API = 'https://api.spiget.org/v2/resources?size=36&sort=-downloads&fields=id,name,tag,description,downloads,releaseDate,updateDate,icon,author,testedVersions,external&fields=*&page=0';
+const SPIGET_API = 'https://api.spiget.org/v2/resources?size=36&sort=-downloads';
+const SPIGET_SEARCH_API = 'https://api.spiget.org/v2/search/resources/';
 
 function safeDate(value?: string) { const n = value ? Date.parse(value) : 0; return Number.isFinite(n) ? n : 0; }
 function humanDate(value?: string) { const n = safeDate(value); return n ? new Date(n).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not provided'; }
@@ -28,9 +29,10 @@ function normalizeModrinth(h: ModrinthHit): Plugin {
     author: h.author || 'Modrinth creator', sourceName: 'Modrinth', raw: h };
 }
 function normalizePoggit(item: any, index = 0): Plugin {
-  const id = String(item.id ?? item.name ?? `poggit-${index}`);
-  return { id: `poggit-${id}`, platform: 'custom', platformId: id, slug: id, title: String(item.name || 'Untitled plugin'),
-    description: String(item.description || 'No description provided.'), body: String(item.description || ''), icon: typeof item.icon === 'string' ? item.icon : null,
+  const id = String(item.id ?? item.name ?? item.plugin_name ?? item.slug ?? `poggit-${index}`);
+  const name = String(item.name ?? item.plugin_name ?? item.title ?? item.slug ?? 'Untitled plugin');
+  return { id: `poggit-${id}`, platform: 'custom', platformId: id, slug: id, title: name,
+    description: String(item.description || item.summary || 'No description provided.'), body: String(item.description || item.summary || ''), icon: typeof item.icon === 'string' ? item.icon : null,
     gallery: [], categories: [], loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.mcpe_version) ? item.mcpe_version.map(String) : item.mcpe_version ? [String(item.mcpe_version)] : [],
     version: String(item.version || ''), downloads: Number(item.downloads) || 0, published: '', updated: '', url: String(item.plugin_url || `https://poggit.pmmp.io/plugins`),
     downloadUrl: String(item.artifact_url || item.download_url || item.downloadUrl || ''), featured: false, hidden: false,
@@ -53,17 +55,42 @@ function normalizeSpiget(item: any): Plugin {
     author: author || 'SpigotMC creator', sourceName: 'SpigotMC' };
 }
 
-async function fetchJsonWithFallback(url: string, fallbackPath: string, signal: AbortSignal) {
+function extractRecords(payload: any, provider: 'poggit' | 'spigot'): any[] {
+  if (Array.isArray(payload)) return payload;
+  if (!payload || typeof payload !== 'object') return [];
+  const keys = provider === 'poggit'
+    ? ['plugins', 'data', 'results', 'items', 'resources']
+    : ['resources', 'data', 'results', 'items'];
+  for (const key of keys) {
+    const value = payload[key];
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object') return Object.values(value);
+  }
+  return Object.values(payload).filter((value: any) => value && typeof value === 'object');
+}
+
+function usableRecords(records: any[], provider: 'poggit' | 'spigot') {
+  return records.filter((item: any) => item && typeof item === 'object' &&
+    (provider === 'poggit' ? Boolean(item.name || item.id || item.plugin_name || item.slug) : Boolean(item.id && item.name)));
+}
+
+async function fetchRecordsWithFallback(url: string, fallbackPath: string, signal: AbortSignal, provider: 'poggit' | 'spigot') {
+  let liveError = '';
   try {
     const response = await fetch(url, { signal, headers: { Accept: 'application/json' } });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
+    const records = usableRecords(extractRecords(await response.json(), provider), provider);
+    if (records.length) return records;
+    liveError = 'The live endpoint returned an empty or unrecognized catalogue.';
   } catch (error) {
     if (signal.aborted) throw error;
-    const fallback = await fetch(`${import.meta.env.BASE_URL}${fallbackPath}`, { signal, headers: { Accept: 'application/json' } });
-    if (!fallback.ok) throw new Error(`Live API failed and synced fallback returned HTTP ${fallback.status}.`);
-    return await fallback.json();
+    liveError = error instanceof Error ? error.message : 'Network request failed';
   }
+  const fallback = await fetch(`${import.meta.env.BASE_URL}${fallbackPath}`, { signal, headers: { Accept: 'application/json' } });
+  if (!fallback.ok) throw new Error(`${provider === 'poggit' ? 'Poggit' : 'SpigotMC'} live request failed (${liveError}); synced catalogue returned HTTP ${fallback.status}.`);
+  const records = usableRecords(extractRecords(await fallback.json(), provider), provider);
+  if (!records.length) throw new Error(`${provider === 'poggit' ? 'Poggit' : 'SpigotMC'} has no usable cached records yet. Run the GitHub Actions “Sync Resources” workflow and check its logs. Live request: ${liveError}`);
+  return records;
 }
 
 export function Plugins() {
@@ -89,20 +116,17 @@ export function Plugins() {
     setRemoteLoading(true); setRemoteError('');
     try {
       if (source === 'pocketmine') {
-        const payload = await fetchJsonWithFallback(POGGIT_API, 'data/poggit-plugins.json', signal);
-        const list = Array.isArray(payload) ? payload : Array.isArray(payload.plugins) ? payload.plugins : Array.isArray(payload.data) ? payload.data : payload && typeof payload === 'object' ? Object.values(payload) : null;
-        if (!list) throw new Error('Poggit response format was not recognized.');
-        const plugins = list.filter((item: any) => item && typeof item === 'object' && (item.name || item.id)).map(normalizePoggit);
-        if (!plugins.length) throw new Error('Poggit returned no usable plugin records. Try again later.');
+        const list = await fetchRecordsWithFallback(POGGIT_API, 'data/poggit-plugins.json', signal, 'poggit');
+        const plugins = list.map(normalizePoggit);
         setRemote(plugins); setTotal(plugins.length);
       } else if (source === 'spigot') {
-        const payload = await fetchJsonWithFallback(SPIGET_API, 'data/spigot-plugins.json', signal);
-        const list = Array.isArray(payload) ? payload : Array.isArray(payload.resources) ? payload.resources : Array.isArray(payload.data) ? payload.data : null;
-        if (!list) throw new Error('Spiget response format was not recognized.');
-        const plugins = list.filter((item: any) => item && item.id && item.name).map(normalizeSpiget)
-          .filter((item: Plugin) => !search.trim() || `${item.title} ${item.description} ${item.author}`.toLowerCase().includes(search.trim().toLowerCase()));
+        const query = search.trim();
+        const url = query ? `${SPIGET_SEARCH_API}${encodeURIComponent(query)}?size=36&sort=-downloads` : SPIGET_API;
+        const list = await fetchRecordsWithFallback(url, 'data/spigot-plugins.json', signal, 'spigot');
+        const queryLower = query.toLowerCase();
+        const plugins = list.map(normalizeSpiget).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
         setRemote(plugins); setTotal(plugins.length);
-        if (!plugins.length) setRemoteError('No SpigotMC resources matched. Try a broader search or retry.');
+        if (!plugins.length) setRemoteError('No matching SpigotMC resources were found in the live results or synced catalogue. Try another search or run Sync Resources in GitHub Actions.');
       } else if (source === 'modrinth' || source === 'all') {
         const result = await searchProjects({ query: search.trim() || undefined, projectType: 'plugin', index: sort === 'relevance' ? 'relevance' : sort === 'downloads' ? 'downloads' : sort === 'newest' ? 'newest' : 'relevance', offset: page * 24, limit: 24, signal });
         const hits = result.hits.map(normalizeModrinth);
