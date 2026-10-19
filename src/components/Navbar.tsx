@@ -10,6 +10,7 @@ const links = [
   { to: '/mods', label: 'Mods' },
   { to: '/plugins', label: 'Plugins' },
   { to: '/servers', label: 'Servers' },
+  { to: '/skin-creator', label: 'Buat Skin' },
   { to: '/resourcepacks', label: 'Resource Packs' },
   { to: '/shaders', label: 'Shaders' },
   { to: '/modpacks', label: 'Modpacks' },
