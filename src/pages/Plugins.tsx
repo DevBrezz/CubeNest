@@ -106,7 +106,7 @@ async function fetchRecordsWithFallback(url: string, fallbackPath: string, signa
     liveError = error instanceof Error ? error.message : 'Network request failed';
   }
   const fallback = await fetch(`${import.meta.env.BASE_URL}${fallbackPath}`, { signal, headers: { Accept: 'application/json' } });
-  if (!fallback.ok) throw new Error(`${provider === 'poggit' ? 'Poggit' : 'SpigotMC'} live request failed (${liveError}); synced catalogue returned HTTP ${fallback.status}.`);
+  if (!fallback.ok) { const hint = liveError.includes('HTTP 404') ? ' The deployed Cloudflare Worker does not have the current API route; redeploy workers/download-proxy/index.js.' : ''; throw new Error(`${provider === 'poggit' ? 'Poggit' : 'SpigotMC'} live request failed (${liveError}); synced catalogue returned HTTP ${fallback.status}.${hint}`); }
   const records = usableRecords(extractRecords(await fallback.json(), provider), provider);
   if (!records.length) throw new Error(`${provider === 'poggit' ? 'Poggit' : 'SpigotMC'} has no usable cached records yet. Run the GitHub Actions “Sync Resources” workflow and check its logs. Live request: ${liveError}`);
   return records;
@@ -159,7 +159,7 @@ export function Plugins() {
             if (fallback.ok) list = usableRecords(extractRecords(await fallback.json(), 'poggit'), 'poggit');
           } catch (error) { if (signal.aborted) throw error; }
         }
-        if (!list.length) throw new Error(`${lastLiveError || 'Poggit catalogue is unavailable.'} The Worker must return approved release records from /releases.min.json, not a GitHub archive or project page.`);
+        if (!list.length) throw new Error(`${lastLiveError || 'Poggit catalogue is unavailable.'} Redeploy workers/download-proxy/index.js so it tries the Poggit JSON release endpoints. Do not use the release-archive GitHub repository as a plugin.`);
         const queryLower = search.trim().toLowerCase();
         const plugins = list.map(normalizePoggit).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
         setRemote(plugins); setTotal(plugins.length);
