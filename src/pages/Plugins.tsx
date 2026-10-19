@@ -8,9 +8,9 @@ type Source = 'all' | 'modrinth' | 'spigot' | 'pocketmine';
 type Plugin = Resource & { author?: string; sourceName: string; raw?: ModrinthHit; full?: ModrinthProject; versions?: ModrinthVersion[]; currentFile?: string; filename?: string };
 const LOADING_GIF = 'https://i.imgur.com/cFLg43W.gif';
 const POGGIT_APIS = ['https://poggit.pmmp.io/plugins.min.json', 'https://poggit.pmmp.io/releases.min.json', 'https://poggit.pmmp.io/plugins.json'];
-const SPIGET_API = 'https://api.spiget.org/v2/resources?size=36&sort=-downloads';
-const SPIGET_SEARCH_API = 'https://api.spiget.org/v2/search/resources/';
 const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev').trim().replace(/\/$/, '');
+const SPIGET_API = `${DOWNLOAD_PROXY_URL}/api/spigot/resources`;
+const SPIGET_SEARCH_API = `${DOWNLOAD_PROXY_URL}/api/spigot/search`;
 
 function safeDate(value?: string) { const n = value ? Date.parse(value) : 0; return Number.isFinite(n) ? n : 0; }
 function humanDate(value?: string) { const n = safeDate(value); return n ? new Date(n).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not provided'; }
@@ -159,14 +159,14 @@ export function Plugins() {
             if (fallback.ok) list = usableRecords(extractRecords(await fallback.json(), 'poggit'), 'poggit');
           } catch (error) { if (signal.aborted) throw error; }
         }
-        if (!list.length) throw new Error(`${lastLiveError || 'Poggit catalogue is unavailable.'} Check that the CubeNest Worker /api/poggit/plugins endpoint returns plugin records.`);
+        if (!list.length) throw new Error(`${lastLiveError || 'Poggit catalogue is unavailable.'} The Worker must return approved release records from /releases.min.json, not a GitHub archive or project page.`);
         const queryLower = search.trim().toLowerCase();
         const plugins = list.map(normalizePoggit).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
         setRemote(plugins); setTotal(plugins.length);
         if (!plugins.length) setRemoteError(`No PocketMine plugins matched “${search.trim()}”. Try another search.`);
       } else if (source === 'spigot') {
         const query = search.trim();
-        const url = query ? `${SPIGET_SEARCH_API}${encodeURIComponent(query)}?size=36&sort=-downloads` : SPIGET_API;
+        const url = query ? `${SPIGET_SEARCH_API}?q=${encodeURIComponent(query)}` : SPIGET_API;
         const list = await fetchRecordsWithFallback(url, 'data/spigot-plugins.json', signal, 'spigot');
         const queryLower = query.toLowerCase();
         const plugins = list.map(normalizeSpiget).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
@@ -251,6 +251,11 @@ export function Plugins() {
         if (!url) throw new Error('No downloadable Modrinth release file was found.');
         downloadEndpoint = new URL('/download/modrinth', DOWNLOAD_PROXY_URL);
         downloadEndpoint.searchParams.set('url', url);
+      } else if (plugin.platform === 'spigot' || plugin.sourceName.includes('SpigotMC')) {
+        if (!/^\d+$/.test(String(plugin.platformId || ''))) throw new Error('SpigotMC did not provide a valid resource ID.');
+        downloadEndpoint = new URL('/download/spigot', DOWNLOAD_PROXY_URL);
+        downloadEndpoint.searchParams.set('id', String(plugin.platformId));
+        filename = `${(plugin.title || 'plugin').toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.jar`;
       } else {
         if (!url) throw new Error('This source did not provide a direct file URL.');
         downloadEndpoint = new URL('/', DOWNLOAD_PROXY_URL);
@@ -264,7 +269,9 @@ export function Plugins() {
         throw new Error(`CubeNest download service returned HTTP ${response.status}.${detail}`);
       }
       const blob = await response.blob();
-      if (blob.size < 32 || blob.type.includes('text/html') || blob.type.includes('application/json')) throw new Error('The source did not return a valid plugin file. Try another release or source.');
+      if (blob.size < 32) throw new Error('The source returned an empty or incomplete plugin file. Try another release.');
+      const signature = new TextDecoder().decode(await blob.slice(0, 96).arrayBuffer()).trimStart().toLowerCase();
+      if (signature.startsWith('<!doctype html') || signature.startsWith('<html') || signature.startsWith('{\"error\"') || signature.startsWith('{\"message\"')) throw new Error('The source returned an error page instead of a plugin file. The source may be blocking downloads.');
       const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = objectUrl; a.download = filename; a.style.display = 'none'; document.body.appendChild(a); a.click(); a.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
