@@ -36,45 +36,81 @@ function safeFilename(value) {
   return cleaned || 'download.bin';
 }
 async function fetchPoggitList(search) {
-  // Poggit's documented releases endpoint returns one record per release and
-  // includes artifact_url. Do not use GitHub repository/archive metadata as plugins.
-  const api = new URL('https://poggit.pmmp.io/releases.min.json');
-  api.searchParams.set('latest-only', 'on');
-  api.searchParams.set('min-state', '5');
-  if (search) api.searchParams.set('name', search.slice(0, 100));
-  const response = await fetch(api.toString(), {
-    headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
-  });
-  if (!response.ok) throw new Error(`Poggit API returned HTTP ${response.status}`);
-  const payload = await response.json();
-  if (!Array.isArray(payload)) throw new Error('Poggit API returned an unexpected catalogue format');
-  return payload.filter(item => {
-    if (!item || !item.id || !item.project_name || !item.artifact_url) return false;
-    const project = String(item.project_name || '').toLowerCase();
-    const repo = String(item.repo_name || '').toLowerCase();
-    const artifact = String(item.artifact_url || '');
-    // Exclude PocketMine-MP itself and Poggit's release-archive repository.
-    if (project === 'pocketmine-mp' || repo.includes('release-archive')) return false;
+  // Poggit is read-only, but its public JSON release catalogue remains the
+  // source of truth. Try documented aliases because deployments may expose
+  // different cached variants. Never turn a GitHub repository into a plugin.
+  const endpoints = ['releases.min.json', 'plugins.min.json', 'releases.json', 'plugins.json'];
+  const errors = [];
+  let records = [];
+  for (const endpoint of endpoints) {
+    const api = new URL(`https://poggit.pmmp.io/${endpoint}`);
+    if (endpoint.startsWith('releases')) api.searchParams.set('latest-only', 'on');
+    if (search) api.searchParams.set('name', search.slice(0, 100));
     try {
-      const u = new URL(artifact);
-      return u.protocol === 'https:' && (u.hostname === 'poggit.pmmp.io' || u.hostname.endsWith('.poggit.pmmp.io'));
-    } catch { return false; }
+      const response = await fetch(api.toString(), {
+        headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
+      });
+      if (!response.ok) { errors.push(`${endpoint}: HTTP ${response.status}`); continue; }
+      const payload = await response.json();
+      const rows = Array.isArray(payload) ? payload
+        : Array.isArray(payload?.releases) ? payload.releases
+        : Array.isArray(payload?.plugins) ? payload.plugins
+        : Array.isArray(payload?.data) ? payload.data : [];
+      const valid = rows.filter(item => {
+        if (!item || typeof item !== 'object') return false;
+        const name = String(item.project_name || item.plugin_name || item.name || item.title || '').trim();
+        const artifact = String(item.artifact_url || item.download_url || item.downloadUrl || '');
+        const project = name.toLowerCase();
+        const repo = String(item.repo_name || item.repository || '').toLowerCase();
+        if (!name || !artifact || project === 'pocketmine-mp' || repo.includes('release-archive')) return false;
+        try {
+          const u = new URL(artifact);
+          return u.protocol === 'https:' && (u.hostname === 'poggit.pmmp.io' || u.hostname.endsWith('.poggit.pmmp.io'));
+        } catch { return false; }
+      });
+      if (valid.length) { records = valid; break; }
+      errors.push(`${endpoint}: no valid artifact records`);
+    } catch (error) {
+      errors.push(`${endpoint}: ${error instanceof Error ? error.message : 'request failed'}`);
+    }
+  }
+  if (!records.length) throw new Error(`Poggit returned no usable plugin releases (${errors.join('; ') || 'empty catalogue'}).`);
+  const seen = new Set();
+  return records.filter(item => {
+    const key = String(item.id ?? item.release_id ?? item.artifact_url ?? item.project_name ?? item.name);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    const name = String(item.project_name || item.plugin_name || item.name || item.title || '');
+    return !search || name.toLowerCase().includes(search.toLowerCase()) || String(item.tagline || '').toLowerCase().includes(search.toLowerCase());
   });
 }
 
 async function fetchSpigetResources(search) {
-  const api = search
-    ? new URL(`https://api.spiget.org/v2/search/resources/${encodeURIComponent(search.slice(0, 100))}`)
-    : new URL('https://api.spiget.org/v2/resources');
-  api.searchParams.set('size', '36');
-  api.searchParams.set('sort', '-downloads');
-  const response = await fetch(api.toString(), {
-    headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
-  });
-  if (!response.ok) throw new Error(`Spiget API returned HTTP ${response.status}`);
-  const payload = await response.json();
-  const records = Array.isArray(payload) ? payload : (Array.isArray(payload?.resources) ? payload.resources : []);
-  return records.filter(item => item && /^\d+$/.test(String(item.id || '')) && item.name);
+  // Search routes have occasionally returned 404 while the resource listing
+  // still works. Always fall back to the listing and filter locally.
+  const urls = [];
+  if (search) urls.push(`https://api.spiget.org/v2/search/resources/${encodeURIComponent(search.slice(0, 100))}?size=36&sort=-downloads`);
+  urls.push('https://api.spiget.org/v2/resources?size=36&sort=-downloads');
+  const errors = [];
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json', 'User-Agent': 'CubeNest/1.0 (+resource catalogue)' }
+      });
+      if (!response.ok) { errors.push(`HTTP ${response.status}`); continue; }
+      const payload = await response.json();
+      const rows = Array.isArray(payload) ? payload : (Array.isArray(payload?.resources) ? payload.resources : []);
+      const records = rows.filter(item => item && /^\d+$/.test(String(item.id || '')) && item.name);
+      if (records.length) {
+        const q = String(search || '').trim().toLowerCase();
+        return records.filter(item => !q || `${item.name || ''} ${item.description || ''} ${item.tag || ''} ${typeof item.author === 'string' ? item.author : item.author?.name || ''}`.toLowerCase().includes(q));
+      }
+      errors.push('empty or unrecognized response');
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : 'request failed');
+    }
+  }
+  throw new Error(`Spiget API unavailable (${errors.join('; ') || 'no records'}).`);
 }
 
 async function streamDownload(target, filename, origin, env) {
