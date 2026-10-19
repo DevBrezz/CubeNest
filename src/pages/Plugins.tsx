@@ -7,7 +7,8 @@ import type { Resource } from '../types/resource';
 type Source = 'all' | 'modrinth' | 'spigot' | 'pocketmine';
 type Plugin = Resource & { author?: string; sourceName: string; raw?: ModrinthHit; full?: ModrinthProject; versions?: ModrinthVersion[]; currentFile?: string; filename?: string };
 const LOADING_GIF = 'https://i.imgur.com/cFLg43W.gif';
-const POGGIT_API = 'https://poggit.pmmp.io/plugins.json?fields=id,name,version,description,authors,downloads,icon,mcpe_version,plugin_url,artifact_url';
+const POGGIT_API = 'https://poggit.pmmp.io/plugins.json';
+const SPIGET_API = 'https://api.spiget.org/v2/resources?size=36&sort=-downloads&fields=id,name,tag,description,downloads,releaseDate,updateDate,icon,author,testedVersions,external&fields=*&page=0';
 
 function safeDate(value?: string) { const n = value ? Date.parse(value) : 0; return Number.isFinite(n) ? n : 0; }
 function humanDate(value?: string) { const n = safeDate(value); return n ? new Date(n).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not provided'; }
@@ -26,15 +27,43 @@ function normalizeModrinth(h: ModrinthHit): Plugin {
     url: `https://modrinth.com/plugin/${h.slug}`, downloadUrl: '', featured: false, hidden: false,
     author: h.author || 'Modrinth creator', sourceName: 'Modrinth', raw: h };
 }
-function normalizePoggit(item: any): Plugin {
-  const id = String(item.id ?? item.name ?? Math.random());
+function normalizePoggit(item: any, index = 0): Plugin {
+  const id = String(item.id ?? item.name ?? `poggit-${index}`);
   return { id: `poggit-${id}`, platform: 'custom', platformId: id, slug: id, title: String(item.name || 'Untitled plugin'),
     description: String(item.description || 'No description provided.'), body: String(item.description || ''), icon: typeof item.icon === 'string' ? item.icon : null,
     gallery: [], categories: [], loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.mcpe_version) ? item.mcpe_version.map(String) : item.mcpe_version ? [String(item.mcpe_version)] : [],
     version: String(item.version || ''), downloads: Number(item.downloads) || 0, published: '', updated: '', url: String(item.plugin_url || `https://poggit.pmmp.io/plugins`),
-    downloadUrl: String(item.artifact_url || ''), featured: false, hidden: false,
+    downloadUrl: String(item.artifact_url || item.download_url || item.downloadUrl || ''), featured: false, hidden: false,
     author: Array.isArray(item.authors) ? item.authors.map((a: any) => typeof a === 'string' ? a : a.name || '').filter(Boolean).join(', ') : String(item.authors || 'Poggit author'),
     sourceName: 'PocketMine-MP / Poggit' };
+}
+
+function normalizeSpiget(item: any): Plugin {
+  const id = String(item.id ?? item.resourceId ?? '');
+  const author = typeof item.author === 'string' ? item.author : item.author?.name;
+  const icon = typeof item.icon === 'string' ? item.icon : item.icon?.url;
+  const updated = item.updateDate ? new Date(Number(item.updateDate)).toISOString() : '';
+  const published = item.releaseDate ? new Date(Number(item.releaseDate)).toISOString() : '';
+  const tested = Array.isArray(item.testedVersions) ? item.testedVersions.map(String) : [];
+  return { id: `spiget-${id}`, platform: 'spigot', platformId: id, slug: id, title: String(item.name || 'Untitled resource'),
+    description: String(item.description || item.tag || 'No description provided.'), body: String(item.description || ''), icon: icon ? (icon.startsWith('http') ? icon : `https://www.spigotmc.org/${icon.replace(/^\//, '')}`) : null,
+    gallery: [], categories: Array.isArray(item.category) ? item.category.map(String) : [], loaders: ['Spigot', 'Bukkit'], gameVersions: tested,
+    version: String(item.version || item.tag || ''), downloads: Number(item.downloads) || 0, published, updated,
+    url: `https://www.spigotmc.org/resources/${id}/`, downloadUrl: `https://api.spiget.org/v2/resources/${id}/download`, featured: false, hidden: false,
+    author: author || 'SpigotMC creator', sourceName: 'SpigotMC' };
+}
+
+async function fetchJsonWithFallback(url: string, fallbackPath: string, signal: AbortSignal) {
+  try {
+    const response = await fetch(url, { signal, headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    if (signal.aborted) throw error;
+    const fallback = await fetch(`${import.meta.env.BASE_URL}${fallbackPath}`, { signal, headers: { Accept: 'application/json' } });
+    if (!fallback.ok) throw new Error(`Live API failed and synced fallback returned HTTP ${fallback.status}.`);
+    return await fallback.json();
+  }
 }
 
 export function Plugins() {
@@ -50,6 +79,9 @@ export function Plugins() {
   const [selected, setSelected] = useState<Plugin | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [downloadState, setDownloadState] = useState('');
+  const [downloadChallenge, setDownloadChallenge] = useState<Plugin | null>(null);
+  const [humanChecked, setHumanChecked] = useState(false);
+  const [downloadBusy, setDownloadBusy] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const localSpigot = useMemo(() => resources.filter(r => !r.hidden && r.platform === 'spigot').map(r => ({...r, sourceName:'SpigotMC', author:'Creator listed by source'} as Plugin)), [resources]);
 
@@ -57,12 +89,20 @@ export function Plugins() {
     setRemoteLoading(true); setRemoteError('');
     try {
       if (source === 'pocketmine') {
-        const response = await fetch(POGGIT_API, { signal, headers: { Accept: 'application/json' } });
-        if (!response.ok) throw new Error(`Poggit returned HTTP ${response.status}.`);
-        const payload = await response.json();
-        const list = Array.isArray(payload) ? payload : Array.isArray(payload.plugins) ? payload.plugins : Array.isArray(payload.data) ? payload.data : null;
+        const payload = await fetchJsonWithFallback(POGGIT_API, 'data/poggit-plugins.json', signal);
+        const list = Array.isArray(payload) ? payload : Array.isArray(payload.plugins) ? payload.plugins : Array.isArray(payload.data) ? payload.data : payload && typeof payload === 'object' ? Object.values(payload) : null;
         if (!list) throw new Error('Poggit response format was not recognized.');
-        setRemote(list.map(normalizePoggit)); setTotal(list.length);
+        const plugins = list.filter((item: any) => item && typeof item === 'object' && (item.name || item.id)).map(normalizePoggit);
+        if (!plugins.length) throw new Error('Poggit returned no usable plugin records. Try again later.');
+        setRemote(plugins); setTotal(plugins.length);
+      } else if (source === 'spigot') {
+        const payload = await fetchJsonWithFallback(SPIGET_API, 'data/spigot-plugins.json', signal);
+        const list = Array.isArray(payload) ? payload : Array.isArray(payload.resources) ? payload.resources : Array.isArray(payload.data) ? payload.data : null;
+        if (!list) throw new Error('Spiget response format was not recognized.');
+        const plugins = list.filter((item: any) => item && item.id && item.name).map(normalizeSpiget)
+          .filter((item: Plugin) => !search.trim() || `${item.title} ${item.description} ${item.author}`.toLowerCase().includes(search.trim().toLowerCase()));
+        setRemote(plugins); setTotal(plugins.length);
+        if (!plugins.length) setRemoteError('No SpigotMC resources matched. Try a broader search or retry.');
       } else if (source === 'modrinth' || source === 'all') {
         const result = await searchProjects({ query: search.trim() || undefined, projectType: 'plugin', index: sort === 'relevance' ? 'relevance' : sort === 'downloads' ? 'downloads' : sort === 'newest' ? 'newest' : 'relevance', offset: page * 24, limit: 24, signal });
         const hits = result.hits.map(normalizeModrinth);
@@ -108,8 +148,8 @@ export function Plugins() {
     finally { setDetailLoading(false); }
   };
 
-  const download = async (plugin: Plugin) => {
-    setDownloadState('Preparing download…');
+  const executeDownload = async (plugin: Plugin) => {
+    setDownloadBusy(true); setDownloadState('Preparing download…');
     try {
       let url = plugin.downloadUrl; let filename = `${plugin.slug || 'plugin'}.jar`;
       if (plugin.platform === 'modrinth') {
@@ -128,15 +168,18 @@ export function Plugins() {
       const a = document.createElement('a'); a.href = objectUrl; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
       setDownloadState('Download initiated by your browser.');
-    } catch (e) { setDownloadState(`${e instanceof Error ? e.message : 'Download failed'} CubeNest will not redirect you to an external project page.`); }
+    } catch (e) { setDownloadState(`${e instanceof Error ? e.message : 'Download failed'} The source may block direct browser downloads (CORS). CubeNest will not redirect you to an external project page.`); }
+    finally { setDownloadBusy(false); }
   };
+
+  const beginDownload = (plugin: Plugin) => { setDownloadState(''); setHumanChecked(false); setDownloadChallenge(plugin); };
 
   return <div className="pt-24 pb-16 min-h-screen mc-grid-bg">
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
       <section className="rounded-3xl border border-mc-border bg-mc-surface p-6 sm:p-9 mb-7">
         <div className="text-xs font-bold tracking-[.18em] uppercase text-mc-red-bright mb-3">CUBENEST RESOURCE DISCOVERY</div>
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-mc-white">Discover <span className="text-mc-red-bright">Minecraft Plugins</span></h1>
-        <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-mc-muted">Explore real community projects from Modrinth, synced SpigotMC listings, and PocketMine-MP plugins from Poggit. Browse details and attempt direct downloads without leaving CubeNest.</p>
+        <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-mc-muted">Discover community-made Java plugins from Modrinth and SpigotMC, plus PocketMine-MP releases from Poggit. Browse details and attempt direct downloads without leaving CubeNest.</p>
       </section>
       <section className="rounded-2xl border border-mc-border bg-mc-surface p-4 sm:p-5 mb-7 space-y-4">
         <div className="relative"><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mc-muted"/><input type="search" value={search} onChange={e=>{setSearch(e.target.value);setPage(0)}} placeholder="Search plugins, features, or creators…" className="w-full pl-11 pr-4 py-3 rounded-xl bg-mc-gray border border-mc-border text-sm text-mc-white placeholder:text-mc-muted"/></div>
@@ -165,9 +208,18 @@ export function Plugins() {
         {selected.gallery.length>0&&<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">{selected.gallery.slice(0,8).map((url,i)=><img key={url+i} src={url} loading="lazy" alt={`${selected.title} screenshot ${i+1}`} className="w-full rounded-lg border border-mc-border object-cover"/>)}</div>}
         <div className="flex flex-wrap gap-2 mt-5">{selected.gameVersions.slice(0,20).map(v=><span key={v} className="rounded-md bg-mc-gray border border-mc-border px-2 py-1 text-xs text-mc-muted">MC {v}</span>)}{selected.loaders.slice(0,8).map(v=><span key={v} className="rounded-md bg-mc-gray border border-mc-border px-2 py-1 text-xs text-mc-muted">{v}</span>)}</div>
         {selected.versions?.[0]&&<div className="mt-5 rounded-xl bg-mc-gray p-3"><p className="text-sm font-semibold">{selected.versions[0].name}</p><p className="text-xs text-mc-muted mt-1">{selected.versions[0].version_number} · Published {humanDate(selected.versions[0].date_published)} · {selected.versions[0].files.length} file(s)</p>{selected.versions[0].changelog&&<p className="text-sm mt-3 whitespace-pre-wrap">{textOnly(selected.versions[0].changelog).slice(0,3000)}</p>}</div>}
-        <div className="flex flex-wrap gap-3 mt-7"><button onClick={()=>void download(selected)} disabled={detailLoading} className="inline-flex items-center gap-2 rounded-xl bg-mc-red px-5 py-3 text-sm font-bold text-white disabled:opacity-50"><Download size={16}/>Download file</button>{selected.platform==='modrinth'&&selected.full?.license?.name&&<span className="self-center text-xs text-mc-muted">License: {selected.full.license.name}</span>}</div>
+        <div className="flex flex-wrap gap-3 mt-7"><button onClick={()=>beginDownload(selected)} disabled={detailLoading} className="inline-flex items-center gap-2 rounded-xl bg-mc-red px-5 py-3 text-sm font-bold text-white disabled:opacity-50"><Download size={16}/>Download file</button>{selected.platform==='modrinth'&&selected.full?.license?.name&&<span className="self-center text-xs text-mc-muted">License: {selected.full.license.name}</span>}</div>
         {downloadState&&<p role="status" className={`mt-4 flex gap-2 text-sm ${downloadState.startsWith('Download initiated')?'text-emerald-300':'text-amber-200'}`}>{downloadState.startsWith('Download initiated')?<CheckCircle2 size={17}/>:<AlertCircle size={17}/>}<span>{downloadState}</span></p>}
         <p className="mt-4 text-xs text-mc-muted">Direct browser downloads require the file host to permit cross-origin requests. If blocked, CubeNest reports the failure and does not open an external page.</p>
       </div></div></div>}
+    {downloadChallenge && <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4" role="dialog" aria-modal="true" aria-label="Human verification" onMouseDown={e=>{if(e.target===e.currentTarget&&!downloadBusy)setDownloadChallenge(null)}}>
+      <div className="w-full max-w-md overflow-hidden rounded-3xl border border-mc-border bg-mc-surface shadow-2xl animate-[fadeIn_.22s_ease-out]">
+        <div className="relative overflow-hidden border-b border-mc-border p-6"><div className="absolute inset-0 bg-gradient-to-br from-mc-red/20 via-transparent to-transparent pointer-events-none"/><div className="relative flex items-center gap-3"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-mc-red/15 text-mc-red-bright"><Puzzle size={23}/></div><div><p className="text-xs uppercase tracking-[.2em] text-mc-red-bright font-bold">CubeNest Download</p><h2 className="mt-1 text-xl font-extrabold text-mc-white">Quick human check</h2></div><button disabled={downloadBusy} onClick={()=>setDownloadChallenge(null)} className="ml-auto rounded-xl p-2 hover:bg-mc-gray disabled:opacity-40" aria-label="Close verification"><X size={19}/></button></div><p className="relative mt-4 text-sm leading-6 text-mc-muted">Confirm the checkbox to continue downloading <span className="font-semibold text-mc-white">{downloadChallenge.title}</span>.</p></div>
+        <div className="p-6"><label className={`group flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition-all duration-300 ${humanChecked?'border-emerald-500/60 bg-emerald-500/10':'border-mc-border bg-mc-gray/70 hover:border-mc-red/50'}`}><input type="checkbox" checked={humanChecked} disabled={downloadBusy} onChange={e=>setHumanChecked(e.target.checked)} className="peer sr-only"/><span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg border-2 transition-all duration-300 ${humanChecked?'scale-105 border-emerald-400 bg-emerald-500 text-white':'border-mc-muted bg-transparent group-hover:border-mc-red-bright'}`}>{humanChecked&&<CheckCircle2 size={20} className="animate-[popIn_.22s_ease-out]"/>}</span><span className="min-w-0 flex-1"><span className="block font-semibold text-mc-white">I'm not a robot</span><span className="mt-1 block text-xs text-mc-muted">A quick on-page confirmation before download.</span></span><span className="text-[10px] font-bold tracking-widest text-mc-muted">CN</span></label>
+          <div className="mt-5 flex gap-3"><button disabled={downloadBusy} onClick={()=>setDownloadChallenge(null)} className="flex-1 rounded-xl border border-mc-border px-4 py-3 text-sm font-semibold text-mc-text hover:bg-mc-gray disabled:opacity-40">Cancel</button><button disabled={!humanChecked||downloadBusy} onClick={()=>void executeDownload(downloadChallenge)} className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-mc-red px-4 py-3 text-sm font-bold text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">{downloadBusy?<><RefreshCw size={16} className="animate-spin"/> Preparing…</>:<><Download size={16}/> Continue</>}</button></div>
+          <p className="mt-4 text-[11px] leading-5 text-mc-muted">This is a lightweight confirmation UI, not a security CAPTCHA. Download availability still depends on the resource host and its browser access policy.</p>
+        </div>
+      </div>
+    </div>}
   </div>;
 }
