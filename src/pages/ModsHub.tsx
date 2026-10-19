@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Boxes, Map, Palette, Sun, User, ArrowLeft, Search, Smartphone, Monitor } from 'lucide-react';
+import { Boxes, Map, Palette, Sun, User, ArrowLeft, Search } from 'lucide-react';
 
 type Platform = 'java' | 'bedrock';
 
@@ -62,14 +62,14 @@ export function ModsHub() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl">
             <motion.button type="button" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} onClick={() => setPlatform('java')}
               className="relative overflow-hidden text-left bg-gradient-to-br from-red-950/35 via-mc-surface to-mc-surface border border-mc-border rounded-2xl p-6 sm:p-7 hover:border-mc-red/50 hover:-translate-y-1 transition-all group shadow-lg shadow-black/10">
-              <Monitor className="w-9 h-9 text-mc-red mb-3" />
+              <img src="https://i.imgur.com/izAKodP.png" alt="Java Edition" loading="lazy" className="w-10 h-10 object-contain mb-3" />
               <h2 className="text-lg font-bold text-mc-white">Java Edition</h2>
               <p className="text-sm text-mc-muted mt-1.5">Mods, maps, textures, shaders on Modrinth. Skins downloadable as PNG.</p>
               <span className="inline-block mt-3 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-mc-red/20 text-mc-red">Java</span>
             </motion.button>
             <motion.button type="button" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }} onClick={() => setPlatform('bedrock')}
               className="relative overflow-hidden text-left bg-gradient-to-br from-emerald-950/50 via-mc-surface to-mc-surface border border-mc-border rounded-2xl p-6 sm:p-7 hover:border-emerald-500/50 hover:-translate-y-1 transition-all group shadow-lg shadow-black/10">
-              <Smartphone className="w-9 h-9 text-emerald-400 mb-3" />
+              <img src="https://i.imgur.com/PxeHyVZ.png" alt="Bedrock Edition" loading="lazy" className="w-10 h-10 object-contain mb-3" />
               <h2 className="text-lg font-bold text-mc-white">Bedrock Edition</h2>
               <p className="text-sm text-mc-muted mt-1.5">Add-ons, maps, textures, shaders, skins via MCPEDL (official downloads there).</p>
               <span className="inline-block mt-3 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-emerald-500/20 text-emerald-400">Bedrock</span>
