@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, ShieldCheck, Gamepad2, Zap, Download } from 'lucide-react';
+import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, ShieldCheck, Gamepad2, Zap, Download, Paintbrush } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
 
@@ -10,8 +10,10 @@ const portals = [
   { to: '/mods', icon: Boxes, number: '02', title: 'Mods & Resources', text: 'Discover mods, texture packs, shaders and modpacks from trusted sources.', tags: ['Mods', 'Textures', 'Shaders'], tint: 'from-emerald-500/20' },
   { to: '/plugins', icon: Puzzle, number: '03', title: 'Plugin Center', text: 'Tools and server extensions for Paper, Spigot and compatible platforms.', tags: ['Paper', 'Spigot', 'Bukkit'], tint: 'from-violet-500/20' },
   { to: '/bedrock', icon: Gamepad2, number: '04', title: 'Bedrock Library', text: 'Add-ons, maps, texture packs and skins for Minecraft Bedrock.', tags: ['Add-ons', 'Maps', 'MCPE'], tint: 'from-orange-500/20' },
+  { to: '/skin-creator', icon: Paintbrush, number: '05', title: 'Buat Skin', text: 'Paint classic or slim skins with a live 3D preview and export a ready PNG.', tags: ['Classic', 'Slim', '3D'], tint: 'from-fuchsia-500/20' },
 ];
 const categories = [
+  { to: '/skin-creator', icon: Paintbrush, title: 'Buat Skin', text: 'Design Steve/Alex skins in 3D.' },
   { to: '/resourcepacks', icon: Palette, title: 'Resource Packs', text: 'Give every block a new look.' },
   { to: '/shaders', icon: Sun, title: 'Shaders', text: 'Refresh your world’s visuals.' },
   { to: '/modpacks', icon: Package, title: 'Modpacks', text: 'Big adventures, ready to play.' },

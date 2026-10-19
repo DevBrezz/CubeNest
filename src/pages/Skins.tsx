@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { FormEvent, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Download, ExternalLink, User, Palette, Box, Sparkles } from 'lucide-react';
@@ -104,6 +105,9 @@ export function Skins() {
           <h1 className="text-2xl font-bold text-mc-white flex items-center gap-2">
             <Palette className="w-6 h-6 text-mc-red" /> Skins
           </h1>
+          <Link to="/skin-creator" className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 rounded-xl bg-fuchsia-500 text-slate-950 text-xs font-bold hover:bg-fuchsia-400">
+            Buat skin sendiri
+          </Link>
           <p className="text-sm text-mc-muted mt-1 max-w-2xl">
             Search a Java username, preview in 2D & 3D-style render, download the PNG, or create a new skin on Nova Skin.
           </p>
