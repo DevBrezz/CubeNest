@@ -1,6 +1,4214 @@
 {
-  "lastSynced": null,
-  "gameId": null,
-  "resources": [],
-  "error": "Run scripts/sync-bedrock-curseforge.mjs with CURSEFORGE_API_KEY"
+  "lastSynced": "2026-10-19T00:12:20.697Z",
+  "gameId": 432,
+  "classId": 4559,
+  "source": "curseforge-api",
+  "total": 200,
+  "directDownloads": 134,
+  "resources": [
+    {
+      "id": 401458,
+      "slug": "staytrue-nobushyleaves",
+      "name": "StayTrue NoBushyLeaves",
+      "summary": "Removes the bushy leaves from Stay True Resourse Pack.",
+      "downloadCount": 508224,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/292/735/256/256/637326773851479026.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/staytrue-nobushyleaves",
+      "downloadUrl": "https://edge.forgecdn.net/files/6503/708/Nobushleaves.zip",
+      "latestFileId": 6503708,
+      "fileName": "Nobushleaves.zip",
+      "authors": [
+        "haimcyfly"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 837187,
+      "slug": "transformers-heropack",
+      "name": "Transformers Heropack",
+      "summary": "               Adds Transformers to Fisk's Supeheroes                - Check out the Patreon for more content -",
+      "downloadCount": 594496,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/789/50/256/256/638143100753856130.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/transformers-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/4515/766/transformers_pack-1.0.4.zip",
+      "latestFileId": 4515766,
+      "fileName": "transformers_pack-1.0.4.zip",
+      "authors": [
+        "MARCTR0N"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1180757,
+      "slug": "tacz-perseus-gun-pack",
+      "name": "[TACZ] Perseus Gun Pack",
+      "summary": "a gun pack for tacz",
+      "downloadCount": 442305,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1569/119/256/256/639017234071694848.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-perseus-gun-pack",
+      "downloadUrl": null,
+      "latestFileId": 7352659,
+      "fileName": "[NPGP3.2]Release.zip",
+      "authors": [
+        "aaanjuinami"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1548068,
+      "slug": "the-obsessed-knocker",
+      "name": "The Obsessed Knocker",
+      "summary": "It's obsessed with you.",
+      "downloadCount": 247031,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1816/661/256/256/639148127611185793.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-obsessed-knocker",
+      "downloadUrl": "https://edge.forgecdn.net/files/8383/870/TheObsessedKnocker.zip",
+      "latestFileId": 8383870,
+      "fileName": "TheObsessedKnocker.zip",
+      "authors": [
+        "Poosh_Woosh"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 670639,
+      "slug": "iron-maniac-heropack",
+      "name": "Iron Maniac Heropack",
+      "summary": "              Adds varius Iron Man suits from the MCU               - Check out the Patreon for more content -",
+      "downloadCount": 995094,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/760/751/256/256/638096544096486082.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/iron-maniac-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5194/96/iron_maniac_2.0.5.zip",
+      "latestFileId": 5194096,
+      "fileName": "iron_maniac_2.0.5.zip",
+      "authors": [
+        "MARCTR0N"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1110779,
+      "slug": "mw-gun-pack-for-tacz",
+      "name": "[TaCZ] Modern Warfare Gun Pack for TaCZ",
+      "summary": "A gunpack for Timeless and Classic: Zero with weapons and attachments from mainly CoD: Modern Warfare 2019, among other games!",
+      "downloadCount": 219691,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1261/354/256/256/638821257701267116.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/mw-gun-pack-for-tacz",
+      "downloadUrl": "https://edge.forgecdn.net/files/6505/302/mw19_guns_addon_v200.zip",
+      "latestFileId": 6505302,
+      "fileName": "mw19_guns_addon_v200.zip",
+      "authors": [
+        "TheWindowsGuy"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1612031,
+      "slug": "parasiticrex-scary-horror-dino-parasite",
+      "name": "Parasitic-Rex (DISCONTINUED) (NOT ORIGINAL MODEL)",
+      "summary": "Minecraft bedrock InfectedSpecemen adds terrifying parasitic horror dinosaurs to Minecraft Bedrock Edition, turning your world into a scary survival nightmare full of infected prehistoric beasts",
+      "downloadCount": 30931,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2065/572/256/256/639257661740884986.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/parasiticrex-scary-horror-dino-parasite",
+      "downloadUrl": "https://edge.forgecdn.net/files/8452/247/mi%cc%80%20to%cc%82m%20bo%cc%80%20kho%cc%82%20radio.zip",
+      "latestFileId": 8452247,
+      "fileName": "mì tôm bò khô radio.zip",
+      "authors": [
+        "DREADDED"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1039894,
+      "slug": "golden-zeros",
+      "name": "[TACZ] Golden Zero GunPack",
+      "summary": "Bringing you elegant and sophisticated weapons made of gold",
+      "downloadCount": 103068,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1270/304/256/256/638826353668282664.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/golden-zeros",
+      "downloadUrl": "https://edge.forgecdn.net/files/5443/428/Glock_Golden.zip",
+      "latestFileId": 5443428,
+      "fileName": "Glock_Golden.zip",
+      "authors": [
+        "Zero_Louise"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1086729,
+      "slug": "a-biggest-lucky-blocks-collection",
+      "name": "Lucky Block's Mega Collection (190+ lucky block's)",
+      "summary": "A huge number of lucky blocks... With 12500+ items",
+      "downloadCount": 111314,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1068/25/256/256/638602414341255227.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/a-biggest-lucky-blocks-collection",
+      "downloadUrl": "https://edge.forgecdn.net/files/5664/155/Lucky_block_pack_v3.zip",
+      "latestFileId": 5664155,
+      "fileName": "Lucky_block_pack_v3.zip",
+      "authors": [
+        "3333r"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 650605,
+      "slug": "launchers",
+      "name": "Launchers",
+      "summary": "Adds projectile launchers!",
+      "downloadCount": 106417,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/579/537/256/256/637944648262919965.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/launchers",
+      "downloadUrl": "https://edge.forgecdn.net/files/3901/129/Launchers_1.18.zip",
+      "latestFileId": 3901129,
+      "fileName": "Launchers_1.18.zip",
+      "authors": [
+        "aanderson777"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1515069,
+      "slug": "tacz-ra1ks-gunpack",
+      "name": "[TACZ] Phoenix Gunpack",
+      "summary": "Next-generation modular weapon systems for TaCZ",
+      "downloadCount": 27067,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1874/781/256/256/639174860781893261.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-ra1ks-gunpack",
+      "downloadUrl": null,
+      "latestFileId": 8962099,
+      "fileName": "Ra1k_gunpack_v2.0.5_hotfix2.zip",
+      "authors": [
+        "Ra1k"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1277273,
+      "slug": "dear-family-v2-update",
+      "name": "Dear Family V2 (update)",
+      "summary": "Your very own Roleplay Family in Minecraft for a realistic virtual stimulation! ",
+      "downloadCount": 49515,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1296/496/256/256/638842751661340843.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/dear-family-v2-update",
+      "downloadUrl": "https://edge.forgecdn.net/files/6600/520/Dear%20Family%20V2%20%5bupdate!%5d.mcaddon.zip",
+      "latestFileId": 6600520,
+      "fileName": "Dear Family V2 [update!].mcaddon.zip",
+      "authors": [
+        "Dear_B"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1218328,
+      "slug": "invincible-war-fisks-superheroes",
+      "name": "Invincible War (Fisk's Superheroes)",
+      "summary": "A Fiskheroes Heropack",
+      "downloadCount": 43159,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1718/976/256/256/639093024068837522.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/invincible-war-fisks-superheroes",
+      "downloadUrl": null,
+      "latestFileId": 7796574,
+      "fileName": "Invincible_War 5.0.0.zip",
+      "authors": [
+        "Messycatcow"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1072259,
+      "slug": "the-man-from-the-fog-add-on",
+      "name": "The Man From The Fog 1.21.9X by Ivan Jirb ",
+      "summary": "The mod will add to the game a popular character from the Java edition with a similar model. The monster will appear at night and will definitely make you scared",
+      "downloadCount": 69383,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1048/144/256/256/638576839260782259.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-man-from-the-fog-add-on",
+      "downloadUrl": "https://edge.forgecdn.net/files/6733/927/The%20Man%20From%20The%20Fog%20v1.21.90%20by%20Ivan%20Jirb.mcaddon.zip",
+      "latestFileId": 6733927,
+      "fileName": "The Man From The Fog v1.21.90 by Ivan Jirb.mcaddon.zip",
+      "authors": [
+        "ivanjirb"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1427227,
+      "slug": "betters-backpack-addon",
+      "name": "Better's  Backpack Addon [Fixed] [Discontinue]",
+      "summary": "Developed By Better Bi",
+      "downloadCount": 24244,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1608/774/256/256/639038288205600664.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/betters-backpack-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/8256/818/Better%27s%20Backpack%20Addon%20%5bFixed%5d.mcaddon.zip",
+      "latestFileId": 8256818,
+      "fileName": "Better's Backpack Addon [Fixed].mcaddon.zip",
+      "authors": [
+        "4LEV"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1217424,
+      "slug": "the-obsessed",
+      "name": "The Obsessed (psychological horror)",
+      "summary": "a human like being that's out too get you",
+      "downloadCount": 38326,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1196/280/256/256/638772067690784466.webp",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-obsessed",
+      "downloadUrl": "https://edge.forgecdn.net/files/6288/64/The%20Obsessed%20(1.19.2)%20(1.21.61%2b).zip",
+      "latestFileId": 6288064,
+      "fileName": "The Obsessed (1.19.2) (1.21.61+).zip",
+      "authors": [
+        "xXThe_LostXx"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1304692,
+      "slug": "vics-point-blank-civilian-gun-pack",
+      "name": "Vic's Point Blank : Civilian Gun Pack",
+      "summary": "A content pack for Vic's Point Blank, adding civilian and hunting gun from all over the world.",
+      "downloadCount": 30359,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1400/203/256/256/638907679063429915.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/vics-point-blank-civilian-gun-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/8323/441/Civiliangunpack_V1.5.0_1.20.1.zip",
+      "latestFileId": 8323441,
+      "fileName": "Civiliangunpack_V1.5.0_1.20.1.zip",
+      "authors": [
+        "Ylanou9"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 880204,
+      "slug": "herobrine-data-pack",
+      "name": "Herobrine Data Pack",
+      "summary": "Makes your minecraft world haunted.",
+      "downloadCount": 45842,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/839/133/256/256/638232032151376666.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/herobrine-data-pack",
+      "downloadUrl": null,
+      "latestFileId": 6022068,
+      "fileName": "Herobrine_DP_1.21.4_v5.4.zip",
+      "authors": [
+        "SirDoomTurtle"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1010600,
+      "slug": "diabolical-heroes",
+      "name": "Diabolical Heroes Heropack (Fisk's Superheroes)",
+      "summary": "A Fiskheroes Heropack",
+      "downloadCount": 49064,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/988/8/256/256/638499355577346396.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/diabolical-heroes",
+      "downloadUrl": null,
+      "latestFileId": 5762444,
+      "fileName": "Diabolical_Heroes_Update8.zip",
+      "authors": [
+        "Messycatcow"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1403674,
+      "slug": "tacz-apex-weapons-pack",
+      "name": "[TACZ]Apex weapons pack",
+      "summary": "A TACZ expansion pack that includes most of the weapons from Apex Legends.",
+      "downloadCount": 20243,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1559/892/256/256/639012227281854986.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-apex-weapons-pack",
+      "downloadUrl": null,
+      "latestFileId": 7332275,
+      "fileName": "apex.zip",
+      "authors": [
+        "Sunbrella"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1473369,
+      "slug": "project-poppyplaytime",
+      "name": "Project: PoppyPlaytime",
+      "summary": "addon of a horror game with puzzles Poppy Playtime by Mob Entertainment ",
+      "downloadCount": 28874,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1750/743/256/256/639114299752251433.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/project-poppyplaytime",
+      "downloadUrl": "https://edge.forgecdn.net/files/7905/332/v0.3%20-%20PROJECT%20%e2%80%a2%20PoppyPlayTime.zip",
+      "latestFileId": 7905332,
+      "fileName": "v0.3 - PROJECT • PoppyPlayTime.zip",
+      "authors": [
+        "ponpicovich"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1615985,
+      "slug": "smiley-openal",
+      "name": "Smiley OpenAL",
+      "summary": "Enables Verity's voice chat and text-to-speech on Android by routing  the mic and AI voice through OpenAL",
+      "downloadCount": 7196,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1928/679/256/256/639200177322121236.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/smiley-openal",
+      "downloadUrl": "https://edge.forgecdn.net/files/8960/334/smiley-openal-1.2.2.jar",
+      "latestFileId": 8960334,
+      "fileName": "smiley-openal-1.2.2.jar",
+      "authors": [
+        "EzequielDevTeam"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1360936,
+      "slug": "luzma-boost-optimizer-for-minecraft-bedrock-lite",
+      "name": "Luzma Boost Optimizer for Bedrock Lite",
+      "summary": "Optimize the Bedrock world by eliminating lag caused by poorly optimized addons and mobs",
+      "downloadCount": 6960,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1471/1/256/256/638954734767467485.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/luzma-boost-optimizer-for-minecraft-bedrock-lite",
+      "downloadUrl": "https://edge.forgecdn.net/files/7136/947/Luzma%20Boost%20%20Lite%201.6.3.zip",
+      "latestFileId": 7136947,
+      "fileName": "Luzma Boost  Lite 1.6.3.zip",
+      "authors": [
+        "KenZX5558"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1112458,
+      "slug": "tacz-mini-gunpack",
+      "name": "[tacz]mini_gunpack",
+      "summary": "a gun pack for TACZ",
+      "downloadCount": 16872,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1089/742/256/256/638632956555482343.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-mini-gunpack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5776/620/miniAttachments_beta1.0.8.zip",
+      "latestFileId": 5776620,
+      "fileName": "miniAttachments_beta1.0.8.zip",
+      "authors": [
+        "twospring"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 541966,
+      "slug": "invincible",
+      "name": "Invincible",
+      "summary": "Adds The Powers And Suits From The Show/Comic Invincible",
+      "downloadCount": 14419,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/488/598/256/256/637793356966849550.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/invincible",
+      "downloadUrl": "https://edge.forgecdn.net/files/3634/274/%5b1.1%5dInvincible_Addon.zip",
+      "latestFileId": 3634274,
+      "fileName": "[1.1]Invincible_Addon.zip",
+      "authors": [
+        "BlueChicken32Live"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1403555,
+      "slug": "forsaken-c00lest-suffering-addon",
+      "name": "FORSAKEN: c00lest suffering",
+      "summary": "An add-on for Forsaken in Roblox. The add-on has morphs of killers and survivors, etc., it's fun to play!",
+      "downloadCount": 19897,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2127/190/256/256/639278628621830925.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/forsaken-c00lest-suffering-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/9229/997/%f0%9d%91%ad4%f0%9d%92%93%f0%9d%91%ba%f0%9d%92%82%f0%9d%92%8c4%f0%9d%92%8f%20%f0%9d%92%973.1%20%f0%9d%92%8400%f0%9d%92%8d%f0%9d%92%86%f0%9d%92%94%f0%9d%92%95%20%f0%9d%92%94%f0%9d%92%96%f0%9d%92%87%f0%9d%92%874%f0%9d%92%93%f0%9d%92%8a%f0%9d%92%8f%f0%9d%92%88.zip",
+      "latestFileId": 9229997,
+      "fileName": "𝑭4𝒓𝑺𝒂𝒌4𝒏 𝒗3.1 𝒄00𝒍𝒆𝒔𝒕 𝒔𝒖𝒇𝒇4𝒓𝒊𝒏𝒈.zip",
+      "authors": [
+        "ponpicovich"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1665678,
+      "slug": "ignorethememories",
+      "name": "IGNORE IT. (Creepy)(Horror)(Stalker)(Scary)(Spooky)(Terrifying)(Twixxel)(LCrandom)",
+      "summary": "They try to get your attention, YOU MUST IGNORE THE MEMORIES FROM THE PAST!!!",
+      "downloadCount": 4911,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2003/27/256/256/639231129004000714.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ignorethememories",
+      "downloadUrl": "https://edge.forgecdn.net/files/8718/502/Please_leave_me_aloneV5.zip",
+      "latestFileId": 8718502,
+      "fileName": "Please_leave_me_aloneV5.zip",
+      "authors": [
+        "StopMotionProphetYT",
+        "Clydethaboy2",
+        "clydethaboy"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1627479,
+      "slug": "gooutside-java-stalker-twixxel-port",
+      "name": "GoOutside(java)(stalker)(twixxel)(port)",
+      "summary": "An official java port",
+      "downloadCount": 5404,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1946/109/256/256/639207439896160986.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/gooutside-java-stalker-twixxel-port",
+      "downloadUrl": "https://edge.forgecdn.net/files/8519/268/GoOutside_mod.jar",
+      "latestFileId": 8519268,
+      "fileName": "GoOutside_mod.jar",
+      "authors": [
+        "Minecraftaddonsmaker"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 890390,
+      "slug": "lumber-axe-bedrock-edition",
+      "name": "Lumber Axe: Bedrock Edition",
+      "summary": "🪓 Lumber axe is an addon that chops a whole tree of connected blocks of logs down with just a single break at any side of the connected block of log. This accurately chops the whole tree down with the power of Minecraft Bedrock's Experimental Features.",
+      "downloadCount": 17726,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1084/632/256/256/638625801412262276.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/lumber-axe-bedrock-edition",
+      "downloadUrl": "https://edge.forgecdn.net/files/5745/608/v2.0.0-Lumber_Axe_Addon.zip",
+      "latestFileId": 5745608,
+      "fileName": "v2.0.0-Lumber_Axe_Addon.zip",
+      "authors": [
+        "Adr_hyng"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1430613,
+      "slug": "ssjj-hero",
+      "name": "[TaCZ]SSJJ Hero Gun Pack",
+      "summary": "A weapon pack for Timeless and Classic: Zero. It adds guns and attachments primarily from the game SSJJ, alongside content from other popular titles.",
+      "downloadCount": 10165,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1615/135/256/256/639040873446880197.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ssjj-hero",
+      "downloadUrl": "https://edge.forgecdn.net/files/8909/819/%5bCC%200%5d%e7%94%9f%e6%ad%bb%e7%8b%99%e5%87%bb%e8%8b%b1%e9%9b%84%e7%ba%a7%e6%ad%a6%e5%99%a8v1.4.1.zip",
+      "latestFileId": 8909819,
+      "fileName": "[CC 0]生死狙击英雄级武器v1.4.1.zip",
+      "authors": [
+        "fiddy_45kjgijo"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 895058,
+      "slug": "remodeled-fa-addon",
+      "name": "Remodeled FA Addon",
+      "summary": "Fixes textures for Fresh Animations and adds many variations!",
+      "downloadCount": 27061,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/856/308/256/256/638259983738402732.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/remodeled-fa-addon",
+      "downloadUrl": null,
+      "latestFileId": 4666033,
+      "fileName": "FA-addon.zip",
+      "authors": [
+        "Ecorn"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1690646,
+      "slug": "beasts-of-the-horizon",
+      "name": "Beasts of the Horizon",
+      "summary": "Welcome to Beasts of the Horizon! A prehistoric journey featuring incredible creatures, unique experiences, and an eternal world waiting to be discovered... but beware: not all of them are friendly.",
+      "downloadCount": 2815,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2039/616/256/256/639246913739643283.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/beasts-of-the-horizon",
+      "downloadUrl": null,
+      "latestFileId": 8854892,
+      "fileName": "Beasts of the Horizon.mcaddon.zip",
+      "authors": [
+        "BeastsStudios"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1029801,
+      "slug": "sh-heropack",
+      "name": "SH Heropack",
+      "summary": "Heropack for Fiskheroes",
+      "downloadCount": 21431,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1397/896/256/256/638906110264983283.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/sh-heropack",
+      "downloadUrl": null,
+      "latestFileId": 6994235,
+      "fileName": "sh-heropack-3-0-5.zip",
+      "authors": [
+        "ShadowyFigure"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1285092,
+      "slug": "the-silk-road",
+      "name": "The Silk Road | Medieval Trade and Warfare",
+      "summary": "\"The Silk Road\" is a Minecraft addon that brings the medieval silk road to your game! Explore civilizations, including China, the Byzantine Empire, India, and the Abbasid Caliphate.",
+      "downloadCount": 11667,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1311/832/256/256/638852992152355162.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-silk-road",
+      "downloadUrl": "https://edge.forgecdn.net/files/6642/300/v3.5.zip",
+      "latestFileId": 6642300,
+      "fileName": "v3.5.zip",
+      "authors": [
+        "thatdirtman"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1594735,
+      "slug": "project-zero-tacz-content-pack",
+      "name": "Project Zero | Tacz Content Pack",
+      "summary": "Project Zero Is A Content Pack For Timeless And classics Zero",
+      "downloadCount": 5698,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1895/971/256/256/639185293977383526.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/project-zero-tacz-content-pack",
+      "downloadUrl": null,
+      "latestFileId": 8665527,
+      "fileName": "Project Zero v0.5+1.21.1.zip",
+      "authors": [
+        "Light_lord101"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1257303,
+      "slug": "phone",
+      "name": "Phone",
+      "summary": "A mod that give you a phone",
+      "downloadCount": 15247,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1255/389/256/256/638818272437960177.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/phone",
+      "downloadUrl": "https://edge.forgecdn.net/files/6489/408/PhoneMod_Forge_1.16.zip",
+      "latestFileId": 6489408,
+      "fileName": "PhoneMod_Forge_1.16.zip",
+      "authors": [
+        "20Pegar70Correr"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 547895,
+      "slug": "datapack-tree-excavation-serverfriendly",
+      "name": "Datapack Tree Excavation (Serverfriendly)",
+      "summary": "Chop down whole trees at once with the new lumberjack axe",
+      "downloadCount": 24737,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/456/665/256/256/637727723007839455.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/datapack-tree-excavation-serverfriendly",
+      "downloadUrl": "https://edge.forgecdn.net/files/4016/965/tree-excavation-1.19-2.1.1.zip",
+      "latestFileId": 4016965,
+      "fileName": "tree-excavation-1.19-2.1.1.zip",
+      "authors": [
+        "jake_derechte"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1422143,
+      "slug": "the-backrooms-project",
+      "name": "The Backrooms Project",
+      "summary": "This addon adds 88 mobs, and even some bonus secret mobs! More blocks + items coming soon!",
+      "downloadCount": 5624,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1598/405/256/256/639032986692587386.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-backrooms-project",
+      "downloadUrl": null,
+      "latestFileId": 7425095,
+      "fileName": "The Backrooms addon.mcaddon.zip",
+      "authors": [
+        "IRON_INC_official"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1249831,
+      "slug": "torchr4t",
+      "name": "Torch R4T",
+      "summary": "TorchR4T, it’s a small, lightweight addon that adds real-time dynamic lighting to your game.",
+      "downloadCount": 8307,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1236/695/256/256/638809923358407612.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/torchr4t",
+      "downloadUrl": null,
+      "latestFileId": 8197760,
+      "fileName": "Torchr4t.v1.1.0.mcaddon.zip",
+      "authors": [
+        "vrizxye"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "shaders",
+      "categoryLabel": "Shaders",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1349937,
+      "slug": "alien-evo-10k-chip",
+      "name": "Alien Evo 10K Chip",
+      "summary": "You can now crafts a chip that allows you to evolve your Omnitrix.",
+      "downloadCount": 6442,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1447/271/256/256/638938931698226279.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/alien-evo-10k-chip",
+      "downloadUrl": "https://edge.forgecdn.net/files/7013/121/AlienEvo10K-1.0.5-forge.zip",
+      "latestFileId": 7013121,
+      "fileName": "AlienEvo10K-1.0.5-forge.zip",
+      "authors": [
+        "DreamCraftStudios"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1000540,
+      "slug": "moon-omnitrix-ben-10-addon",
+      "name": "Moon Omnitrix- Ben 10 Addon",
+      "summary": "The power to transform into hundreds of powerful aliens with the Powers of the Omnitrix, a powerful gadget from outer space!",
+      "downloadCount": 15467,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/977/790/256/256/638482230115426257.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/moon-omnitrix-ben-10-addon",
+      "downloadUrl": null,
+      "latestFileId": 5285247,
+      "fileName": "MOONS_OMNITRIX_ADDON_1.05.zip",
+      "authors": [
+        "Moon2001Satsu"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 982148,
+      "slug": "golden-age-jujutsu",
+      "name": "Golden Age Jujutsu (Jujutsucraft Addon)",
+      "summary": "Addon for Jujutsucraft by Orca",
+      "downloadCount": 21428,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/957/56/256/256/638450262753067648.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/golden-age-jujutsu",
+      "downloadUrl": "https://edge.forgecdn.net/files/5257/170/golden_age_jujutsu_3.0.0.zip",
+      "latestFileId": 5257170,
+      "fileName": "golden_age_jujutsu_3.0.0.zip",
+      "authors": [
+        "4nam3"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 506463,
+      "slug": "husbandry-for-alexsmobs",
+      "name": "Husbandry For Alexsmobs",
+      "summary": "This pack will allow you to use features from Husbandry with the creatures from Alexsmobs",
+      "downloadCount": 11104,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/408/925/256/256/637623288040944310.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/husbandry-for-alexsmobs",
+      "downloadUrl": "https://edge.forgecdn.net/files/3395/455/Husbandry_For_Alexsmobs%20Egg%20Edition.zip",
+      "latestFileId": 3395455,
+      "fileName": "Husbandry_For_Alexsmobs Egg Edition.zip",
+      "authors": [
+        "Keebsz"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 465378,
+      "slug": "mystic-origins",
+      "name": "Mystic Origins",
+      "summary": "Adds Origins that are inspired by mystical creatures. Like Phoenix, Dragon, Cyclops and more",
+      "downloadCount": 34372,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/373/375/256/256/637545763199917919.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/mystic-origins",
+      "downloadUrl": "https://edge.forgecdn.net/files/4160/700/Mystic%20Origins%20v.beta.0.17.0.zip",
+      "latestFileId": 4160700,
+      "fileName": "Mystic Origins v.beta.0.17.0.zip",
+      "authors": [
+        "Bluestone_Bot"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1235785,
+      "slug": "parasite-apocalypse-shameless",
+      "name": "Parasite Apocalypse-26.0",
+      "summary": "It is an addon that adds parasites, at first they are weak but as time goes by they become more dangerous.",
+      "downloadCount": 12295,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1751/741/256/256/639114958725121480.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/parasite-apocalypse-shameless",
+      "downloadUrl": "https://edge.forgecdn.net/files/7440/832/Parasite%20Apocalypse.zip",
+      "latestFileId": 7440832,
+      "fileName": "Parasite Apocalypse.zip",
+      "authors": [
+        "GreenSoulMC"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1375936,
+      "slug": "dinos-and-dragons-and-more",
+      "name": "Dinos and dragons and more",
+      "summary": "There are dinosaurs,dragons,new mobs and way more",
+      "downloadCount": 7151,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1501/60/256/256/638975092942165738.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/dinos-and-dragons-and-more",
+      "downloadUrl": "https://edge.forgecdn.net/files/7170/103/1761876902121.zip",
+      "latestFileId": 7170103,
+      "fileName": "1761876902121.zip",
+      "authors": [
+        "user_j6w93mqrjm3zd1x0"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1069369,
+      "slug": "uheroes",
+      "name": "UnitedHeroes",
+      "summary": "Fiskheroes addon,adding more suits to the mod",
+      "downloadCount": 5805,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1066/501/256/256/638600478242627733.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/uheroes",
+      "downloadUrl": "https://edge.forgecdn.net/files/5634/340/LomkaHeroes-1.0.3.zip",
+      "latestFileId": 5634340,
+      "fileName": "LomkaHeroes-1.0.3.zip",
+      "authors": [
+        "SuicideSquad"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1070597,
+      "slug": "digimon-icon-pack-for-xaeros-minimap-by-redrex64",
+      "name": "Digimon Icon pack for Xaeros Minimap by RedRex64",
+      "summary": "A resourcepack that adds Digimod icons to Xaeros Minimap",
+      "downloadCount": 5729,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1046/494/256/256/638574530926811693.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/digimon-icon-pack-for-xaeros-minimap-by-redrex64",
+      "downloadUrl": "https://edge.forgecdn.net/files/5586/186/DigimonIconXaerosPackAllThree.zip",
+      "latestFileId": 5586186,
+      "fileName": "DigimonIconXaerosPackAllThree.zip",
+      "authors": [
+        "RedRex64Remixes"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 531838,
+      "slug": "faithful-64x-bedrock",
+      "name": "Faithful 64x: Bedrock [ARCHIVED]",
+      "summary": "An even more detailed experience with quadruple-resolution textures!",
+      "downloadCount": 196995,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/545/361/256/256/637878634944060258.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/faithful-64x-bedrock",
+      "downloadUrl": "https://edge.forgecdn.net/files/3865/490/Faithful%2064x.zip",
+      "latestFileId": 3865490,
+      "fileName": "Faithful 64x.zip",
+      "authors": [
+        "Faithful_Resource_Pack",
+        "haryamc"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "textures",
+      "categoryLabel": "Texture packs",
+      "source": "CurseForge"
+    },
+    {
+      "id": 942001,
+      "slug": "pokemon-towns-cobblemon",
+      "name": "Pokemon Towns [Cobblemon]",
+      "summary": "Adds in NPC towns for Cobblemon",
+      "downloadCount": 14932,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/910/124/256/256/638363718854429324.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/pokemon-towns-cobblemon",
+      "downloadUrl": null,
+      "latestFileId": 4895016,
+      "fileName": "SpacedPlumsCobblemonVillage.zip",
+      "authors": [
+        "SpacedPlum"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1387633,
+      "slug": "orbital-strike",
+      "name": "Orbital Strike",
+      "summary": "Use a fishing rod to launch a tnt",
+      "downloadCount": 9537,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1526/444/256/256/638991234330255209.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/orbital-strike",
+      "downloadUrl": "https://edge.forgecdn.net/files/7237/715/OrbitalStrikeV1.zip",
+      "latestFileId": 7237715,
+      "fileName": "OrbitalStrikeV1.zip",
+      "authors": [
+        "wailol"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1543984,
+      "slug": "supernatural-roles",
+      "name": "Supernatural roles",
+      "summary": "Become more than human! Dive into a supernatural Bedrock roleplay. Choose your path: Werewolves with Ultima powers, Dragons with elemental flight, Werecats with agility, or Vampires. Pick your age and master unique forms and abilities. Join the hunt!",
+      "downloadCount": 4653,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1809/374/256/256/639144600082555841.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/supernatural-roles",
+      "downloadUrl": "https://edge.forgecdn.net/files/8094/760/Supernatural_RP%20folder.zip",
+      "latestFileId": 8094760,
+      "fileName": "Supernatural_RP folder.zip",
+      "authors": [
+        "user_8nbwwpk1uyd5pvzt"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1420991,
+      "slug": "nohostilemobs-addon",
+      "name": "NoHostileMobs Addon",
+      "summary": "Removes all hostile mobs in Minecraft Bedrock, including hidden variants like Baby Zombies, Zombie Villager V2, Phantom V2, and Bogged, keeping survival normal but fully peaceful.",
+      "downloadCount": 6899,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1595/940/256/256/639031626955625834.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/nohostilemobs-addon",
+      "downloadUrl": null,
+      "latestFileId": 7418733,
+      "fileName": "NoHostileMobs.zip",
+      "authors": [
+        "BsAddons"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1519956,
+      "slug": "v0-1-the-amazing-digital-circus",
+      "name": "V0.2 - The Amazing Digital Circus",
+      "summary": "This is boss fight and rpg addon with caine... from tadc, goodluck to kill him!",
+      "downloadCount": 6391,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1919/541/256/256/639196359411711147.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/v0-1-the-amazing-digital-circus",
+      "downloadUrl": "https://edge.forgecdn.net/files/8431/115/v0.2%20tadc.zip",
+      "latestFileId": 8431115,
+      "fileName": "v0.2 tadc.zip",
+      "authors": [
+        "ponpicovich"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1580357,
+      "slug": "bloodmoon-zombie-apocalypse",
+      "name": "BLOODMOON zombie apocalypse",
+      "summary": "Hardest Zombie Apocalypse",
+      "downloadCount": 3322,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1873/648/256/256/639174268833054363.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/bloodmoon-zombie-apocalypse",
+      "downloadUrl": "https://edge.forgecdn.net/files/8277/10/BLOODMOON_v1.0.77_DEIMOSHED.mcaddon.zip",
+      "latestFileId": 8277010,
+      "fileName": "BLOODMOON_v1.0.77_DEIMOSHED.mcaddon.zip",
+      "authors": [
+        "deimoshed"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1427546,
+      "slug": "diabolical-heropack",
+      "name": "Diabolical Heropack (Fisk's Superheroes)",
+      "summary": "A Fiskheroes Heropack",
+      "downloadCount": 6853,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1721/261/256/256/639094777959167283.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/diabolical-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/7790/112/DiabolicalHP.zip",
+      "latestFileId": 7790112,
+      "fileName": "DiabolicalHP.zip",
+      "authors": [
+        "Messycatcow"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1026909,
+      "slug": "sanrioverse",
+      "name": "Sanrioverse",
+      "summary": "adds cute things ><",
+      "downloadCount": 39386,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1004/401/256/256/638525354659742347.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/sanrioverse",
+      "downloadUrl": null,
+      "latestFileId": 5385729,
+      "fileName": "sanrioverse.zip",
+      "authors": [
+        "emobunny"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 873703,
+      "slug": "lld-heroes-heropack",
+      "name": "The 2D Heropack",
+      "summary": "A FiskHeroes Heropack that includes  all your favorite anime characters.  This Addon adds characters like goku to  fiskheroes which allows you to play  as goku in the fiskheroes mod it adds  new powers,movesets,and suits",
+      "downloadCount": 42418,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1157/419/256/256/638725441943990143.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/lld-heroes-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5172/893/2D%20Heroes.zip",
+      "latestFileId": 5172893,
+      "fileName": "2D Heroes.zip",
+      "authors": [
+        "2D1"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1617669,
+      "slug": "encounter",
+      "name": "verity demon.jar",
+      "summary": "Is mod is test mod to kill froggy (Rabies version)",
+      "downloadCount": 4827,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1931/275/256/256/639201320705469487.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/encounter",
+      "downloadUrl": "https://edge.forgecdn.net/files/8470/139/VERITY%20DEMON.jar",
+      "latestFileId": 8470139,
+      "fileName": "VERITY DEMON.jar",
+      "authors": [
+        "Fixingman"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 482090,
+      "slug": "coordinates",
+      "name": "[Datapack] Coordinates",
+      "summary": "Shows coordinates in the actionbar!",
+      "downloadCount": 6740,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/381/963/256/256/637565685958640762.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/coordinates",
+      "downloadUrl": "https://edge.forgecdn.net/files/3309/57/Coordinates.zip",
+      "latestFileId": 3309057,
+      "fileName": "Coordinates.zip",
+      "authors": [
+        "poonxal"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 976798,
+      "slug": "gnd-hero-pack",
+      "name": "Gnd Hero Pack",
+      "summary": "a pack for fisk heroes",
+      "downloadCount": 6130,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/950/575/256/256/638439380507268699.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/gnd-hero-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5126/49/GndHero.zip",
+      "latestFileId": 5126049,
+      "fileName": "GndHero.zip",
+      "authors": [
+        "EmirhanGnd"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 378693,
+      "slug": "minecolonies-immersed",
+      "name": "Minecolonies Immersed",
+      "summary": "Additional Sounds for Minecolonies to improve your Immersion",
+      "downloadCount": 50644,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/266/990/256/256/637234312506550972.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/minecolonies-immersed",
+      "downloadUrl": "https://edge.forgecdn.net/files/2992/83/Minecolonies%20Voicepack%20v1.5%20for%20MC%201.15.2.zip",
+      "latestFileId": 2992083,
+      "fileName": "Minecolonies Voicepack v1.5 for MC 1.15.2.zip",
+      "authors": [
+        "Raycoms",
+        "carlansor"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 313580,
+      "slug": "pe-superheroes-mod",
+      "name": "SuperHeroes Mod",
+      "summary": "SuperHeroes Mod",
+      "downloadCount": 94313,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/189/651/256/256/636851576491119772.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/pe-superheroes-mod",
+      "downloadUrl": "https://edge.forgecdn.net/files/2670/267/superheroes_v1.zip",
+      "latestFileId": 2670267,
+      "fileName": "superheroes_v1.zip",
+      "authors": [
+        "warfreyt"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1515217,
+      "slug": "create-optimization",
+      "name": "Create: Optimization",
+      "summary": "Optimizes the create mod",
+      "downloadCount": 4229,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1758/752/256/256/639118812829955589.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/create-optimization",
+      "downloadUrl": "https://edge.forgecdn.net/files/8006/504/create_optimization-1.1.0-neoforge-1.21.1.zip",
+      "latestFileId": 8006504,
+      "fileName": "create_optimization-1.1.0-neoforge-1.21.1.zip",
+      "authors": [
+        "vndtta"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1063023,
+      "slug": "bedrock-totem-add-on",
+      "name": "Bedrock Animal Totems addon",
+      "summary": "To add more totems to minecraft.",
+      "downloadCount": 9678,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1039/186/256/256/638564700563179633.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/bedrock-totem-add-on",
+      "downloadUrl": null,
+      "latestFileId": 5528574,
+      "fileName": "MoreTotems.mcaddon.zip",
+      "authors": [
+        "small_knuth5021579"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1343159,
+      "slug": "craftys-murder-drones-addon-early-access",
+      "name": "Crafty's Murder Drones Addon",
+      "summary": "This Palladium Addonpack adds the ability to become a Solver Drone to your world!",
+      "downloadCount": 7845,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1433/808/256/256/638928886519040965.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/craftys-murder-drones-addon-early-access",
+      "downloadUrl": "https://edge.forgecdn.net/files/7007/616/Murder%20Drones.zip",
+      "latestFileId": 7007616,
+      "fileName": "Murder Drones.zip",
+      "authors": [
+        "YourLocalCrafty"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 417932,
+      "slug": "ben-10-alien-hybrids",
+      "name": "Ben 10 Alien Hybrids",
+      "summary": "Adds human-alien hybrids from the show Ben 10",
+      "downloadCount": 34124,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/386/941/256/256/637576422905414465.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ben-10-alien-hybrids",
+      "downloadUrl": "https://edge.forgecdn.net/files/5652/644/Alien%20Hybrids%20v2.2.zip",
+      "latestFileId": 5652644,
+      "fileName": "Alien Hybrids v2.2.zip",
+      "authors": [
+        "Matticus07"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1290008,
+      "slug": "vpb-droolings-ww2-pack",
+      "name": "[VPB] Drooling's WW2 Pack",
+      "summary": "Another WW2 Addon for Vic's Point Blank",
+      "downloadCount": 16860,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1665/996/256/256/639060579298250655.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/vpb-droolings-ww2-pack",
+      "downloadUrl": null,
+      "latestFileId": 8514692,
+      "fileName": "Drooling_WW2_Pack_1.4.zip",
+      "authors": [
+        "TheDroolingHalfling"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 995631,
+      "slug": "zandomly-fiskheroes-heropack",
+      "name": "Zandomly Fiskheroes Heropack",
+      "summary": "Fiskheroes mode pack ",
+      "downloadCount": 4188,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/972/496/256/256/638474777404353355.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/zandomly-fiskheroes-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5240/937/zandomly-1.1.2v.zip",
+      "latestFileId": 5240937,
+      "fileName": "zandomly-1.1.2v.zip",
+      "authors": [
+        "Zandomi"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1028971,
+      "slug": "olympus-heropack",
+      "name": "Olympus Heropack",
+      "summary": "Fiskheroes mode pack  ",
+      "downloadCount": 4775,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1006/518/256/256/638528503984305014.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/olympus-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5389/836/OlympusHeropack.zip",
+      "latestFileId": 5389836,
+      "fileName": "OlympusHeropack.zip",
+      "authors": [
+        "Oli27"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1626098,
+      "slug": "horror-golem-stalker",
+      "name": "Horror golem stalker",
+      "summary": "Horror golem stalker scary",
+      "downloadCount": 5050,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1943/986/256/256/639206586717695428.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/horror-golem-stalker",
+      "downloadUrl": "https://edge.forgecdn.net/files/8512/321/The%20horror%20golem%20stalker.zip",
+      "latestFileId": 8512321,
+      "fileName": "The horror golem stalker.zip",
+      "authors": [
+        "Cyrus_twixxels"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1299395,
+      "slug": "the-faye-garden-ambient-sounds",
+      "name": "Faye Garden Ambient Sounds",
+      "summary": "Enjoy relaxing sounds in your Faye Garden world with our Ambient Sounds pack! ",
+      "downloadCount": 6601,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1345/242/256/256/638874270081834128.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-faye-garden-ambient-sounds",
+      "downloadUrl": "https://edge.forgecdn.net/files/8662/596/faye_ambient_sounds-1.0.0-neoforge-26.1.2.jar",
+      "latestFileId": 8662596,
+      "fileName": "faye_ambient_sounds-1.0.0-neoforge-26.1.2.jar",
+      "authors": [
+        "FAYEPIXEL"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 978751,
+      "slug": "a-1900s-guns-point-blank-content-pack",
+      "name": "Point Blank 1900's Guns Content Pack!",
+      "summary": "A 1900's gun content pack for point blank",
+      "downloadCount": 11865,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/956/442/256/256/638449199076445996.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/a-1900s-guns-point-blank-content-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/6339/930/1900%27s-ext.zip",
+      "latestFileId": 6339930,
+      "fileName": "1900's-ext.zip",
+      "authors": [
+        "luqmanji"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 826083,
+      "slug": "webwarriors-heropack",
+      "name": "WebWarriors Heropack",
+      "summary": "Heropack for Fisk Heroes Mod",
+      "downloadCount": 18932,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/776/313/256/256/638118246292088637.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/webwarriors-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/4395/233/webwarriors-v2-0.zip",
+      "latestFileId": 4395233,
+      "fileName": "webwarriors-v2-0.zip",
+      "authors": [
+        "LuckyLucasGames"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 965761,
+      "slug": "cnr-jinghu-legendary-railway",
+      "name": "CNR JingHu Legendary Railway",
+      "summary": "This addon is going to add realistic diesel locomotives and cars into Minecraft",
+      "downloadCount": 5149,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/937/575/256/256/638415896151522728.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/cnr-jinghu-legendary-railway",
+      "downloadUrl": null,
+      "latestFileId": 5053894,
+      "fileName": "[IR]Lc_JingHuRailWay.zip",
+      "authors": [
+        "Lc1111Ln"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 650100,
+      "slug": "marvel-hero-alliance-for-lucraft-curseforge-port",
+      "name": "Marvel Hero Alliance for Lucraft (CurseForge Port)",
+      "summary": "Suits from 36 different Marvel Characters, adding powers, and cosmetic changes",
+      "downloadCount": 6416,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/578/954/256/256/637943647144232846.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/marvel-hero-alliance-for-lucraft-curseforge-port",
+      "downloadUrl": "https://edge.forgecdn.net/files/3899/240/marvelalliancepack1-2.zip",
+      "latestFileId": 3899240,
+      "fileName": "marvelalliancepack1-2.zip",
+      "authors": [
+        "GlacialWhisper"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1431796,
+      "slug": "garden-a-grow",
+      "name": "Garden a Grow",
+      "summary": "Fanmade Grow a Garden Mod offering things that are in Grow a Garden to be playable in Minecraft Bedrock.",
+      "downloadCount": 2928,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1617/607/256/256/639041750349627940.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/garden-a-grow",
+      "downloadUrl": "https://edge.forgecdn.net/files/7468/955/UnzipMeAndOpenAsMinecraft.zip",
+      "latestFileId": 7468955,
+      "fileName": "UnzipMeAndOpenAsMinecraft.zip",
+      "authors": [
+        "Sunfallmiscirts"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1521658,
+      "slug": "tvd-legacy-addon",
+      "name": "TVD Legacy Addon",
+      "summary": "TVD Legacy Addon brings vampires, werewolves, witches, hybrids, hunters and originals to Minecraft Bedrock. Fight bosses, unlock powers, transform, perform rituals, use special weapons and survive with custom blood, mana and progression systems.",
+      "downloadCount": 3118,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1769/794/256/256/639124600372295844.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tvd-legacy-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/7966/910/TVD_LEGACYADDON_BETA.mcaddon.zip",
+      "latestFileId": 7966910,
+      "fileName": "TVD_LEGACYADDON_BETA.mcaddon.zip",
+      "authors": [
+        "dksalvatore_"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1544685,
+      "slug": "flamed",
+      "name": "Flamed",
+      "summary": "Minecraft bedrock FPS Optimizer and OpenGL supporter.",
+      "downloadCount": 2637,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1810/627/256/256/639145249474817859.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/flamed",
+      "downloadUrl": null,
+      "latestFileId": 8101603,
+      "fileName": "Flamed-nightly-0.1.2.zip",
+      "authors": [
+        "HlwanStudiosOfficial"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1479602,
+      "slug": "tacz-real-weapon-recoil-and-soumd",
+      "name": "[TaCZ] REAL Weapon Recoil and Sound",
+      "summary": "This addon add recoil to tacz mod",
+      "downloadCount": 2948,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1909/101/256/256/639191548444445288.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-real-weapon-recoil-and-soumd",
+      "downloadUrl": null,
+      "latestFileId": 8404695,
+      "fileName": "[TaCZ] REAL Weapon Recoil and Sound V2.zip",
+      "authors": [
+        "moh66"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1181999,
+      "slug": "tacz-bocchi-the-gunpack",
+      "name": "[TACZ] Bocchi The Gunpack",
+      "summary": "A random gunpack with guns with bocchi skins and some random stuff I created",
+      "downloadCount": 5737,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2029/80/256/256/639242260929617328.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-bocchi-the-gunpack",
+      "downloadUrl": "https://edge.forgecdn.net/files/6099/394/Louise%20The%20Bocchi-0.1.zip",
+      "latestFileId": 6099394,
+      "fileName": "Louise The Bocchi-0.1.zip",
+      "authors": [
+        "Zero_Louise"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1626839,
+      "slug": "aphmau-wolf-ears-and-tail",
+      "name": "aphmau wolf ears and tail",
+      "summary": "made for bedrock aphmaus wolf tail and ears",
+      "downloadCount": 1745,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1945/81/256/256/639206954140755614.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/aphmau-wolf-ears-and-tail",
+      "downloadUrl": "https://edge.forgecdn.net/files/8516/83/aphmau-wolf-ears-and-tail.zip",
+      "latestFileId": 8516083,
+      "fileName": "aphmau-wolf-ears-and-tail.zip",
+      "authors": [
+        "user_d3w7w69dg2p0tz4v"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 995194,
+      "slug": "ir-cr-ss8",
+      "name": "[IR/Immersive Railroading]China Railways SS8 ",
+      "summary": "China Railways SS8 type electricity locomotive",
+      "downloadCount": 5286,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/990/496/256/256/638503826890556019.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ir-cr-ss8",
+      "downloadUrl": "https://edge.forgecdn.net/files/5224/108/%5bIR%5dCNR_SS8_TypeElectricityLocomotive%20A2.zip",
+      "latestFileId": 5224108,
+      "fileName": "[IR]CNR_SS8_TypeElectricityLocomotive A2.zip",
+      "authors": [
+        "ChiHai_ChenXi"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1360950,
+      "slug": "luzma-boost-optimizer-for-minecraft-bedrock-no",
+      "name": "⚡ Luzma Boost Optimizer for Bedrock (no lite)",
+      "summary": "Optimize Bedrock world by removing lag caused by poorly optimized addons (decorations that are entities instead of blocks, unnecessary mobs, etc.)",
+      "downloadCount": 1315,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1471/29/256/256/638954754529874071.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/luzma-boost-optimizer-for-minecraft-bedrock-no",
+      "downloadUrl": "https://edge.forgecdn.net/files/7136/952/Luzma%20Boost%201.7.8.zip",
+      "latestFileId": 7136952,
+      "fileName": "Luzma Boost 1.7.8.zip",
+      "authors": [
+        "KenZX5558"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1621780,
+      "slug": "worldedit-simplified-v1-0-18",
+      "name": "WorldEdit Simplified Bedrock v1.0.18",
+      "summary": "Are you tired of having to learn ALL these commands in the regular WorldEdit mod? Well you finally found what you were looking for. With WorldEdit Simplified, it’s super easy! No more endless commands! Try WorldEdit Simplified now! (IMPORTANT: FOR BEDROCK)",
+      "downloadCount": 1902,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1937/608/256/256/639203852240262579.webp",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/worldedit-simplified-v1-0-18",
+      "downloadUrl": null,
+      "latestFileId": 8492056,
+      "fileName": "WorldEdit_Simplified 13.zip",
+      "authors": [
+        "UtilityAddons"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1352601,
+      "slug": "wolfcraft-x-ray",
+      "name": "WolfCraft X-Ray",
+      "summary": "The WolfCraft X-Ray Mod Pack lets you see through blocks to quickly find diamonds, gold, iron, and more. With stone, dirt, and other common blocks hidden, ores and caves are easy to spot.",
+      "downloadCount": 9718,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1452/800/256/256/638942639757569304.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/wolfcraft-x-ray",
+      "downloadUrl": "https://edge.forgecdn.net/files/7027/211/Alpah%20X-ray.zip",
+      "latestFileId": 7027211,
+      "fileName": "Alpah X-ray.zip",
+      "authors": [
+        "Boss12323"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 253146,
+      "slug": "minecraft-font",
+      "name": "Minecraft Font",
+      "summary": "Replacement for the default (thin) Unicode font",
+      "downloadCount": 1729289,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/54/677/256/256/636137050794094158.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/minecraft-font",
+      "downloadUrl": "https://edge.forgecdn.net/files/2573/586/MinecraftFont.mcpack",
+      "latestFileId": 2573586,
+      "fileName": "MinecraftFont.mcpack",
+      "authors": [
+        "fromgate"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1191151,
+      "slug": "the-wendigo",
+      "name": "The Wendigo",
+      "summary": "Unleash the terror of the Wendigo in your world with this chilling mod! The Wendigo, a malevolent and mythical creature from Native American folklore, has been brought to life in Minecraft, adding a whole new layer of horror to your gameplay.",
+      "downloadCount": 4381,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1169/8/256/256/638740079112688589.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-wendigo",
+      "downloadUrl": "https://edge.forgecdn.net/files/6147/912/The%20Wendigo%20Mod_1736641228032.zip",
+      "latestFileId": 6147912,
+      "fileName": "The Wendigo Mod_1736641228032.zip",
+      "authors": [
+        "GoldenPJ"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1632342,
+      "slug": "artifacts",
+      "name": "Artifacts +",
+      "summary": "45 new artifacts and 33 everlasting foods for the Artifacts mod, found the same way the originals are — campsite chests, mimics, structure loot, archaeology and armoured mobs. Nothing is craftable, because nothing in Artifacts is.",
+      "downloadCount": 1436,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1953/436/256/256/639210351283291134.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/artifacts",
+      "downloadUrl": "https://edge.forgecdn.net/files/8554/276/artifacts_addon-1.21.1.jar",
+      "latestFileId": 8554276,
+      "fileName": "artifacts_addon-1.21.1.jar",
+      "authors": [
+        "Aaryaaa"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 419583,
+      "slug": "frequent-legacy-music",
+      "name": "Frequent Legacy Music",
+      "summary": "Makes the game use only tracks from Volume Alpha and more frequent like in legacy console editions.",
+      "downloadCount": 4992,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/313/287/256/256/637408361074189587.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/frequent-legacy-music",
+      "downloadUrl": "https://edge.forgecdn.net/files/3110/175/FrequentLegacyMusic103mcpackInside.zip",
+      "latestFileId": 3110175,
+      "fileName": "FrequentLegacyMusic103mcpackInside.zip",
+      "authors": [
+        "Timtronicles"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1661060,
+      "slug": "pmweather-storms",
+      "name": "PMWeather storms  ",
+      "summary": "his is an unofficial extension built specifically for the \"ProtoManly's Weather\" project. Nowhere is safe anymore. This addon changes storm...",
+      "downloadCount": 1238,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1996/233/256/256/639228339198900194.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/pmweather-storms",
+      "downloadUrl": "https://edge.forgecdn.net/files/8692/99/mods%d1%87%d0%b5%d0%bb%d0%b5%d0%bd%d0%b4%d0%b6.zip",
+      "latestFileId": 8692099,
+      "fileName": "modsчелендж.zip",
+      "authors": [
+        "tornado_lvovsk"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1320315,
+      "slug": "remys-heroes-heropack",
+      "name": "Remy's Heroes Heropack",
+      "summary": "Remy's Heroes is a Heropack for the Fisk Superheroes Mod made by remy that adds heroes from Marvel, DC, Original Characters and some from games.",
+      "downloadCount": 3667,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1385/923/256/256/638898634209827763.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/remys-heroes-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/6848/717/Remy%27s%20Heroes%20(Ver.%203.0).zip",
+      "latestFileId": 6848717,
+      "fileName": "Remy's Heroes (Ver. 3.0).zip",
+      "authors": [
+        "Remy238"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1328513,
+      "slug": "point-blank-mirsgereas-gunpack",
+      "name": "[Point Blank] Mirsgerea's Gunpack",
+      "summary": "A customizable selection of firearms made by Mirsgerea",
+      "downloadCount": 4516,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1403/323/256/256/638909588330198817.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/point-blank-mirsgereas-gunpack",
+      "downloadUrl": null,
+      "latestFileId": 8130133,
+      "fileName": "m4_burst_remodel.zip",
+      "authors": [
+        "Mirsgerea"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1110944,
+      "slug": "alternative-musket-sounds-for-ewewukeks-musket-mod",
+      "name": "Alternative Musket Sounds for Ewewukek's Musket Mod",
+      "summary": "Enhance your Minecraft experience with realistic musket sounds that immerse players in historical battles.",
+      "downloadCount": 3380,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1088/277/256/256/638631107951839226.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/alternative-musket-sounds-for-ewewukeks-musket-mod",
+      "downloadUrl": null,
+      "latestFileId": 5764055,
+      "fileName": "Alternative  Musket Sounds for Ewewukek's Musket Mod .zip",
+      "authors": [
+        "ChaosCommander"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1384910,
+      "slug": "jerms-better-leaves-add-on-unofficial-1-21-10",
+      "name": "Jerm's Better Leaves Add-on | Unofficial Patch",
+      "summary": "A fan-made compatibility fix that re-enables Jerm’s Better Leaves Add-on on Minecraft 1.21.10",
+      "downloadCount": 3659,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1520/619/256/256/638987600836444073.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/jerms-better-leaves-add-on-unofficial-1-21-10",
+      "downloadUrl": null,
+      "latestFileId": 7222629,
+      "fileName": "JermsBetterLeavesAddon-1.21.10-Patch 2.zip",
+      "authors": [
+        "perfectstorm"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 577804,
+      "slug": "more-jungle-saplings",
+      "name": "More Jungle Saplings",
+      "summary": "Now a 5% chance, just like every other leaf block, instead of 2.5%",
+      "downloadCount": 3793,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/491/354/256/256/637800349036673048.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/more-jungle-saplings",
+      "downloadUrl": null,
+      "latestFileId": 4632377,
+      "fileName": "more_jungle-1.20-b.zip",
+      "authors": [
+        "SepiaPages"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 828974,
+      "slug": "alternative-sounds-musket-mod",
+      "name": "Alternative shot sounds for ewewukek's Musket ",
+      "summary": "Replaces the sounds in ewewukek's Musket mod with alternative ones",
+      "downloadCount": 8572,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/779/649/256/256/638124372786734034.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/alternative-sounds-musket-mod",
+      "downloadUrl": "https://edge.forgecdn.net/files/4405/708/Musketmod(v1.4.5)-%20Michail01011101%27s%20alternative%20sounds_v2.3.7.zip",
+      "latestFileId": 4405708,
+      "fileName": "Musketmod(v1.4.5)- Michail01011101's alternative sounds_v2.3.7.zip",
+      "authors": [
+        "Michail01011101"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 852085,
+      "slug": "darkest-knight-heropack",
+      "name": "Darkest Knight Heropack",
+      "summary": "Darkest Heropack in the multiverse",
+      "downloadCount": 21569,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/806/418/256/256/638174286834579264.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/darkest-knight-heropack",
+      "downloadUrl": null,
+      "latestFileId": 7221266,
+      "fileName": "Knights.zip",
+      "authors": [
+        "Mastergaming1236"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 940904,
+      "slug": "clone-pokemon-cobblemon",
+      "name": "Clone Pokemon [Cobblemon]",
+      "summary": "Clone Pokemon for Cobblemon ",
+      "downloadCount": 7075,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/908/867/256/256/638361300608079340.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/clone-pokemon-cobblemon",
+      "downloadUrl": null,
+      "latestFileId": 6279089,
+      "fileName": "SpacedPlumsCloneStarters1.1.zip",
+      "authors": [
+        "SpacedPlum"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1455754,
+      "slug": "fels-ww1-gun-pack",
+      "name": "[TACZ] Fel's WW1 Gun Pack",
+      "summary": "An addon pack for TACZ featuring ww1 guns",
+      "downloadCount": 5534,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1664/976/256/256/639060044002207501.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/fels-ww1-gun-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/7585/852/felsww11.1.zip",
+      "latestFileId": 7585852,
+      "fileName": "felsww11.1.zip",
+      "authors": [
+        "MeowraticWorks"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 393229,
+      "slug": "nissan-skyline-car-addon",
+      "name": "Nissan Skyline car addon",
+      "summary": "Addon adds a new car into the game.",
+      "downloadCount": 8748,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/283/378/256/256/637292959732191129.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/nissan-skyline-car-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/2994/728/Nissan%20Skyline%20UNZIP.zip",
+      "latestFileId": 2994728,
+      "fileName": "Nissan Skyline UNZIP.zip",
+      "authors": [
+        "biglfigl"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 561520,
+      "slug": "elemental-magic-addon",
+      "name": "Elemental Magic Addon",
+      "summary": "Adds new Magic elements to the game. Adds new wands new mobs and so much more. Based on the different biomes in Minecraft ",
+      "downloadCount": 10768,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/473/42/256/256/637764105668339494.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/elemental-magic-addon",
+      "downloadUrl": null,
+      "latestFileId": 3584945,
+      "fileName": "Elemental magic addon.zip",
+      "authors": [
+        "lukasbrawlstars92"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1479678,
+      "slug": "zhangsan2333-cn-freight-pack",
+      "name": "ZhangSan2333's CN Freight Pack[RealTrainMod/ImmersiveRailroading]",
+      "summary": "A resource pack with common railway freight cars in China for the Minecraft mod ImmersiveRailroading and RealTrainMod.",
+      "downloadCount": 2542,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1706/839/256/256/639084534634829633.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/zhangsan2333-cn-freight-pack",
+      "downloadUrl": null,
+      "latestFileId": 7724464,
+      "fileName": "ZS23Pack-v1.0.2_IR_4K_part1.zip",
+      "authors": [
+        "ZhangSan2333"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "textures",
+      "categoryLabel": "Texture packs",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1054799,
+      "slug": "helldivers-2-gun-pack-vics-point-blank",
+      "name": "Helldivers 2 Gun Pack | Vic's Point Blank",
+      "summary": "Helldivers 2 Addon for Vic's Point Blank! Meant to be used with HyTech01's Helldivers - Spread Democracy Mod",
+      "downloadCount": 20066,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1031/145/256/256/638553786477133140.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/helldivers-2-gun-pack-vics-point-blank",
+      "downloadUrl": "https://edge.forgecdn.net/files/6378/306/helldivers2-ext.zip",
+      "latestFileId": 6378306,
+      "fileName": "helldivers2-ext.zip",
+      "authors": [
+        "HyTech01"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1589833,
+      "slug": "smh-heropack",
+      "name": "Smh Heropack",
+      "summary": "Heropack for Fiskheroes Mod",
+      "downloadCount": 1314,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1888/417/256/256/639181586027245460.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/smh-heropack",
+      "downloadUrl": "https://edge.forgecdn.net/files/8342/945/smh-heropack-1-0-0.zip",
+      "latestFileId": 8342945,
+      "fileName": "smh-heropack-1-0-0.zip",
+      "authors": [
+        "MrBlack0"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1660450,
+      "slug": "stand-disc-adaptation",
+      "name": "stand disc adaptation",
+      "summary": "This addon adds stand and creatures from Jojo's Bizarre Adventure",
+      "downloadCount": 8526,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1995/374/256/256/639227991879992864.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/stand-disc-adaptation",
+      "downloadUrl": null,
+      "latestFileId": 8689159,
+      "fileName": "jojo_stand_disc.mcaddon",
+      "authors": [
+        "user_gxko4hu3n7unvnx0"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1621793,
+      "slug": "the-smile",
+      "name": "The Smile (Bedrock)",
+      "summary": "A mysterious stalker that silently follows players and begins hunting when they look at it.",
+      "downloadCount": 1366,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1937/634/256/256/639203865961459791.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-smile",
+      "downloadUrl": "https://edge.forgecdn.net/files/8492/153/AnoMc3338_1784790009687.mcaddon.zip",
+      "latestFileId": 8492153,
+      "fileName": "AnoMc3338_1784790009687.mcaddon.zip",
+      "authors": [
+        "ano1009tv"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1213149,
+      "slug": "vics-point-blank-eastern-european-arsenal",
+      "name": "Vic's Point Blank: Eastern European Arsenal (Postponed)",
+      "summary": "Addon for vic's point blank, which will add to the game many samples of weapons of the countries of eastern europe",
+      "downloadCount": 12059,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1196/319/256/256/638772141266025741_animated.gif",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/vics-point-blank-eastern-european-arsenal",
+      "downloadUrl": "https://edge.forgecdn.net/files/6313/447/EasternEuropeanArsenal_0.0.3_1.21.zip",
+      "latestFileId": 6313447,
+      "fileName": "EasternEuropeanArsenal_0.0.3_1.21.zip",
+      "authors": [
+        "YumehanaAkwa"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1662487,
+      "slug": "verity-villager-intro",
+      "name": "verity Villager intro",
+      "summary": "this mod makes the intro aka the villager intro at the very start of thatmobs minecraft horror verity series play when you join a world this mod works with neoforge forge and fabric CLICK ON FILES TAB FOR THE NEOFORGE AND FORGE VERSION OF THE MOD!",
+      "downloadCount": 1357,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1998/251/256/256/639229226213640597.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/verity-villager-intro",
+      "downloadUrl": "https://edge.forgecdn.net/files/8708/198/Horror%20arg%20intro%20fabric%201.21.1.zip",
+      "latestFileId": 8708198,
+      "fileName": "Horror arg intro fabric 1.21.1.zip",
+      "authors": [
+        "nicosbyt"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1137791,
+      "slug": "more-addons-mod",
+      "name": "More Things",
+      "summary": "An addons mod who had some burger",
+      "downloadCount": 3266,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1115/220/256/256/638668957741535841.webp",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/more-addons-mod",
+      "downloadUrl": null,
+      "latestFileId": 5914884,
+      "fileName": "1.0.0.zip",
+      "authors": [
+        "Idonthaveusername"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1351287,
+      "slug": "chromastone-ae",
+      "name": "Chromastone Alien Evolution",
+      "summary": "An addon for Alien Evo,  adds chromastone with mod compability of many other mods.",
+      "downloadCount": 12085,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1450/257/256/256/638940779945845398.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/chromastone-ae",
+      "downloadUrl": "https://edge.forgecdn.net/files/7720/990/chromastone-1.9_fix.zip",
+      "latestFileId": 7720990,
+      "fileName": "chromastone-1.9_fix.zip",
+      "authors": [
+        "godday"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1296629,
+      "slug": "the-faye-pixies-furniture-cit-pack",
+      "name": "The Faye Pixies Furniture CIT Pack",
+      "summary": "Decorate your Minecraft worlds with the Pixies Furniture CIT pack, featuring 30 new items inspired by the enchanting world of the Faye!",
+      "downloadCount": 11333,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1335/249/256/256/638868001147663039.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/the-faye-pixies-furniture-cit-pack",
+      "downloadUrl": null,
+      "latestFileId": 6708074,
+      "fileName": "Pixies Furniture 1.21.zip",
+      "authors": [
+        "FAYEPIXEL"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 853385,
+      "slug": "ir-chinese-train-pack",
+      "name": "Chinese steam rolling stock pack",
+      "summary": "This addon is going to add realistic Chinese steam locomotives and tracks into Minecraft.",
+      "downloadCount": 6043,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/810/293/256/256/638181943422262632.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ir-chinese-train-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/4509/89/CNR5.0.zip",
+      "latestFileId": 4509089,
+      "fileName": "CNR5.0.zip",
+      "authors": [
+        "Lc1111Ln"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1226453,
+      "slug": "kingdom-constructor",
+      "name": "Kingdom Constructor: Iron Age",
+      "summary": "Kingdom Constructor is a framework for a kingdom builder game in Minecraft Bedrock! With it you can raid castles, forts and outposts to slowly build a stronger and larger army, who can also be appointed to guard your castle!",
+      "downloadCount": 4275,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1454/726/256/256/638944191968325915.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/kingdom-constructor",
+      "downloadUrl": "https://edge.forgecdn.net/files/6437/958/KingdomConstructor_IronAge1.1.zip",
+      "latestFileId": 6437958,
+      "fileName": "KingdomConstructor_IronAge1.1.zip",
+      "authors": [
+        "Black_Cat_Studios"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1087142,
+      "slug": "usp-match-pack-pointblank",
+      "name": "Usp Match Pack | Pointblank",
+      "summary": "A Usp Match Gun Pack for PointBlank",
+      "downloadCount": 4894,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1063/919/256/256/638596902654953015.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/usp-match-pack-pointblank",
+      "downloadUrl": "https://edge.forgecdn.net/files/5776/806/uspm-ext.zip",
+      "latestFileId": 5776806,
+      "fileName": "uspm-ext.zip",
+      "authors": [
+        "Larsh512"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1310162,
+      "slug": "dragonblockc-compatibility-with-galacticraft-more",
+      "name": "DragonBlockC Compatibility with Galacticraft, More Planets and More Planets Extras",
+      "summary": "Mod for Dragonblock C and Galacticraft (you can add More planets and More planets extra tho)",
+      "downloadCount": 4457,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1363/486/256/256/638885515462565589.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/dragonblockc-compatibility-with-galacticraft-more",
+      "downloadUrl": "https://edge.forgecdn.net/files/6789/276/DBCxGLC-1.0.zip",
+      "latestFileId": 6789276,
+      "fileName": "DBCxGLC-1.0.zip",
+      "authors": [
+        "Gabrizee10_"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1492702,
+      "slug": "demon-lord-magic-1-0-0-addon",
+      "name": "DEMON LORD MAGIC",
+      "summary": "it's a ADDON about Magic and RPG events.",
+      "downloadCount": 1878,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1725/477/256/256/639097876127429776.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/demon-lord-magic-1-0-0-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/7794/976/Demon%20Lord%20Magic%201.0.0.zip",
+      "latestFileId": 7794976,
+      "fileName": "Demon Lord Magic 1.0.0.zip",
+      "authors": [
+        "user_d1v5iymgbzp6sh8w"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1255748,
+      "slug": "eurrussia-variantz-tacz",
+      "name": "[TACZ] Eurrussia Variantz ",
+      "summary": "Pistol Pack & More  for TACZ (1.1.4+)",
+      "downloadCount": 7808,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1314/241/256/256/638854554942720067.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/eurrussia-variantz-tacz",
+      "downloadUrl": null,
+      "latestFileId": 6482115,
+      "fileName": "GlockVariantz2.1.1b.zip",
+      "authors": [
+        "Kenjisutro"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1517847,
+      "slug": "create-aeronautic-russian-translate",
+      "name": "Create Aeronautic russian-translate",
+      "summary": "just a Russian translation of Create Aeronautic , nothing more",
+      "downloadCount": 3777,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1763/139/256/256/639121288433728580.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/create-aeronautic-russian-translate",
+      "downloadUrl": "https://edge.forgecdn.net/files/7946/58/Create%20Aeronautics-Russian%20translation.zip",
+      "latestFileId": 7946058,
+      "fileName": "Create Aeronautics-Russian translation.zip",
+      "authors": [
+        "Chelovechic"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1354629,
+      "slug": "bullpups-addon-pack-for-vics-point-blank",
+      "name": "(Mostly) Bullpups Addon Pack for Vic's Point Blank",
+      "summary": "A content pack for Vic's Point Blank - new guns and more",
+      "downloadCount": 3389,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1457/292/256/256/638945943272029897.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/bullpups-addon-pack-for-vics-point-blank",
+      "downloadUrl": "https://edge.forgecdn.net/files/7039/651/Point%20Blank%20Bullpups%20Pack%201.0.zip",
+      "latestFileId": 7039651,
+      "fileName": "Point Blank Bullpups Pack 1.0.zip",
+      "authors": [
+        "Kurodani"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 947998,
+      "slug": "minigun-data-pack",
+      "name": "Minigun Data Pack",
+      "summary": "Adds a Minigun/Gatling gun into your game",
+      "downloadCount": 4810,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/917/15/256/256/638376612821487602.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/minigun-data-pack",
+      "downloadUrl": null,
+      "latestFileId": 4944036,
+      "fileName": "Gatling Gun DP v1.1 [1.20-1.20.1].zip",
+      "authors": [
+        "SirDoomTurtle"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1087724,
+      "slug": "freshanimations-x-horror-mods",
+      "name": "FreshAnimations x Horror Mods",
+      "summary": "FreshAnimations support for some horror mods.",
+      "downloadCount": 3006,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1064/531/256/256/638597812050104453.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/freshanimations-x-horror-mods",
+      "downloadUrl": "https://edge.forgecdn.net/files/5647/999/FreshAnimations%20x%20Horror%20Mods.zip",
+      "latestFileId": 5647999,
+      "fileName": "FreshAnimations x Horror Mods.zip",
+      "authors": [
+        "Noobkin77"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 462209,
+      "slug": "speedster-heroes-season-7-8-flash",
+      "name": "Speedster Heroes Season 7 and 8 (Flash)",
+      "summary": "This is a season 7 and 8 update for speedster heroes mod by Lucraft. This is for season 7 and before",
+      "downloadCount": 14879,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/360/560/256/256/637524722509007408.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/speedster-heroes-season-7-8-flash",
+      "downloadUrl": "https://edge.forgecdn.net/files/3257/79/The%20Flash%20Season%207%202.0.1-1.12.2.zip",
+      "latestFileId": 3257079,
+      "fileName": "The Flash Season 7 2.0.1-1.12.2.zip",
+      "authors": [
+        "RTRIOS"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 993085,
+      "slug": "mace-3d-rp-bedrock",
+      "name": "Mace 3D RP Bedrock",
+      "summary": "Minecraft Bedrock Resource Pack that makes the Mace weapon 3D.",
+      "downloadCount": 3649,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/969/813/256/256/638470793508344278.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/mace-3d-rp-bedrock",
+      "downloadUrl": null,
+      "latestFileId": 5213595,
+      "fileName": "Mace_3D_RP_player_animations.zip",
+      "authors": [
+        "Nogard_YT"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "textures",
+      "categoryLabel": "Texture packs",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1454774,
+      "slug": "bodyguard",
+      "name": "Bodyguard Addon",
+      "summary": "An addon that allows you to upgrade Iron Goldems to your Bodyguard!",
+      "downloadCount": 2516,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1664/797/256/256/639059972006967908.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/bodyguard",
+      "downloadUrl": "https://edge.forgecdn.net/files/7648/97/Bodyguard%20v1.1.0.mcaddon.zip",
+      "latestFileId": 7648097,
+      "fileName": "Bodyguard v1.1.0.mcaddon.zip",
+      "authors": [
+        "Mixbi"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 637471,
+      "slug": "luckypixelmonblock",
+      "name": "LuckyPixBlock",
+      "summary": "Custom Pixelmon Lucky Block",
+      "downloadCount": 6544,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/563/638/256/256/637918968982909266.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/luckypixelmonblock",
+      "downloadUrl": null,
+      "latestFileId": 3849654,
+      "fileName": "PixelmonLuckyBlock.zip",
+      "authors": [
+        "Soonerbdead"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1060901,
+      "slug": "origins-plus",
+      "name": "Dan's Re-Worked Origins (OriginsPlus)",
+      "summary": "Tweaks giving more life to Apace's Origins Mod",
+      "downloadCount": 3966,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1037/81/256/256/638561760891901511.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/origins-plus",
+      "downloadUrl": "https://edge.forgecdn.net/files/5900/714/OriginsPlus%20v1.5%20NoReplace.zip",
+      "latestFileId": 5900714,
+      "fileName": "OriginsPlus v1.5 NoReplace.zip",
+      "authors": [
+        "DansOtherClone"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 966095,
+      "slug": "vpb-raygun",
+      "name": "VPB | RayGun",
+      "summary": "Adding the famous RayGun from call of duty zombies into the game as an addon for the mod Vic's Point Blank",
+      "downloadCount": 4840,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/937/956/256/256/638416672917960455.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/vpb-raygun",
+      "downloadUrl": "https://edge.forgecdn.net/files/7088/876/MtYzRaygunVPBPACK.zip",
+      "latestFileId": 7088876,
+      "fileName": "MtYzRaygunVPBPACK.zip",
+      "authors": [
+        "Mathai_asz"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1264132,
+      "slug": "uncrafting",
+      "name": "Uncrafting",
+      "summary": "Recycle items or blocks",
+      "downloadCount": 1899,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1295/118/256/256/638841805566611757.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/uncrafting",
+      "downloadUrl": "https://edge.forgecdn.net/files/6597/577/Uncrafting%20V1.1.zip",
+      "latestFileId": 6597577,
+      "fileName": "Uncrafting V1.1.zip",
+      "authors": [
+        "Ikkan00"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1509242,
+      "slug": "fullcowling-project",
+      "name": "Fullcowling Project",
+      "summary": "This add-on is inspired by One For All from MHA.",
+      "downloadCount": 3900,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1749/563/256/256/639113480437965030.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/fullcowling-project",
+      "downloadUrl": "https://edge.forgecdn.net/files/7900/259/FullCowling.zip",
+      "latestFileId": 7900259,
+      "fileName": "FullCowling.zip",
+      "authors": [
+        "PuckIsHere"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 513624,
+      "slug": "simply-seasons-for-biomes-o-plenty",
+      "name": "Simply Seasons For Biomes O' Plenty (Datapack)",
+      "summary": "Have seasons factor the grow of saplings from Biomes O' Plenty",
+      "downloadCount": 5861,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/417/97/256/256/637640510176701414.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/simply-seasons-for-biomes-o-plenty",
+      "downloadUrl": "https://edge.forgecdn.net/files/3419/522/Simply_Seasons_For_BOP.zip",
+      "latestFileId": 3419522,
+      "fileName": "Simply_Seasons_For_BOP.zip",
+      "authors": [
+        "Keebsz"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1479822,
+      "slug": "into-oblivion-update-v-3-1-quick-fix",
+      "name": "Into oblivion ",
+      "summary": "He thinks. He follows. He never stops. Into Oblivion adds a real Herobrine AI to Bedrock — smart stalking, dimension following, escalating fog, jumpscares, world corruption, and a death sequence that blacks your screen out. Requires Beta APIs · Bedrock",
+      "downloadCount": 2373,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1707/62/256/256/639084704719107813.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/into-oblivion-update-v-3-1-quick-fix",
+      "downloadUrl": "https://edge.forgecdn.net/files/7723/351/into%20oblivion_v1-0.mcaddon.zip",
+      "latestFileId": 7723351,
+      "fileName": "into oblivion_v1-0.mcaddon.zip",
+      "authors": [
+        "matmath_asosocer"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 876943,
+      "slug": "cobblemon-added-recipes",
+      "name": "Cobblemon Added Recipes",
+      "summary": "Adds Recipes for cobblemon",
+      "downloadCount": 1622,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/835/486/256/256/638227080142150380.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/cobblemon-added-recipes",
+      "downloadUrl": "https://edge.forgecdn.net/files/6206/656/Added%20Recipies%201.21.1%201.0.0.zip",
+      "latestFileId": 6206656,
+      "fileName": "Added Recipies 1.21.1 1.0.0.zip",
+      "authors": [
+        "Fierylemming"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1571722,
+      "slug": "project-ultrakill",
+      "name": "PROJECT - ULTRAKILL",
+      "summary": "The addon is based on the game Ultrakill by Newblood, a computer shooter. ",
+      "downloadCount": 1663,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1858/444/256/256/639167615499709244.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/project-ultrakill",
+      "downloadUrl": "https://edge.forgecdn.net/files/8230/480/V0.1%20-%20ULTRAKILL.zip",
+      "latestFileId": 8230480,
+      "fileName": "V0.1 - ULTRAKILL.zip",
+      "authors": [
+        "ponpicovich"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 968887,
+      "slug": "vaults-of-abandon-datapack",
+      "name": "Vaults of Abandon - [Dungeon Datapack] ",
+      "summary": "Conquer the Vault, in the Vaults of Abandon - Dungeon Datapack. Battle Epic Bosses, Explore vast dungeons, and utilize powerful magic.  Access over 50+ Custom Items, and battle over 20+ Custom Mobs.",
+      "downloadCount": 15390,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1037/378/256/256/638562215884756336.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/vaults-of-abandon-datapack",
+      "downloadUrl": null,
+      "latestFileId": 8750613,
+      "fileName": "voa-resource-3.5.0.zip",
+      "authors": [
+        "BeagleBlocks"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1626399,
+      "slug": "auto-enchant",
+      "name": "Auto Enchant",
+      "summary": "Useful if you don't want to waste levels",
+      "downloadCount": 857,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1944/436/256/256/639206749190337566.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/auto-enchant",
+      "downloadUrl": null,
+      "latestFileId": 8513861,
+      "fileName": "Auto Enchant v1.jar",
+      "authors": [
+        "Conlin"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 562069,
+      "slug": "excalibur-fresh-animations-support",
+      "name": "Excalibur Fresh Animations Support",
+      "summary": "Adds support for Fresh Animations custom animations and models.",
+      "downloadCount": 7469,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/813/83/256/256/638187262071635160.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/excalibur-fresh-animations-support",
+      "downloadUrl": "https://edge.forgecdn.net/files/3587/77/Excalibur_FA_v1.5.zip",
+      "latestFileId": 3587077,
+      "fileName": "Excalibur_FA_v1.5.zip",
+      "authors": [
+        "Maffhew"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 975562,
+      "slug": "better-glock17-for-vics-point-blank",
+      "name": "Better glock17 for Vic's point blank",
+      "summary": "Comes with a better glock 17",
+      "downloadCount": 2623,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/949/154/256/256/638437039157443511.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/better-glock17-for-vics-point-blank",
+      "downloadUrl": null,
+      "latestFileId": 5113123,
+      "fileName": "Btr-glock17.zip",
+      "authors": [
+        "lukeonDaCat"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1388260,
+      "slug": "star-wars-expansion-more-sabers",
+      "name": "Star Wars Expansion: More Sabers",
+      "summary": "This addon adds more lightsabers to MrFazCraft's Star Wars Expansion Mod!",
+      "downloadCount": 1425,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1527/748/256/256/638992162614592862.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/star-wars-expansion-more-sabers",
+      "downloadUrl": null,
+      "latestFileId": 7244690,
+      "fileName": "more_sabers.zip",
+      "authors": [
+        "YourLocalCrafty"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1414701,
+      "slug": "fredbears-family-crafting",
+      "name": "Fredbear's Family Crafting V2",
+      "summary": "A Minecraft addon about fnaf, especifically about the restaurant Fredbear's Family Diner",
+      "downloadCount": 1594,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1790/207/256/256/639134470462018816.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/fredbears-family-crafting",
+      "downloadUrl": "https://edge.forgecdn.net/files/8035/250/Fredbear%27s%20Family%20Addon%20V2_1777848559164.mcaddon.zip",
+      "latestFileId": 8035250,
+      "fileName": "Fredbear's Family Addon V2_1777848559164.mcaddon.zip",
+      "authors": [
+        "Mauroelpro777"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 990489,
+      "slug": "danny-phantom-for-palladium",
+      "name": "Danny Phantom Heropack Moved to mods",
+      "summary": "Adds Danny Phantom to Palladium",
+      "downloadCount": 3056,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/966/895/256/256/638466444184000069.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/danny-phantom-for-palladium",
+      "downloadUrl": "https://edge.forgecdn.net/files/5405/335/Danny%20Phantom%20Addonpack.zip",
+      "latestFileId": 5405335,
+      "fileName": "Danny Phantom Addonpack.zip",
+      "authors": [
+        "Ghostly_Things"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 460569,
+      "slug": "orb-of-orgin-crafting-recipe",
+      "name": "Orb Of Orgin Crafting recipe",
+      "summary": "This will add a crafting recipe to get your hands of the orb of origin in survival.",
+      "downloadCount": 12457,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/358/801/256/256/637520142957426638.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/orb-of-orgin-crafting-recipe",
+      "downloadUrl": "https://edge.forgecdn.net/files/3827/564/datapack%20(1).zip",
+      "latestFileId": 3827564,
+      "fileName": "datapack (1).zip",
+      "authors": [
+        "IronGrogu"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1599871,
+      "slug": "dark-slugterra",
+      "name": "Dark Slugterra",
+      "summary": "Adds a corrupted Dark Caverns dimension, 24+ evil slug variants, a corruption injector, and the boss Doctor Black to Legends of Slugterra. Requires the base Slugterra mod.",
+      "downloadCount": 1277,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1903/890/256/256/639189202143347243.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/dark-slugterra",
+      "downloadUrl": null,
+      "latestFileId": 8379782,
+      "fileName": "slugterra_dark-1.0.0.jar",
+      "authors": [
+        "Exer12"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1143483,
+      "slug": "dsa-58-pack-addon-for-vics-point-blank",
+      "name": "DSA-58 PACK [ADDON FOR VIC'S POINT BLANK]",
+      "summary": "ddon add DSA-58 rifle from company DS arms, the rifle is fully modifiable, has 25 rounds",
+      "downloadCount": 1868,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1120/520/256/256/638675427317169398.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/dsa-58-pack-addon-for-vics-point-blank",
+      "downloadUrl": "https://edge.forgecdn.net/files/5920/433/sa_58.zip",
+      "latestFileId": 5920433,
+      "fileName": "sa_58.zip",
+      "authors": [
+        "ronbonpixel"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1008348,
+      "slug": "metro",
+      "name": "METRO Vic's Point Blank ",
+      "summary": "The pack for Vic's Point Blank for the Metro series of games",
+      "downloadCount": 1469,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/985/747/256/256/638495551175033711.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/metro",
+      "downloadUrl": "https://edge.forgecdn.net/files/8245/141/metro2.6.zip",
+      "latestFileId": 8245141,
+      "fileName": "metro2.6.zip",
+      "authors": [
+        "grayrus"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 901444,
+      "slug": "mine-mine-no-mi-recipesplus",
+      "name": "Mine Mine No Mi RecipesPlus",
+      "summary": "is a datapack for Mine Mine No Mi that adds recipes for wooden through golden chest and other weapons.",
+      "downloadCount": 1681,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/863/813/256/256/638273199586135645.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/mine-mine-no-mi-recipesplus",
+      "downloadUrl": "https://edge.forgecdn.net/files/4694/220/Mine_Mine_No_Mi_RecipesPlus.zip",
+      "latestFileId": 4694220,
+      "fileName": "Mine_Mine_No_Mi_RecipesPlus.zip",
+      "authors": [
+        "blueflare986"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 984530,
+      "slug": "champion-heroes-heropack",
+      "name": "champion heroes heropack",
+      "summary": "fisksuperheroes addon",
+      "downloadCount": 9849,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/959/873/256/256/638455279906174911.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/champion-heroes-heropack",
+      "downloadUrl": null,
+      "latestFileId": 5169317,
+      "fileName": "champion-heropack.zip",
+      "authors": [
+        "championfurkan1"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1494275,
+      "slug": "scythe",
+      "name": "Scythe",
+      "summary": "he Stunning Shieldbane Scythe is a powerful netherite-tier weapon that, on every normal melee hit, pulls the struck target toward you and gives subtle visual/sound feedback plus a short actionbar confirmation., here is full details given below",
+      "downloadCount": 1562,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1727/785/256/256/639099386605661685.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/scythe",
+      "downloadUrl": null,
+      "latestFileId": 9069169,
+      "fileName": "Stunning_Scythe_V4_0_0.mcaddon",
+      "authors": [
+        "Dark_PixelForge"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 526382,
+      "slug": "godzillaorigin",
+      "name": "GodzillaOrigin",
+      "summary": "Adds The Shin Godzilla Origin",
+      "downloadCount": 4578,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/432/247/256/256/637669407818080925.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/godzillaorigin",
+      "downloadUrl": "https://edge.forgecdn.net/files/3456/166/GodzillaOrigins.zip",
+      "latestFileId": 3456166,
+      "fileName": "GodzillaOrigins.zip",
+      "authors": [
+        "shortdinosaur"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1503853,
+      "slug": "metal-sonic-alien-evolution-addon",
+      "name": "Metal Sonic (Alien Evolution Addon)",
+      "summary": "Addon that adds Metal Sonic in Alien Evolution, a Ben 10 addon, color changeable",
+      "downloadCount": 1979,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1743/651/256/256/639109426195878917.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/metal-sonic-alien-evolution-addon",
+      "downloadUrl": null,
+      "latestFileId": 8279775,
+      "fileName": "OmniMetalSonic (Addonpack).zip",
+      "authors": [
+        "user_kw75l9iecjpiifk1"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1086960,
+      "slug": "indonesian-ghost-addon",
+      "name": "Indonesian Ghost Addon",
+      "summary": "Adds the ghost of Indonesia to your Minecraft world!",
+      "downloadCount": 2284,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1063/758/256/256/638596704777221345.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/indonesian-ghost-addon",
+      "downloadUrl": null,
+      "latestFileId": 5643922,
+      "fileName": "IndonesianGhostv1.mcaddon.zip",
+      "authors": [
+        "FelixChats"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1383865,
+      "slug": "star-wars-expansion-sith-quest",
+      "name": "Star Wars Expansion: Sith Quest",
+      "summary": "A Small Addon To MrFazCraft's Star Wars Mod!",
+      "downloadCount": 1238,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1518/402/256/256/638986078891222569.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/star-wars-expansion-sith-quest",
+      "downloadUrl": null,
+      "latestFileId": 7230984,
+      "fileName": "sith_quest_addon.zip",
+      "authors": [
+        "YourLocalCrafty"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1350640,
+      "slug": "point-blank-codmw",
+      "name": "Point Blank - Call of Duty: Modern Warfare",
+      "summary": "Point Blank addon that adds weapons from CoD: MW",
+      "downloadCount": 1489,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1448/847/256/256/638939932836298661.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/point-blank-codmw",
+      "downloadUrl": "https://edge.forgecdn.net/files/7016/487/codmw_0.1.zip",
+      "latestFileId": 7016487,
+      "fileName": "codmw_0.1.zip",
+      "authors": [
+        "YumehanaAkwa"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 532461,
+      "slug": "titan-shifter",
+      "name": "Titan Shifter",
+      "summary": "Adds The Titan Shifters To Minecraft",
+      "downloadCount": 12090,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/439/88/256/256/637685725280942899.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/titan-shifter",
+      "downloadUrl": "https://edge.forgecdn.net/files/3476/949/Armoured%20Titan.zip",
+      "latestFileId": 3476949,
+      "fileName": "Armoured Titan.zip",
+      "authors": [
+        "luciferrightshiftslash"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 273559,
+      "slug": "herobrine-skinpack",
+      "name": "Herobrine Skinpack",
+      "summary": "Herobrine skinpack (for Minecraft 1.2+)",
+      "downloadCount": 22750,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/108/401/256/256/636372432098835827.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/herobrine-skinpack",
+      "downloadUrl": "https://edge.forgecdn.net/files/2459/332/Herobrine.mcpack",
+      "latestFileId": 2459332,
+      "fileName": "Herobrine.mcpack",
+      "authors": [
+        "fromgate"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1497754,
+      "slug": "tacz-i-s-gfl-hk416b-gunpack",
+      "name": "TACZ I S GFL HK416 gunpack",
+      "summary": "a gunpack make by I_simp_gfl_hk416",
+      "downloadCount": 1268,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1793/83/256/256/639135981943130789.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-i-s-gfl-hk416b-gunpack",
+      "downloadUrl": "https://edge.forgecdn.net/files/8044/354/I%20S%20GFL%20HK416%20gunpack.zip",
+      "latestFileId": 8044354,
+      "fileName": "I S GFL HK416 gunpack.zip",
+      "authors": [
+        "congthanh93187"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1029920,
+      "slug": "cavscobblemons",
+      "name": "CavsCobblemons",
+      "summary": "An addon that adds more high-quality, textured, and animated models to Cobblemon.",
+      "downloadCount": 2243,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1107/515/256/256/638657492420805857.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/cavscobblemons",
+      "downloadUrl": "https://edge.forgecdn.net/files/6191/425/CavsCobblemon1.4.zip",
+      "latestFileId": 6191425,
+      "fileName": "CavsCobblemon1.4.zip",
+      "authors": [
+        "Xcavalier"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1184982,
+      "slug": "metiss-gun-pack-for-tacz",
+      "name": "[TACZ] Metis's Gun Pack",
+      "summary": "Whatever gun i could think of that are semi/full realisticly functional guns pack for TACZ",
+      "downloadCount": 4479,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1162/489/256/256/638731651672649820.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/metiss-gun-pack-for-tacz",
+      "downloadUrl": "https://edge.forgecdn.net/files/8828/574/metis_gun_pack_v1.7.1.zip",
+      "latestFileId": 8828574,
+      "fileName": "metis_gun_pack_v1.7.1.zip",
+      "authors": [
+        "Hesitant_Metis"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1276618,
+      "slug": "scrilis-militiry-vehicle-pack-smvp",
+      "name": "Scrili's Militiry Vehicle Pack |SMVP|",
+      "summary": "military equipment",
+      "downloadCount": 2461,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1295/211/256/256/638841907794859331.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/scrilis-militiry-vehicle-pack-smvp",
+      "downloadUrl": null,
+      "latestFileId": 6947505,
+      "fileName": "Scrili_Military_Pack_Assets_0.2.zip",
+      "authors": [
+        "ScRiLi1"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 584808,
+      "slug": "flamethrower-data-pack",
+      "name": "Flamethrower Data Pack",
+      "summary": "Adds a Flamethrower to Minecraft.",
+      "downloadCount": 4209,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/499/287/256/256/637815837247212932.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/flamethrower-data-pack",
+      "downloadUrl": null,
+      "latestFileId": 4924082,
+      "fileName": "Flamethrower DP v2.1 [1.20-1.20.1].zip",
+      "authors": [
+        "SirDoomTurtle"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1489690,
+      "slug": "tacz-nakara-weapon-pack",
+      "name": "[TacZ] Nakara Weapon Pack",
+      "summary": "Weapon pack for Tac:Z",
+      "downloadCount": 947,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1721/162/256/256/639094704161619408.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tacz-nakara-weapon-pack",
+      "downloadUrl": null,
+      "latestFileId": 8050601,
+      "fileName": "na-0.0.2.zip",
+      "authors": [
+        "MCJohn3148"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1257223,
+      "slug": "tram-tatra-t6b5-update-mtc",
+      "name": "Tram Tatra T6b5 update mtc",
+      "summary": "Add-on for Minecraft Bedrock The addition to the Tatra T6B5 tram includes a model of the USSR tram, which has unique functions. This addition is suitable for those who are building a city, or who want to imagine themselves in the place of a tram driver.",
+      "downloadCount": 3947,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1255/173/256/256/638818179622451762.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/tram-tatra-t6b5-update-mtc",
+      "downloadUrl": "https://edge.forgecdn.net/files/6490/702/MTC2.0.10.zip",
+      "latestFileId": 6490702,
+      "fileName": "MTC2.0.10.zip",
+      "authors": [
+        "Mdtv_Mods"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 517426,
+      "slug": "hihiirokane-addon-ii-for-bedrock-edition",
+      "name": "Hihiirokane Addon II for Bedrock Edition",
+      "summary": "Adds 6 new magic wands, 2 new swords, 5 new armors and 1 new item.",
+      "downloadCount": 12837,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/421/316/256/256/637648843596479924.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/hihiirokane-addon-ii-for-bedrock-edition",
+      "downloadUrl": null,
+      "latestFileId": 4807536,
+      "fileName": "Hihiirokane Addon Ver4.zip",
+      "authors": [
+        "pyorotan"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1022804,
+      "slug": "morphin",
+      "name": "Morphin",
+      "summary": "A Morph Mod made for playing with a friend, in which one will be a mob trying to kill the other, whom is a human.",
+      "downloadCount": 1564,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1000/435/256/256/638519459779816298.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/morphin",
+      "downloadUrl": null,
+      "latestFileId": 5363123,
+      "fileName": "Morph.zip",
+      "authors": [
+        "user_eqgjxfzzd6lpp7i8"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1026456,
+      "slug": "warhammer-40-000-weapon-pack",
+      "name": "Warhammer 40 000 weapon pack",
+      "summary": "Addition for mod Vic's  Point blank",
+      "downloadCount": 2864,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1003/949/256/256/638524833320239051.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/warhammer-40-000-weapon-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/5423/359/Warhammer%2040k%20weapon%20pack%20v1.1.zip",
+      "latestFileId": 5423359,
+      "fileName": "Warhammer 40k weapon pack v1.1.zip",
+      "authors": [
+        "GreyDox0005"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 536364,
+      "slug": "more-weapons-be",
+      "name": "More Weapons BE",
+      "summary": "Adds new weapons to minecraft",
+      "downloadCount": 8147,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/443/522/256/256/637696865931992475.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/more-weapons-be",
+      "downloadUrl": "https://edge.forgecdn.net/files/3489/601/Minecraft%20More%20Weapons%200.1.zip",
+      "latestFileId": 3489601,
+      "fileName": "Minecraft More Weapons 0.1.zip",
+      "authors": [
+        "TheHighTide"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1159031,
+      "slug": "mimicer-addon",
+      "name": "Mimicer Addon",
+      "summary": "An addon that adds loot drops for the Mimicer. ",
+      "downloadCount": 4380,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1135/976/256/256/638697536522756840.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/mimicer-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/5990/189/mimicer-addon-1.0.zip",
+      "latestFileId": 5990189,
+      "fileName": "mimicer-addon-1.0.zip",
+      "authors": [
+        "1337leets"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1350097,
+      "slug": "project-pwr-a-superpower-addon",
+      "name": "Project PWR",
+      "summary": "Project PWR- is an addon that adds superpowers to your world",
+      "downloadCount": 1884,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1814/681/256/256/639147065084459558.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/project-pwr-a-superpower-addon",
+      "downloadUrl": null,
+      "latestFileId": 8141313,
+      "fileName": "Project-PWR_BP.zip",
+      "authors": [
+        "Bored_Hoodie_Guy"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 513581,
+      "slug": "simply-seasons-for-farmers-delight-datapack",
+      "name": "Simply Seasons For Farmer's Delight (Datapack)",
+      "summary": "Have seasons factor when crops from Farmer's Delight can be grown",
+      "downloadCount": 2270,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/417/51/256/256/637640437043973146.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/simply-seasons-for-farmers-delight-datapack",
+      "downloadUrl": "https://edge.forgecdn.net/files/3419/381/Farmers_Delight_Seasons.zip",
+      "latestFileId": 3419381,
+      "fileName": "Farmers_Delight_Seasons.zip",
+      "authors": [
+        "Keebsz"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1162402,
+      "slug": "ir-voxel-world-trains",
+      "name": "IR Voxel World Trains",
+      "summary": "The Voxel Train addon pack for Immersive Railroading from around the World",
+      "downloadCount": 2519,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1139/454/256/256/638702413952170287.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ir-voxel-world-trains",
+      "downloadUrl": null,
+      "latestFileId": 7385259,
+      "fileName": "Voxel World Trains beta4.0.zip",
+      "authors": [
+        "FS_FADE"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1221122,
+      "slug": "groupheros-palladium-addon",
+      "name": "GroupHeros Palladium Addon",
+      "summary": "A custom superhero addon pack made with palladium.",
+      "downloadCount": 674,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1200/112/256/256/638776713515210097.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/groupheros-palladium-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/6565/927/groupheros.zip",
+      "latestFileId": 6565927,
+      "fileName": "groupheros.zip",
+      "authors": [
+        "YourLocalCrafty"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 624295,
+      "slug": "strawberry-cow-bedrock-edition",
+      "name": "Strawberry Cow 🍓◦ Bedrock Edition",
+      "summary": "Adds cute Strawberry Cow to the game!",
+      "downloadCount": 4707,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/548/432/256/256/637883986127913877.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/strawberry-cow-bedrock-edition",
+      "downloadUrl": null,
+      "latestFileId": 3794871,
+      "fileName": "Strawberry_Cow_BE.zip",
+      "authors": [
+        "TinyDaggsy"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1402068,
+      "slug": "ir-voxel-realistic-logic-minecart",
+      "name": "IR Voxel Realistic Minecart",
+      "summary": "More Realistic Logic Minecart for Immersive Railroading Mod",
+      "downloadCount": 1019,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1556/535/256/256/639009998031617453.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ir-voxel-realistic-logic-minecart",
+      "downloadUrl": null,
+      "latestFileId": 7335994,
+      "fileName": "Voxel Realistic Logic Minecart v1.2.zip",
+      "authors": [
+        "FS_FADE"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1506326,
+      "slug": "team-fortress-2",
+      "name": "Team Fortress 2",
+      "summary": "This project features the entire Team Fortress 2 cast. Scout, Soldier, Pyro, Demoman, Heavy, Engineer, Medic, Sniper, and Spy are all here. Red and Blue teams are here and their one goal is to fight each other.",
+      "downloadCount": 1227,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1745/674/256/256/639110794266024937.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/team-fortress-2",
+      "downloadUrl": "https://edge.forgecdn.net/files/7884/928/Team%20Fortress%202.zip",
+      "latestFileId": 7884928,
+      "fileName": "Team Fortress 2.zip",
+      "authors": [
+        "Mystery_Montero"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 827484,
+      "slug": "crafting",
+      "name": "Crafting+",
+      "summary": "Adds new recipes for more than just a crafting table!",
+      "downloadCount": 1687,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/777/987/256/256/638121572093084794.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/crafting",
+      "downloadUrl": "https://edge.forgecdn.net/files/4398/535/crafting-plus.v1.5.0-mc1.19.X.zip",
+      "latestFileId": 4398535,
+      "fileName": "crafting-plus.v1.5.0-mc1.19.X.zip",
+      "authors": [
+        "thezadezapper"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 601834,
+      "slug": "camera-addon-promo-cinematic",
+      "name": "THIRD PERSON+ | Adds Shoulder Surfing!",
+      "summary": "Adds more dynamic viewing for the playable cinematic experience",
+      "downloadCount": 2278,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/522/57/256/256/637842195966859489.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/camera-addon-promo-cinematic",
+      "downloadUrl": "https://edge.forgecdn.net/files/3724/22/Camera%20.zip",
+      "latestFileId": 3724022,
+      "fileName": "Camera .zip",
+      "authors": [
+        "Vexcenot"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 969879,
+      "slug": "deeper-oceans",
+      "name": "Deeper Oceans",
+      "summary": "A simple increase to water depth of minecraft ",
+      "downloadCount": 1856,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/942/477/256/256/638424895681090222.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/deeper-oceans",
+      "downloadUrl": null,
+      "latestFileId": 5149085,
+      "fileName": "Deeper oceans 1.0.0 (8).zip",
+      "authors": [
+        "Fierylemming"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 605793,
+      "slug": "blooming-wisteria-bedrock-edition",
+      "name": "Blooming Wisteria ◦ Bedrock Edition",
+      "summary": "Replaces azalea with wisteria.",
+      "downloadCount": 3397,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/526/834/256/256/637846714363259616.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/blooming-wisteria-bedrock-edition",
+      "downloadUrl": null,
+      "latestFileId": 3735029,
+      "fileName": "Blooming_Wisteria_BE.zip",
+      "authors": [
+        "TinyDaggsy"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 581678,
+      "slug": "netherite-dragonsteel-datapack-for-ice-and-fire",
+      "name": "Netherite Dragonsteel Datapack for Ice and Fire",
+      "summary": "Uses netherite instead of iron for all the Ice and Fire dragonsteel ingot recipes.",
+      "downloadCount": 2413,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1180/251/256/256/638753364324761084.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/netherite-dragonsteel-datapack-for-ice-and-fire",
+      "downloadUrl": "https://edge.forgecdn.net/files/6200/956/Netherite%20Dragonsteel%201.20.zip",
+      "latestFileId": 6200956,
+      "fileName": "Netherite Dragonsteel 1.20.zip",
+      "authors": [
+        "benkenobee"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1400180,
+      "slug": "everything-arrowverse",
+      "name": "Everything Arrowverse",
+      "summary": "A Fisk Heropack that adds characters from the popular Arrowverse shows such as Arrow and Flash",
+      "downloadCount": 1060,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1552/760/256/256/639007630274802073.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/everything-arrowverse",
+      "downloadUrl": "https://edge.forgecdn.net/files/7306/939/everything-arrowverse-v2-0.zip",
+      "latestFileId": 7306939,
+      "fileName": "everything-arrowverse-v2-0.zip",
+      "authors": [
+        "blondie_03_"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1268903,
+      "slug": "reawakened-lucky-block",
+      "name": "Reawakened Lucky Block (Orespawn Lucky Block)",
+      "summary": "Remember the Orespawn Lucky Block? Well, it reawakens thanks to Zenyx_on_yt's remake of Orespawn, Craziness Awakened! Every drop and structure has been transferred from the original lucky block, with some extras!",
+      "downloadCount": 2959,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1279/829/256/256/638832250865186051.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/reawakened-lucky-block",
+      "downloadUrl": "https://edge.forgecdn.net/files/6811/549/Reawakened_Lucky_Block_v1.0.1.zip",
+      "latestFileId": 6811549,
+      "fileName": "Reawakened_Lucky_Block_v1.0.1.zip",
+      "authors": [
+        "Iron3Ethan"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 520852,
+      "slug": "hearts",
+      "name": "Hearts!",
+      "summary": "Let the hearts pour out of the mobs!",
+      "downloadCount": 2279,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/426/36/256/256/637655855831243991.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/hearts",
+      "downloadUrl": "https://edge.forgecdn.net/files/5574/948/Hearts.zip",
+      "latestFileId": 5574948,
+      "fileName": "Hearts.zip",
+      "authors": [
+        "IFoxuk"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1257415,
+      "slug": "play-as-herobrine",
+      "name": "Play As Herobrine",
+      "summary": "Play As Herobrine",
+      "downloadCount": 1149,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1255/713/256/256/638818420525382226.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/play-as-herobrine",
+      "downloadUrl": null,
+      "latestFileId": 6490013,
+      "fileName": "Play As Herobrine V1.zip",
+      "authors": [
+        "user_pamx9hhct9arsmqo"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1440480,
+      "slug": "faster-furnaces",
+      "name": "Faster Furnaces",
+      "summary": "Faster Furnaces, Smokers and Blast furnaces",
+      "downloadCount": 1237,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1633/920/256/256/639046625467801895.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/faster-furnaces",
+      "downloadUrl": "https://edge.forgecdn.net/files/7505/289/fasterfurnaces-1.21.1.zip",
+      "latestFileId": 7505289,
+      "fileName": "fasterfurnaces-1.21.1.zip",
+      "authors": [
+        "Reccers"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 405553,
+      "slug": "color-blindness-resource-pack",
+      "name": "Color Blindness Resource Pack",
+      "summary": "this will be added later",
+      "downloadCount": 13339,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/297/348/256/256/637344193133069044.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/color-blindness-resource-pack",
+      "downloadUrl": "https://edge.forgecdn.net/files/3047/70/Tritanomaly%20Pack%20-%201.16.zip",
+      "latestFileId": 3047070,
+      "fileName": "Tritanomaly Pack - 1.16.zip",
+      "authors": [
+        "zenek1290"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "textures",
+      "categoryLabel": "Texture packs",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1056461,
+      "slug": "savev-jujutsucraft-addon",
+      "name": "JJB (Jujutsucraft addon)",
+      "summary": "Addon adds multiple new abilities to CTs, adds new damage types, buffs weak CTs to make game more balanced.Makes the game more fair for players who don`t want to use commands in game.",
+      "downloadCount": 4083,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/2072/392/256/256/639260438331481229.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/savev-jujutsucraft-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/5800/274/Savev2.zip",
+      "latestFileId": 5800274,
+      "fileName": "Savev2.zip",
+      "authors": [
+        "Savelless"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1288407,
+      "slug": "rich-veins",
+      "name": "Rich Veins",
+      "summary": "Dramatically increases the amount of ore found in every vein",
+      "downloadCount": 1941,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1318/659/256/256/638857335340141629.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/rich-veins",
+      "downloadUrl": "https://edge.forgecdn.net/files/6659/959/Rich%20Veins.zip",
+      "latestFileId": 6659959,
+      "fileName": "Rich Veins.zip",
+      "authors": [
+        "user_yosv3j4eab8ksd0c"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1514136,
+      "slug": "project-b-o-b",
+      "name": "project B.O.B (invincible & the boys)",
+      "summary": "an addon to palladium that gives power from invincible focusing on vilrumite varients and powers from the show the boys",
+      "downloadCount": 821,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1756/882/256/256/639117819259146534.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/project-b-o-b",
+      "downloadUrl": "https://edge.forgecdn.net/files/8175/56/ProjectBOB.zip",
+      "latestFileId": 8175056,
+      "fileName": "ProjectBOB.zip",
+      "authors": [
+        "haladopa_73466"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1635060,
+      "slug": "newbig-diamond-return",
+      "name": "New Bigdiamond return",
+      "summary": "Adding big diamond bosses",
+      "downloadCount": 888,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1957/457/256/256/639212016597446728.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/newbig-diamond-return",
+      "downloadUrl": "https://edge.forgecdn.net/files/8726/98/bigdiamondaddon.zip",
+      "latestFileId": 8726098,
+      "fileName": "bigdiamondaddon.zip",
+      "authors": [
+        "MrvhhAndNglongMC"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1093855,
+      "slug": "ir-voxel-rail-stuff",
+      "name": "IR Voxel Rail Stuff",
+      "summary": "The Voxel Rails addon pack for Immersive Railroading",
+      "downloadCount": 1561,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1070/999/256/256/638606383696346636.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/ir-voxel-rail-stuff",
+      "downloadUrl": null,
+      "latestFileId": 5678179,
+      "fileName": "Voxel Rail Stuff alpha3.0.9.zip",
+      "authors": [
+        "FS_FADE"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1231449,
+      "slug": "henry-danger",
+      "name": "Henry Danger (Lucraft Addonpack)",
+      "summary": "Henry Danger Lucraft Addon – Unlock the powers of Henry Danger! Suit up as Captain Man, Kid Danger, and Danger Force, and harness abilities like Electrokinesis, Energy Shields, and Hypermotility. Experience the ultimate hero adventure in Minecraft! ",
+      "downloadCount": 3177,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1210/985/256/256/638788728084125555.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/henry-danger",
+      "downloadUrl": "https://edge.forgecdn.net/files/6448/308/HD2.5.zip",
+      "latestFileId": 6448308,
+      "fileName": "HD2.5.zip",
+      "authors": [
+        "LegendaryTacoman"
+      ],
+      "categories": [
+        "Worlds"
+      ],
+      "category": "maps",
+      "categoryLabel": "Maps",
+      "source": "CurseForge"
+    },
+    {
+      "id": 637189,
+      "slug": "sonic-boom",
+      "name": "Sonic Boom",
+      "summary": "Makes the Warden's sonic boom attack usable by players",
+      "downloadCount": 5120,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/563/318/256/256/637918388573572624.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/sonic-boom",
+      "downloadUrl": null,
+      "latestFileId": 5599203,
+      "fileName": "Sonic_Boom_DP_1.21.zip",
+      "authors": [
+        "SirDoomTurtle"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 986110,
+      "slug": "m2-stinger-point-blank",
+      "name": "M2 Stinger - Point Blank",
+      "summary": "Adds the M2 Stinger from WW2",
+      "downloadCount": 2292,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/961/705/256/256/638458205295399097.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/m2-stinger-point-blank",
+      "downloadUrl": "https://edge.forgecdn.net/files/5176/113/m2stinger-ext.zip",
+      "latestFileId": 5176113,
+      "fileName": "m2stinger-ext.zip",
+      "authors": [
+        "cookieman_741"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 549160,
+      "slug": "more-armor",
+      "name": "More Armor",
+      "summary": "Adds more armor sets into minecraft",
+      "downloadCount": 2289,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/458/94/256/256/637731723236966273.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/more-armor",
+      "downloadUrl": null,
+      "latestFileId": 3533621,
+      "fileName": "More Armor Data Pack.zip",
+      "authors": [
+        "SirDoomTurtle"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 633300,
+      "slug": "bedrock-blades-bedrock-edition",
+      "name": "bedrock blades ~bedrock edition~",
+      "summary": "adds some basic swords to bedrock edition",
+      "downloadCount": 3154,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/558/806/256/256/637907352774576025.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/bedrock-blades-bedrock-edition",
+      "downloadUrl": null,
+      "latestFileId": 3830766,
+      "fileName": "bedrock blades.zip",
+      "authors": [
+        "Draggonfire1"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 442316,
+      "slug": "immersive-portals-gobber-addon-fabric",
+      "name": "Immersive Portals Gobber datapack [FABRIC]",
+      "summary": "Datapack to make Gobber portals more fancy when Immersive Portals is installed",
+      "downloadCount": 8733,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/338/695/256/256/637477945715317401.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/immersive-portals-gobber-addon-fabric",
+      "downloadUrl": null,
+      "latestFileId": 3207856,
+      "fileName": "gobber2_immersive_portals-1.1.zip",
+      "authors": [
+        "ZenoMetal"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 610738,
+      "slug": "decauville-addon",
+      "name": "Decauville addon for immersive railroading",
+      "summary": "Narrow gauge trains",
+      "downloadCount": 4214,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/557/427/256/256/637904004873800627.png",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/decauville-addon",
+      "downloadUrl": "https://edge.forgecdn.net/files/3819/331/decauville.zip",
+      "latestFileId": 3819331,
+      "fileName": "decauville.zip",
+      "authors": [
+        "Hamood30"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1305708,
+      "slug": "eternal-singularity",
+      "name": "Eternal Singularity",
+      "summary": "\"All matter wears out... until it finds eternity.\"",
+      "downloadCount": 11044,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1997/325/256/256/639228806506786592_animated.gif",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/eternal-singularity",
+      "downloadUrl": null,
+      "latestFileId": 8726390,
+      "fileName": "Eternal_SingularityV9.mcaddon.zip",
+      "authors": [
+        "Ls_Craft"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    },
+    {
+      "id": 539958,
+      "slug": "time-stop",
+      "name": "Time Stop",
+      "summary": "Adds an item that can stop time",
+      "downloadCount": 3151,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/447/653/256/256/637706987930307897.jpeg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/time-stop",
+      "downloadUrl": "https://edge.forgecdn.net/files/3502/552/Time%20stop%20datapack%2btextures%20folder.zip",
+      "latestFileId": 3502552,
+      "fileName": "Time stop datapack+textures folder.zip",
+      "authors": [
+        "dog_lime"
+      ],
+      "categories": [
+        "Scenarios"
+      ],
+      "category": "addons",
+      "categoryLabel": "Add-ons",
+      "source": "CurseForge"
+    },
+    {
+      "id": 1468366,
+      "slug": "faye-fairy-dining-set",
+      "name": "Faye Fairy Dining Set CIT",
+      "summary": "The Faye Fairy Dining Set comes with 10 adorable decorations to use in Minecraft Java Optifine!",
+      "downloadCount": 917,
+      "logo": "https://media.forgecdn.net/avatars/thumbnails/1690/327/256/256/639072962700063934.jpg",
+      "url": "https://www.curseforge.com/minecraft/mc-addons/faye-fairy-dining-set",
+      "downloadUrl": null,
+      "latestFileId": 7659609,
+      "fileName": "Invisible Item Frame Pack_1.zip",
+      "authors": [
+        "FAYEPIXEL"
+      ],
+      "categories": [
+        "Resource Packs"
+      ],
+      "category": "other",
+      "categoryLabel": "Other",
+      "source": "CurseForge"
+    }
+  ]
 }
