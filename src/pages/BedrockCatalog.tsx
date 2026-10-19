@@ -242,7 +242,7 @@ export function BedrockCatalog() {
             </div>
           </div>
         </motion.article>)}
-      </div>
+      </div>}
     </div>
   </div>;
 }
