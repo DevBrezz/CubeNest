@@ -22,6 +22,9 @@ jobs:
           node-version: 22
       - name: Run sync
         run: node scripts/sync-resources.mjs
+      - name: Sync global SpigotMC and PocketMine plugin catalogues
+        continue-on-error: true
+        run: node scripts/sync-global-plugins.mjs
       - name: Sync CurseForge creator resources
         run: node scripts/sync-curseforge.mjs
       - name: Sync Bedrock catalog and direct download URLs
@@ -32,7 +35,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/resources.json public/data/curseforge.json public/data/bedrock-curseforge.json
+          git add public/data/resources.json public/data/curseforge.json public/data/bedrock-curseforge.json public/data/poggit-plugins.json public/data/spigot-plugins.json
           if git diff --staged --quiet; then
             echo "No changes"
           else
