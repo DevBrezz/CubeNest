@@ -281,7 +281,7 @@ export function SkinCreator() {
       if (!viewerRef.current) return;
       if (document.hidden) {
         viewerRef.current.autoRotate = false;
-        viewerRef.current.animation = undefined;
+        viewerRef.current.animation = null;
       } else if (!reducedMotion) {
         viewerRef.current.autoRotate = !isMobile;
         if (anim === 'walk') viewerRef.current.animation = new WalkingAnimation();
@@ -298,7 +298,7 @@ export function SkinCreator() {
           if (!viewerRef.current) return;
           if (!vis) {
             viewerRef.current.autoRotate = false;
-            viewerRef.current.animation = undefined;
+            viewerRef.current.animation = null;
           } else if (!document.hidden && !reducedMotion) {
             viewerRef.current.autoRotate = !isMobile;
             if (anim === 'walk') viewerRef.current.animation = new WalkingAnimation();
@@ -333,12 +333,12 @@ export function SkinCreator() {
     const reducedMotion =
       typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion || document.hidden) {
-      v.animation = undefined;
+      v.animation = null;
       return;
     }
     if (anim === 'walk') v.animation = new WalkingAnimation();
     else if (anim === 'idle') v.animation = new IdleAnimation();
-    else v.animation = undefined;
+    else v.animation = null;
   }, [anim]);
 
   const paintAt = (clientX: number, clientY: number, isStart: boolean) => {
