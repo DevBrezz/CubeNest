@@ -1,8 +1,8 @@
 {
-  "lastSynced": "2026-10-20T01:54:17.031Z",
+  "lastSynced": "2026-10-20T07:35:59.084Z",
   "source": "9minecraft-wordpress",
-  "total": 1135,
-  "directDownloads": 743,
+  "total": 1136,
+  "directDownloads": 744,
   "resources": [
     {
       "id": "9mc-1050068",
@@ -80,7 +80,7 @@
       "name": "The Man from the Shadow (26+, 1.21) – MCPE/Bedrock Addon",
       "summary": "A dark figure that pursues players from the shadows is the centerpiece of The Man from the Shadow, a horror add-on.",
       "downloadCount": 0,
-      "logo": "https://img3.9minecraft.net/i/2026/09/24/The-man-from-the-shadow-MCPE-Bedrock-Addon-1-500x496.jpg",
+      "logo": "https://img4.9minecraft.net/i/2026/10/20/The-man-from-the-shadow-MCPE-Bedrock-Addon-2-500x335.webp",
       "url": "https://www.9minecraft.net/the-man-from-the-shadow-addon-mcpe/",
       "authors": [
         "9Minecraft"
@@ -93,7 +93,7 @@
       "downloadUrl": "https://dl2.9minecraft.net/dl2.php?file=The-man-from-the-shadow-MCPE-Bedrock-Addon-20260217.mcaddon",
       "fileName": "The-man-from-the-shadow-MCPE-Bedrock-Addon-20260217.mcaddon",
       "fileId": null,
-      "updated": "2026-10-09T14:00:36",
+      "updated": "2026-10-20T10:26:34",
       "source": "9Minecraft"
     },
     {
@@ -11045,6 +11045,29 @@
       "source": "9Minecraft"
     },
     {
+      "id": "9mc-1033317",
+      "numericId": 1033317,
+      "slug": "alya-totem-texture-pack-mcpe",
+      "name": "Alya Totem (26+) – MCPE/Bedrock Texture Pack",
+      "summary": "The Totem of Undying gets a new design in Alya Totem, a texture pack that replaces its default look with an Alya Totem.",
+      "downloadCount": 0,
+      "logo": "https://img2.9minecraft.net/i/2026/09/23/Alya-Totem-MCPE-Bedrock-Texture-Pack-1-500x281.jpg",
+      "url": "https://www.9minecraft.net/alya-totem-texture-pack-mcpe/",
+      "authors": [
+        "9Minecraft"
+      ],
+      "categories": [
+        "Texture packs"
+      ],
+      "category": "textures",
+      "categoryLabel": "Texture packs",
+      "downloadUrl": "https://dl2.9minecraft.net/dl2.php?file=Alya-Totem-MCPE-Bedrock-Texture-Pack-20260325.mcpack",
+      "fileName": "Alya-Totem-MCPE-Bedrock-Texture-Pack-20260325.mcpack",
+      "fileId": null,
+      "updated": "2026-10-02T16:27:00",
+      "source": "9Minecraft"
+    },
+    {
       "id": "9mc-1033316",
       "numericId": 1033316,
       "slug": "classic-texture-panorama-texture-pack-mcpe",
@@ -16542,29 +16565,6 @@
       "source": "9Minecraft"
     },
     {
-      "id": "9mc-1027528",
-      "numericId": 1027528,
-      "slug": "creepypasta-shader-bedrock-mcpe",
-      "name": "Creepypasta Shader (26+) – MCPE/Bedrock Shader",
-      "summary": "A gray, overcast sky sets a horror mood in Creepypasta Shader, a shader made for Vibrant Visuals mode.",
-      "downloadCount": 0,
-      "logo": "https://www.9minecraft.net/wp-content/uploads/2026/09/Creepypasta-Shader-MCPE-Bedrock-Shader-1-500x281.jpg",
-      "url": "https://www.9minecraft.net/creepypasta-shader-bedrock-mcpe/",
-      "authors": [
-        "9Minecraft"
-      ],
-      "categories": [
-        "Texture packs"
-      ],
-      "category": "textures",
-      "categoryLabel": "Texture packs",
-      "downloadUrl": "https://dl2.9minecraft.net/dl2.php?file=Creepypasta-Shader-MCPE-Bedrock-Shader-1.11.mcpack",
-      "fileName": "Creepypasta-Shader-MCPE-Bedrock-Shader-1.11.mcpack",
-      "fileId": null,
-      "updated": "2026-10-02T16:13:55",
-      "source": "9Minecraft"
-    },
-    {
       "id": "9mc-1089238",
       "numericId": 1089238,
       "slug": "newb-classic-shader",
@@ -20610,6 +20610,29 @@
       "fileName": null,
       "fileId": null,
       "updated": "2026-09-28T21:15:50",
+      "source": "9Minecraft"
+    },
+    {
+      "id": "9mc-1027528",
+      "numericId": 1027528,
+      "slug": "creepypasta-shader-bedrock-mcpe",
+      "name": "Creepypasta Shader (26+) – MCPE/Bedrock Shader",
+      "summary": "A gray, overcast sky sets a horror mood in Creepypasta Shader, a shader made for Vibrant Visuals mode.",
+      "downloadCount": 0,
+      "logo": "https://www.9minecraft.net/wp-content/uploads/2026/09/Creepypasta-Shader-MCPE-Bedrock-Shader-1-500x281.jpg",
+      "url": "https://www.9minecraft.net/creepypasta-shader-bedrock-mcpe/",
+      "authors": [
+        "9Minecraft"
+      ],
+      "categories": [
+        "Shaders"
+      ],
+      "category": "shaders",
+      "categoryLabel": "Shaders",
+      "downloadUrl": "https://dl2.9minecraft.net/dl2.php?file=Creepypasta-Shader-MCPE-Bedrock-Shader-1.11.mcpack",
+      "fileName": "Creepypasta-Shader-MCPE-Bedrock-Shader-1.11.mcpack",
+      "fileId": null,
+      "updated": "2026-10-02T16:13:55",
       "source": "9Minecraft"
     },
     {
