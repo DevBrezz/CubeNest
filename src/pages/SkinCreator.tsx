@@ -236,8 +236,9 @@ export function SkinCreator() {
     } else if (type === 'up') {
       paintingRef.current = false;
       lastPixelRef.current = null;
+      // Still in draw mode here (narrowed by early return) — keep orbit disabled
       if (editorViewerRef.current?.controls) {
-        editorViewerRef.current.controls.enabled = mode === 'rotate';
+        editorViewerRef.current.controls.enabled = false;
       }
       void syncEditorSkin();
     }
