@@ -3,13 +3,14 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Download, ExternalLink, Package, AlertCircle, Palette, Map, Boxes, Sun, User, Layers } from 'lucide-react';
 import { formatNumber } from '../lib/utils';
+import { downloadBedrockItem, canDownloadBedrockItem } from '../lib/bedrockDownload';
 
 type Category = 'all' | 'addons' | 'maps' | 'textures' | 'shaders' | 'skins';
 type BedrockItem = {
   id: number | string; slug: string; name: string; summary: string; downloadCount: number;
   logo: string | null; url: string; authors?: string[]; categories?: string[];
   category?: Exclude<Category, 'all'> | 'other'; categoryLabel?: string;
-  downloadUrl?: string | null; fileName?: string | null; fileId?: number | null; updated?: string | null;
+  downloadUrl?: string | null; fileName?: string | null; fileId?: number | null; latestFileId?: number | null; updated?: string | null;
   source?: string;
 };
 type BedrockData = { lastSynced: string | null; gameId?: number; total?: number; resources: BedrockItem[]; error?: string };
@@ -21,10 +22,6 @@ const CATEGORIES: { id: Category; label: string; icon: typeof Boxes; description
   { id: 'shaders', label: 'Shaders', icon: Sun, description: 'Visual effects and lighting' },
   { id: 'skins', label: 'Skins', icon: User, description: 'Character skins and skin packs' },
 ];
-
-const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev')
-  .trim()
-  .replace(/\/$/, '');
 
 function inferCategory(item: BedrockItem): Exclude<Category, 'all'> | 'other' {
   const explicit = String(item.category || '').toLowerCase().replace(/[ _-]+/g, '');
@@ -42,55 +39,6 @@ function inferCategory(item: BedrockItem): Exclude<Category, 'all'> | 'other' {
   return 'other';
 }
 
-function isNineMinecraftUrl(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase();
-    return host.includes('9minecraft.net') || host.includes('cdn9mc.com');
-  } catch {
-    return false;
-  }
-}
-
-/** Stream a file through the CubeNest worker; never navigate away. */
-async function downloadViaProxy(item: BedrockItem): Promise<void> {
-  if (!item.downloadUrl) {
-    throw new Error('No direct download URL is available for this resource. CubeNest will not open an external page as a fake download.');
-  }
-  if (!DOWNLOAD_PROXY_URL) {
-    throw new Error('CubeNest download proxy is not configured.');
-  }
-  const fromNine = item.source === '9Minecraft' || isNineMinecraftUrl(item.downloadUrl);
-  const path = fromNine ? '/download/9minecraft' : '/download/curseforge';
-  const endpoint = new URL(path, DOWNLOAD_PROXY_URL);
-  endpoint.searchParams.set('url', item.downloadUrl);
-  const filename = item.fileName || `${item.slug || item.id}.${fromNine ? 'mcaddon' : 'zip'}`;
-  endpoint.searchParams.set('filename', filename);
-  const response = await fetch(endpoint.toString(), { method: 'GET', credentials: 'omit' });
-  if (!response.ok) {
-    let detail = '';
-    try {
-      const payload = await response.json();
-      detail = typeof payload?.error === 'string' ? ` ${payload.error}` : '';
-    } catch { /* not JSON */ }
-    throw new Error(`Download failed (HTTP ${response.status}).${detail}`);
-  }
-  const blob = await response.blob();
-  if (blob.size < 32) throw new Error('The source returned an empty or incomplete file.');
-  const head = new TextDecoder().decode(await blob.slice(0, 64).arrayBuffer()).trimStart().toLowerCase();
-  if (head.startsWith('<!doctype') || head.startsWith('<html') || head.startsWith('{')) {
-    throw new Error('The source returned a web page or error instead of a resource file.');
-  }
-  const objectUrl = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = objectUrl;
-  a.download = filename;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-}
-
 export function BedrockCatalog() {
   const [params, setParams] = useSearchParams();
   const [query, setQuery] = useState(params.get('q') || '');
@@ -106,7 +54,7 @@ export function BedrockCatalog() {
     setDownloadBusyId(item.id);
     setDownloadMessage(null);
     try {
-      await downloadViaProxy(item);
+      await downloadBedrockItem(item);
       setDownloadMessage(`Download started for “${item.name}”. You stayed on CubeNest.`);
     } catch (e) {
       setDownloadMessage(e instanceof Error ? e.message : 'Download failed.');
@@ -218,7 +166,7 @@ export function BedrockCatalog() {
             <p className="text-xs text-mc-muted mt-2 line-clamp-3 flex-1">{m.summary || 'Minecraft Bedrock community resource.'}</p>
             <div className="flex items-center justify-between text-[11px] text-mc-muted border-t border-mc-border pt-3 mt-4"><span>{m.source === '9Minecraft' ? '9Minecraft' : `${formatNumber(m.downloadCount || 0)} downloads`}</span><span className="truncate max-w-28">{m.source === '9Minecraft' ? (m.authors?.[0] || '9Minecraft') : (m.authors?.[0] || 'Community creator')}</span></div>
             <div className="grid grid-cols-2 gap-2 mt-3">
-              {m.downloadUrl ? (
+              {canDownloadBedrockItem(m) ? (
                 <button
                   type="button"
                   disabled={downloadBusyId === m.id}
@@ -226,13 +174,13 @@ export function BedrockCatalog() {
                   className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-emerald-400 transition-colors disabled:opacity-60"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  {downloadBusyId === m.id ? 'Downloading…' : 'Direct download'}
+                  {downloadBusyId === m.id ? 'Downloading…' : 'Download'}
                 </button>
               ) : (
                 <button
                   type="button"
                   disabled
-                  title="No direct file URL is available for this resource"
+                  title="No download file is available for this resource"
                   className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-mc-gray px-3 py-2.5 text-xs font-bold text-mc-muted cursor-not-allowed"
                 >
                   <Download className="w-3.5 h-3.5" /> Unavailable

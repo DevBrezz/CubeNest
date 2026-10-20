@@ -4,10 +4,9 @@ import { useResources } from '../hooks/useResources';
 import { searchProjects, getProject, getProjectVersions, type ModrinthHit, type ModrinthProject, type ModrinthVersion } from '../lib/modrinth';
 import type { Resource } from '../types/resource';
 
-type Source = 'all' | 'modrinth' | 'spigot' | 'pocketmine';
+type Source = 'all' | 'modrinth' | 'spigot';
 type Plugin = Resource & { author?: string; sourceName: string; raw?: ModrinthHit; full?: ModrinthProject; versions?: ModrinthVersion[]; currentFile?: string; filename?: string };
 const LOADING_GIF = 'https://i.imgur.com/cFLg43W.gif';
-const POGGIT_APIS = ['https://poggit.pmmp.io/plugins.min.json', 'https://poggit.pmmp.io/releases.min.json', 'https://poggit.pmmp.io/plugins.json'];
 const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev').trim().replace(/\/$/, '');
 const SPIGET_API = `${DOWNLOAD_PROXY_URL}/api/spigot/resources`;
 const SPIGET_SEARCH_API = `${DOWNLOAD_PROXY_URL}/api/spigot/search`;
@@ -28,35 +27,6 @@ function normalizeModrinth(h: ModrinthHit): Plugin {
     version: h.latest_version || '', downloads: Number(h.downloads) || 0, published: h.date_created || '', updated: h.date_modified || '',
     url: `https://modrinth.com/plugin/${h.slug}`, downloadUrl: '', featured: false, hidden: false,
     author: h.author || 'Modrinth creator', sourceName: 'Modrinth', raw: h };
-}
-function normalizePoggit(item: any, index = 0): Plugin {
-  // Poggit's API is release-oriented: `id` identifies a release/build, while
-  // `project_id` identifies the project. Keep the release ID for downloads.
-  const releaseId = String(item.id ?? item.release_id ?? item.releaseId ?? item.build_id ?? `poggit-${index}`);
-  const projectId = String(item.project_id ?? item.projectId ?? item.plugin_id ?? item.slug ?? releaseId);
-  const name = String(item.project_name ?? item.plugin_name ?? item.name ?? item.title ?? item.slug ?? `PocketMine plugin ${projectId}`);
-  const artifact = String(item.artifact_url ?? item.download_url ?? item.downloadUrl ?? item.latest_release?.artifact_url ?? '');
-  const canonicalUrl = String(item.html_url ?? item.plugin_url ?? item.url ?? `https://poggit.pmmp.io/plugins`);
-  const authors = item.producers ?? item.authors ?? item.author;
-  const author = Array.isArray(authors)
-    ? authors.map((a: any) => typeof a === 'string' ? a : a?.name || '').filter(Boolean).join(', ')
-    : String(authors || 'Poggit creator');
-  const filenameFromUrl = artifact ? (artifact.split('?')[0].split('/').pop() || '') : '';
-  const filename = String(item.filename || filenameFromUrl || `${name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.phar`);
-  const version = String(item.version ?? item.version_name ?? item.tagline ?? '');
-  return {
-    id: `poggit-${releaseId}`, platform: 'custom', platformId: releaseId, slug: projectId,
-    title: name, description: String(item.tagline || item.description || item.summary || 'No description provided.'),
-    body: String(item.description || item.tagline || ''), icon: item.icon_url || (typeof item.icon === 'string' ? item.icon : null),
-    gallery: [], categories: Array.isArray(item.categories) ? item.categories.map((c: any) => String(c.category_name || c)) : [],
-    loaders: ['PocketMine-MP'], gameVersions: Array.isArray(item.api) ? item.api.map(String) : item.api ? [String(item.api)] : [],
-    version, downloads: Number(item.downloads) || 0,
-    published: item.submission_date ? new Date(Number(item.submission_date) * 1000).toISOString() : '',
-    updated: item.last_state_change_date ? new Date(Number(item.last_state_change_date) * 1000).toISOString() : '',
-    url: canonicalUrl, downloadUrl: artifact, featured: false, hidden: false,
-    filename: filename.toLowerCase().endsWith('.phar') ? filename : `${filename}.phar`,
-    author, sourceName: 'PocketMine-MP / Poggit'
-  };
 }
 
 function normalizeSpiget(item: any): Plugin {
@@ -135,38 +105,7 @@ export function Plugins() {
   const loadRemote = useCallback(async (signal: AbortSignal) => {
     setRemoteLoading(true); setRemoteError('');
     try {
-      if (source === 'pocketmine') {
-        setModrinthHasMore(false);
-        let list: any[] = [];
-        let lastLiveError = '';
-        // Use CubeNest's Worker first: the browser never calls Poggit directly, avoiding CORS failures.
-        try {
-          const q = search.trim();
-          const endpoint = `${DOWNLOAD_PROXY_URL}/api/poggit/plugins${q ? `?name=${encodeURIComponent(q)}` : ''}`;
-          const response = await fetch(endpoint, { signal, headers: { Accept: 'application/json' }, credentials: 'omit' });
-          if (!response.ok) throw new Error(`CubeNest Poggit proxy returned HTTP ${response.status}`);
-          const payload = await response.json();
-          list = usableRecords(extractRecords(payload, 'poggit'), 'poggit');
-          if (!list.length && Array.isArray(payload?.plugins)) list = usableRecords(payload.plugins, 'poggit');
-          if (!list.length && payload?.data && Array.isArray(payload.data.plugins)) list = usableRecords(payload.data.plugins, 'poggit');
-          if (!list.length) lastLiveError = 'The CubeNest proxy returned no matching PocketMine plugins.';
-        } catch (error) {
-          if (signal.aborted) throw error;
-          lastLiveError = error instanceof Error ? error.message : String(error);
-        }
-        // Static synced catalogue remains a fallback when the live proxy is temporarily unavailable.
-        if (!list.length) {
-          try {
-            const fallback = await fetch(`${import.meta.env.BASE_URL}data/poggit-plugins.json`, { signal, headers: { Accept: 'application/json' } });
-            if (fallback.ok) list = usableRecords(extractRecords(await fallback.json(), 'poggit'), 'poggit');
-          } catch (error) { if (signal.aborted) throw error; }
-        }
-        if (!list.length) throw new Error(`${lastLiveError || 'Poggit catalogue is unavailable.'} Redeploy workers/download-proxy/index.js so it tries the Poggit JSON release endpoints. Do not use the release-archive GitHub repository as a plugin.`);
-        const queryLower = search.trim().toLowerCase();
-        const plugins = list.map(normalizePoggit).filter((item: Plugin) => !queryLower || `${item.title} ${item.description} ${item.author || ''}`.toLowerCase().includes(queryLower));
-        setRemote(plugins); setTotal(plugins.length);
-        if (!plugins.length) setRemoteError(`No PocketMine plugins matched “${search.trim()}”. Try another search.`);
-      } else if (source === 'spigot') {
+      if (source === 'spigot') {
         setModrinthHasMore(false);
         const query = search.trim();
         const url = query ? `${SPIGET_SEARCH_API}?q=${encodeURIComponent(query)}` : SPIGET_API;
@@ -189,26 +128,8 @@ export function Plugins() {
           const endpoint = query ? `${SPIGET_SEARCH_API}?q=${encodeURIComponent(query)}` : SPIGET_API;
           return fetchRecordsWithFallback(endpoint, 'data/spigot-plugins.json', signal, 'spigot');
         })();
-        const poggitTask = (async () => {
-          const endpoint = `${DOWNLOAD_PROXY_URL}/api/poggit/plugins${query ? `?name=${encodeURIComponent(query)}` : ''}`;
-          try {
-            const response = await fetch(endpoint, { signal, headers: { Accept: 'application/json' }, credentials: 'omit' });
-            if (!response.ok) throw new Error(`CubeNest Poggit proxy returned HTTP ${response.status}`);
-            const payload = await response.json();
-            const records = usableRecords(extractRecords(payload, 'poggit'), 'poggit');
-            if (records.length) return records;
-            throw new Error('Poggit proxy returned no usable release records.');
-          } catch (error) {
-            if (signal.aborted) throw error;
-            const fallback = await fetch(`${import.meta.env.BASE_URL}data/poggit-plugins.json`, { signal, headers: { Accept: 'application/json' } });
-            if (!fallback.ok) throw error;
-            const records = usableRecords(extractRecords(await fallback.json(), 'poggit'), 'poggit');
-            if (!records.length) throw error;
-            return records;
-          }
-        })();
 
-        const [modrinthResult, spigotResult, poggitResult] = await Promise.allSettled([modrinthTask, spigotTask, poggitTask]);
+        const [modrinthResult, spigotResult] = await Promise.allSettled([modrinthTask, spigotTask]);
         if (signal.aborted) return;
         const combined: Plugin[] = [];
         const failures: string[] = [];
@@ -228,11 +149,6 @@ export function Plugins() {
           failures.push(`Spigot: ${spigotResult.reason instanceof Error ? spigotResult.reason.message : 'live search unavailable'}`);
         }
 
-        if (poggitResult.status === 'fulfilled') {
-          combined.push(...poggitResult.value.map(normalizePoggit));
-        } else {
-          failures.push(`PocketMine: ${poggitResult.reason instanceof Error ? poggitResult.reason.message : 'catalogue unavailable'}`);
-        }
 
         const seen = new Set<string>();
         const unique = combined.filter(item => {
@@ -244,8 +160,7 @@ export function Plugins() {
         const modrinthTotal = modrinthResult.status === 'fulfilled' ? modrinthResult.value.total_hits : 0;
         setModrinthHasMore(modrinthTotal > (page + 1) * 24);
         setTotal(modrinthTotal
-          + (spigotResult.status === 'fulfilled' ? spigotResult.value.length : 0)
-          + (poggitResult.status === 'fulfilled' ? poggitResult.value.length : 0));
+          + (spigotResult.status === 'fulfilled' ? spigotResult.value.length : 0));
         if (failures.length && !unique.length) setRemoteError(`Some resource sources are unavailable. ${failures.join(' · ')}`);
         else if (!unique.length) setRemoteError(query ? `No plugins matched “${query}”. Try another search.` : 'No plugin resources were returned by the selected sources.');
         else if (failures.length) setRemoteError(`Some sources could not be loaded; available results are still shown. ${failures.join(' · ')}`);
@@ -309,17 +224,7 @@ export function Plugins() {
       const proxyUrl = new URL(DOWNLOAD_PROXY_URL);
       if (proxyUrl.protocol !== 'https:') throw new Error('The CubeNest download service must use HTTPS.');
       let downloadEndpoint: URL;
-      if (plugin.id.startsWith('poggit-') || plugin.sourceName.includes('Poggit')) {
-        if (!url) throw new Error('Poggit did not provide a downloadable release artifact for this entry. Try another release.');
-        // The Worker fetches the .phar server-side and streams it back; the browser stays on CubeNest.
-        downloadEndpoint = new URL('/download/poggit', DOWNLOAD_PROXY_URL);
-        downloadEndpoint.searchParams.set('url', url);
-        filename = plugin.filename || `${(plugin.slug || plugin.title || 'plugin').toLowerCase().replace(/[^a-z0-9._-]+/g, '-')}.phar`;
-      } else if (plugin.platform === 'modrinth') {
-        if (!url) throw new Error('No downloadable Modrinth release file was found.');
-        downloadEndpoint = new URL('/download/modrinth', DOWNLOAD_PROXY_URL);
-        downloadEndpoint.searchParams.set('url', url);
-      } else if (plugin.platform === 'spigot' || plugin.sourceName.includes('SpigotMC')) {
+      if (plugin.platform === 'spigot' || plugin.sourceName.includes('SpigotMC')) {
         if (!/^\d+$/.test(String(plugin.platformId || ''))) throw new Error('SpigotMC did not provide a valid resource ID.');
         downloadEndpoint = new URL('/download/spigot', DOWNLOAD_PROXY_URL);
         downloadEndpoint.searchParams.set('id', String(plugin.platformId));
@@ -356,12 +261,12 @@ export function Plugins() {
       <section className="rounded-3xl border border-mc-border bg-mc-surface p-6 sm:p-9 mb-7">
         <div className="text-xs font-bold tracking-[.18em] uppercase text-mc-red-bright mb-3">CUBENEST RESOURCE DISCOVERY</div>
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-mc-white">Discover <span className="text-mc-red-bright">Minecraft Plugins</span></h1>
-        <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-mc-muted">Discover community-made Java plugins from Modrinth and SpigotMC, plus PocketMine-MP releases from Poggit. Browse details and attempt direct downloads without leaving CubeNest.</p>
+        <p className="mt-3 max-w-3xl text-sm sm:text-base leading-relaxed text-mc-muted">Discover community-made Java plugins from Modrinth and SpigotMC. Browse details and download without leaving CubeNest.</p>
       </section>
       <section className="rounded-2xl border border-mc-border bg-mc-surface p-4 sm:p-5 mb-7 space-y-4">
         <div className="relative"><Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mc-muted"/><input type="search" value={search} onChange={e=>{setSearch(e.target.value);setPage(0)}} placeholder="Search plugins, features, or creators…" className="w-full pl-11 pr-4 py-3 rounded-xl bg-mc-gray border border-mc-border text-sm text-mc-white placeholder:text-mc-muted"/></div>
         <div className="flex flex-wrap gap-2 items-center">
-          {([{id:'all',label:'All sources'},{id:'modrinth',label:'Modrinth'},{id:'spigot',label:'SpigotMC'},{id:'pocketmine',label:'PocketMine-MP / Poggit'}] as const).map(o=><button key={o.id} onClick={()=>{setSource(o.id);setPage(0)}} className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border ${source===o.id?'bg-mc-red border-mc-red text-white':'bg-mc-gray border-mc-border text-mc-text hover:border-mc-red/50'}`}>{o.label}</button>)}
+          {([{id:'all',label:'All sources'},{id:'modrinth',label:'Modrinth'},{id:'spigot',label:'SpigotMC'}] as const).map(o=><button key={o.id} onClick={()=>{setSource(o.id);setPage(0)}} className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border ${source===o.id?'bg-mc-red border-mc-red text-white':'bg-mc-gray border-mc-border text-mc-text hover:border-mc-red/50'}`}>{o.label}</button>)}
           <select value={sort} onChange={e=>setSort(e.target.value as typeof sort)} className="sm:ml-auto px-3 py-2 rounded-xl bg-mc-gray border border-mc-border text-xs text-mc-text"><option value="relevance">Relevance</option><option value="newest">Newest</option><option value="downloads">Most downloads</option><option value="alphabetical">Name A–Z</option></select>
           <button onClick={()=>setReloadKey(k=>k+1)} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-mc-border text-xs"><RefreshCw size={14}/> Retry</button>
           <span className="text-xs text-mc-muted">{remoteLoading?'Loading…':`${displayed.length} shown · ${total.toLocaleString()} total`}</span>

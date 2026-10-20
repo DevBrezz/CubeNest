@@ -3,64 +3,16 @@ import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, ExternalLink, Package, CalendarDays, DownloadCloud, ShieldCheck, Tag, UserRound, AlertCircle } from 'lucide-react';
 import { formatNumber } from '../lib/utils';
+import { downloadBedrockItem, canDownloadBedrockItem } from '../lib/bedrockDownload';
 
 type BedrockItem = {
   id: number | string; slug: string; name: string; summary: string; downloadCount: number;
   logo: string | null; url: string; authors?: string[]; categories?: string[];
   category?: string; categoryLabel?: string; downloadUrl?: string | null;
-  fileName?: string | null; fileId?: number | null; updated?: string | null;
+  fileName?: string | null; fileId?: number | null; latestFileId?: number | null; updated?: string | null;
   source?: string;
 };
 type BedrockData = { lastSynced: string | null; resources: BedrockItem[]; error?: string };
-
-const DOWNLOAD_PROXY_URL = String(import.meta.env.VITE_DOWNLOAD_PROXY_URL || 'https://cubenest-download-proxy.brezzteam5.workers.dev')
-  .trim()
-  .replace(/\/$/, '');
-
-function isNineMinecraftUrl(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase();
-    return host.includes('9minecraft.net') || host.includes('cdn9mc.com');
-  } catch {
-    return false;
-  }
-}
-
-async function downloadViaProxy(item: BedrockItem): Promise<void> {
-  if (!item.downloadUrl) {
-    throw new Error('No direct download URL is available for this resource. CubeNest will not open an external page as a fake download.');
-  }
-  if (!DOWNLOAD_PROXY_URL) throw new Error('CubeNest download proxy is not configured.');
-  const fromNine = item.source === '9Minecraft' || isNineMinecraftUrl(item.downloadUrl);
-  const endpoint = new URL(fromNine ? '/download/9minecraft' : '/download/curseforge', DOWNLOAD_PROXY_URL);
-  endpoint.searchParams.set('url', item.downloadUrl);
-  const filename = item.fileName || `${item.slug || item.id}.${fromNine ? 'mcaddon' : 'zip'}`;
-  endpoint.searchParams.set('filename', filename);
-  const response = await fetch(endpoint.toString(), { method: 'GET', credentials: 'omit' });
-  if (!response.ok) {
-    let detail = '';
-    try {
-      const payload = await response.json();
-      detail = typeof payload?.error === 'string' ? ` ${payload.error}` : '';
-    } catch { /* not JSON */ }
-    throw new Error(`Download failed (HTTP ${response.status}).${detail}`);
-  }
-  const blob = await response.blob();
-  if (blob.size < 32) throw new Error('The source returned an empty or incomplete file.');
-  const head = new TextDecoder().decode(await blob.slice(0, 64).arrayBuffer()).trimStart().toLowerCase();
-  if (head.startsWith('<!doctype') || head.startsWith('<html') || head.startsWith('{')) {
-    throw new Error('The source returned a web page or error instead of a resource file.');
-  }
-  const objectUrl = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = objectUrl;
-  a.download = filename;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-}
 
 export function BedrockResourceDetail() {
   const { id } = useParams<{ id: string }>();
@@ -107,7 +59,7 @@ export function BedrockResourceDetail() {
     setDownloadBusy(true);
     setDownloadMessage(null);
     try {
-      await downloadViaProxy(item);
+      await downloadBedrockItem(item);
       setDownloadMessage('Download started. You stayed on CubeNest.');
     } catch (e) {
       setDownloadMessage(e instanceof Error ? e.message : 'Download failed.');
@@ -139,7 +91,7 @@ export function BedrockResourceDetail() {
               {updated && !Number.isNaN(updated.getTime()) && <span className="inline-flex items-center gap-1.5 rounded-lg bg-black/20 px-3 py-2"><CalendarDays className="w-3.5 h-3.5" /> Updated {updated.toLocaleDateString()}</span>}
             </div>
             <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3">
-              {item.downloadUrl ? (
+              {canDownloadBedrockItem(item) ? (
                 <button
                   type="button"
                   disabled={downloadBusy}
