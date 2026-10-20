@@ -4,7 +4,7 @@ import {
   RotateCcw, User, Eye, EyeOff, X, Play, Pause, RotateCw, Hand,
 } from 'lucide-react';
 import { SkinViewer, WalkingAnimation, IdleAnimation, RunningAnimation } from 'skinview3d';
-import { Raycaster, Vector2, type Object3D, type Intersection } from 'three';
+import { Raycaster, Vector2, Box3, Vector3, type Object3D, type Intersection } from 'three';
 import {
   PRESET_COLORS,
   SkinModel,
@@ -33,6 +33,9 @@ const BUNDLED: Record<'steve' | 'alex', string> = {
   steve: steveSkinUrl,
   alex: alexSkinUrl,
 };
+
+/** Skin Creator editor backdrop (static). */
+const EDITOR_BG_URL = 'https://i.imgur.com/TSOqH6m.jpeg';
 
 function publicSkinUrl(id: 'steve' | 'alex'): string {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
@@ -91,6 +94,117 @@ function findBodyPartName(obj: Object3D | null): BodyPartKey | null {
   return null;
 }
 
+
+/** Orbit target + distance from visible body-part bounds only (hidden parts ignored). */
+function focusCameraOnParts(
+  viewer: SkinViewer,
+  filter: BodyPartKey | 'all',
+  smooth = true,
+): void {
+  const skin = viewer.playerObject?.skin;
+  const controls = viewer.controls;
+  const camera = viewer.camera;
+  if (!skin || !controls || !camera) return;
+
+  const keys: BodyPartKey[] =
+    filter === 'all'
+      ? ['head', 'body', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg']
+      : [filter];
+
+  const box = new Box3();
+  let has = false;
+  for (const key of keys) {
+    const part = skin[key];
+    if (!part || part.visible === false) continue;
+    part.updateWorldMatrix(true, true);
+    // Only include meshes that are actually visible in the hierarchy
+    part.traverse((obj) => {
+      const mesh = obj as Object3D & { isMesh?: boolean; visible: boolean };
+      if (!mesh.isMesh) return;
+      let ok = true;
+      let cur: Object3D | null = mesh;
+      while (cur) {
+        if (!cur.visible) {
+          ok = false;
+          break;
+        }
+        cur = cur.parent;
+      }
+      if (!ok) return;
+      const b = new Box3().setFromObject(mesh);
+      if (b.isEmpty()) return;
+      if (!has) {
+        box.copy(b);
+        has = true;
+      } else {
+        box.union(b);
+      }
+    });
+  }
+  if (!has) return;
+
+  const center = new Vector3();
+  const size = new Vector3();
+  box.getCenter(center);
+  box.getSize(size);
+  const maxDim = Math.max(size.x, size.y, size.z, 0.15);
+
+  // Distance from FOV so the part fills most of the view
+  const fovRad = ((camera.fov ?? 45) * Math.PI) / 180;
+  let dist = (maxDim * 0.6) / Math.tan(fovRad / 2);
+  dist = Math.max(dist * 1.35, maxDim * 2.0);
+
+  const prevTarget = controls.target.clone();
+  const prevPos = camera.position.clone();
+  let dir = prevPos.clone().sub(prevTarget);
+  if (dir.lengthSq() < 1e-6) dir.set(0.35, 0.25, 1);
+  dir.normalize();
+
+  const nextPos = center.clone().addScaledVector(dir, dist);
+
+  controls.minDistance = Math.max(0.35, maxDim * 0.35);
+  controls.maxDistance = Math.max(28, maxDim * 18);
+  // Near/far for close inspection of small parts
+  camera.near = 0.05;
+  camera.far = 500;
+  camera.updateProjectionMatrix();
+
+  if (!smooth) {
+    controls.target.copy(center);
+    camera.position.copy(nextPos);
+    controls.update();
+    return;
+  }
+
+  // Short lerp (cancel previous with generation counter on viewer)
+  const gen = ((viewer as unknown as { __focusGen?: number }).__focusGen ?? 0) + 1;
+  (viewer as unknown as { __focusGen?: number }).__focusGen = gen;
+  const startT = performance.now();
+  const dur = 180;
+  const fromTarget = prevTarget.clone();
+  const fromPos = prevPos.clone();
+  const tick = (now: number) => {
+    if ((viewer as unknown as { __focusGen?: number }).__focusGen !== gen) return;
+    const u = Math.min(1, (now - startT) / dur);
+    const e = 1 - (1 - u) * (1 - u);
+    controls.target.lerpVectors(fromTarget, center, e);
+    camera.position.lerpVectors(fromPos, nextPos, e);
+    controls.update();
+    if (u < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function isObjectVisibleInTree(obj: Object3D): boolean {
+  let cur: Object3D | null = obj;
+  while (cur) {
+    if (!cur.visible) return false;
+    cur = cur.parent;
+  }
+  return true;
+}
+
+
 export function SkinCreator() {
   const skinCanvasRef = useRef<HTMLCanvasElement>(null);
   const editorCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -134,7 +248,7 @@ export function SkinCreator() {
   }, []);
 
   const applyVisibility = useCallback(
-    (viewer: SkinViewer | null, filter: BodyPartKey | 'all', outer: boolean) => {
+    (viewer: SkinViewer | null, filter: BodyPartKey | 'all', outer: boolean, focus = true) => {
       const skin = viewer?.playerObject?.skin;
       if (!skin) return;
       const parts: BodyPartKey[] = ['head', 'body', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'];
@@ -146,17 +260,26 @@ export function SkinCreator() {
         if (part.innerLayer) part.innerLayer.visible = show;
         if (part.outerLayer) part.outerLayer.visible = show && outer;
       }
+      if (focus && viewer) {
+        // Defer one frame so world matrices reflect visibility
+        requestAnimationFrame(() => {
+          if (editorViewerRef.current === viewer || previewViewerRef.current === viewer) {
+            focusCameraOnParts(viewer, filter, true);
+          }
+        });
+      }
     },
     [],
   );
 
-  const syncEditorSkin = useCallback(async () => {
+  const syncEditorSkin = useCallback(async (opts?: { focus?: boolean }) => {
     const canvas = skinCanvasRef.current;
     const viewer = editorViewerRef.current;
     if (!canvas || !viewer) return;
     try {
       await viewer.loadSkin(canvas, { model: model === 'slim' ? 'slim' : 'default' });
-      applyVisibility(viewer, partFilter, showOuter);
+      // After texture reload, restore isolation; skip camera jump while painting
+      applyVisibility(viewer, partFilter, showOuter, opts?.focus !== false);
     } catch {
       /* transient */
     }
@@ -165,7 +288,8 @@ export function SkinCreator() {
   const scheduleSkinSync = useCallback(() => {
     if (paintSyncTimer.current) window.clearTimeout(paintSyncTimer.current);
     paintSyncTimer.current = window.setTimeout(() => {
-      void syncEditorSkin();
+      // Keep current camera framing while painting
+      void syncEditorSkin({ focus: false });
     }, 40);
   }, [syncEditorSkin]);
 
@@ -200,13 +324,16 @@ export function SkinCreator() {
 
     const targets: Object3D[] = [];
     skinRoot.traverse((o) => {
-      if ((o as { isMesh?: boolean }).isMesh) targets.push(o);
+      if (!(o as { isMesh?: boolean }).isMesh) return;
+      if (!isObjectVisibleInTree(o)) return;
+      targets.push(o);
     });
 
     const hits = raycaster.current.intersectObjects(targets, false);
     if (!hits.length) return;
 
     const hit = hits[0];
+    // Hidden parts are excluded from targets; still enforce part filter
     if (partFilter !== 'all') {
       const part = findBodyPartName(hit.object);
       if (part && part !== partFilter) return;
@@ -240,7 +367,7 @@ export function SkinCreator() {
       if (editorViewerRef.current?.controls) {
         editorViewerRef.current.controls.enabled = false;
       }
-      void syncEditorSkin();
+      void syncEditorSkin({ focus: false });
     }
   };
 
@@ -312,11 +439,18 @@ export function SkinCreator() {
         width: isMobile ? 320 : 420,
         height: isMobile ? 400 : 520,
         model: 'default',
-        background: 0x0b1220,
+        background: 0x000000,
         animation: undefined,
         zoom: 0.85,
         enableControls: true,
       });
+      // Transparent clear so CSS background image shows through
+      try {
+        viewer.renderer.setClearColor(0x000000, 0);
+        viewer.renderer.setClearAlpha(0);
+      } catch {
+        /* ignore */
+      }
     } catch {
       setWebglError('WebGL is not available on this device. Skin Creator needs WebGL.');
       return;
@@ -347,6 +481,7 @@ export function SkinCreator() {
       }
       try {
         await viewer.loadSkin(skinEl, { model: 'default' });
+        applyVisibility(viewer, 'all', true, true);
       } catch {
         /* ignore */
       }
@@ -371,8 +506,17 @@ export function SkinCreator() {
   }, []);
 
   useEffect(() => {
-    void syncEditorSkin();
-  }, [syncEditorSkin]);
+    void syncEditorSkin({ focus: true });
+  }, [model]); // model/slim only — avoid reloading texture on every part toggle
+
+
+  // Isolate / restore parts: visibility + camera framing only (no texture reload)
+  useEffect(() => {
+    const viewer = editorViewerRef.current;
+    if (!viewer?.playerObject?.skin) return;
+    applyVisibility(viewer, partFilter, showOuter, true);
+  }, [partFilter, showOuter, applyVisibility]);
+
 
   useEffect(() => {
     const v = editorViewerRef.current;
@@ -452,7 +596,7 @@ export function SkinCreator() {
     setHistory((h) => h.slice(0, -1));
     setFuture((f) => [...f, cloneImageData(current)]);
     ctx.putImageData(prev, 0, 0);
-    void syncEditorSkin();
+    void syncEditorSkin({ focus: false });
   };
 
   const redo = () => {
@@ -463,7 +607,7 @@ export function SkinCreator() {
     setFuture((f) => f.slice(0, -1));
     setHistory((h) => [...h, cloneImageData(current)]);
     ctx.putImageData(next, 0, 0);
-    void syncEditorSkin();
+    void syncEditorSkin({ focus: false });
   };
 
   const resetSkin = () => {
@@ -620,13 +764,29 @@ export function SkinCreator() {
                 </div>
               </div>
               <div
-                className="flex justify-center bg-[#0b1220] touch-none"
-                style={{ cursor: mode === 'draw' ? 'crosshair' : 'grab' }}
+                className="flex justify-center touch-none relative overflow-hidden"
+                style={{
+                  cursor: mode === 'draw' ? 'crosshair' : 'grab',
+                  backgroundImage: `url(${EDITOR_BG_URL})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }}
               >
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: 'rgba(11, 18, 32, 0.35)' }}
+                  aria-hidden
+                />
                 <canvas
                   ref={editorCanvasRef}
-                  className="max-w-full rounded-b-lg"
-                  style={{ width: 'min(100%, 420px)', height: 'auto', touchAction: 'none' }}
+                  className="max-w-full rounded-b-lg relative z-[1]"
+                  style={{
+                    width: 'min(100%, 420px)',
+                    height: 'auto',
+                    touchAction: 'none',
+                    background: 'transparent',
+                  }}
                   onPointerDown={(e) => onEditorPointer(e, 'down')}
                   onPointerMove={(e) => onEditorPointer(e, 'move')}
                   onPointerUp={(e) => onEditorPointer(e, 'up')}
