@@ -4,6 +4,7 @@ import {
   Download, Upload, Undo2, Redo2, Eraser, Paintbrush, Pipette, PaintBucket,
   RotateCcw, User, Sparkles, Grid3x3, Eye, EyeOff,
 } from 'lucide-react';
+import { SkinViewer, WalkingAnimation, IdleAnimation } from 'skinview3d';
 import {
   ALL_PARTS,
   BodyPartId,
@@ -19,7 +20,7 @@ import {
 
 type Tool = 'pencil' | 'eraser' | 'fill' | 'eyedropper';
 
-const SCALE = 8; // 64 * 8 = 512 editor canvas
+const SCALE = 8;
 
 function hexToRgba(hex: string): [number, number, number, number] {
   const h = hex.replace('#', '');
@@ -32,160 +33,13 @@ function rgbaToHex(r: number, g: number, b: number): string {
   return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
-/** Draw textured cuboid faces in simple isometric order. */
-function drawPreview3d(
-  ctx: CanvasRenderingContext2D,
-  skin: HTMLCanvasElement,
-  model: SkinModel,
-  rotY: number,
-  showOverlay: boolean,
-) {
-  const W = ctx.canvas.width;
-  const H = ctx.canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  // soft ground
-  const g = ctx.createRadialGradient(W / 2, H * 0.78, 8, W / 2, H * 0.78, 120);
-  g.addColorStop(0, 'rgba(16,185,129,0.12)');
-  g.addColorStop(1, 'transparent');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, W, H);
-
-  const unit = 8;
-  const scale = 3.4;
-  const cx = W / 2;
-  const cy = H * 0.58;
-
-  const cos = Math.cos(rotY);
-  const sin = Math.sin(rotY);
-
-  type Face = {
-    pts: [number, number][];
-    uv: { x: number; y: number; w: number; h: number };
-    depth: number;
-    shade: number;
-  };
-
-  const project = (x: number, y: number, z: number): [number, number, number] => {
-    // rotate around Y
-    const xr = x * cos + z * sin;
-    const zr = -x * sin + z * cos;
-    // isometric-ish
-    const px = cx + (xr - zr) * scale * 0.9;
-    const py = cy + (-y) * scale + (xr + zr) * scale * 0.35;
-    return [px, py, zr + xr];
-  };
-
-  const faces: Face[] = [];
-
-  const addCuboid = (
-    ox: number,
-    oy: number,
-    oz: number,
-    sx: number,
-    sy: number,
-    sz: number,
-    uvOrigin: { top: { x: number; y: number; w: number; h: number }; front: { x: number; y: number; w: number; h: number }; right: { x: number; y: number; w: number; h: number }; left: { x: number; y: number; w: number; h: number }; back: { x: number; y: number; w: number; h: number }; bottom: { x: number; y: number; w: number; h: number } },
-  ) => {
-    // corners of box in model space (y up)
-    const c = [
-      [ox, oy, oz],
-      [ox + sx, oy, oz],
-      [ox + sx, oy + sy, oz],
-      [ox, oy + sy, oz],
-      [ox, oy, oz + sz],
-      [ox + sx, oy, oz + sz],
-      [ox + sx, oy + sy, oz + sz],
-      [ox, oy + sy, oz + sz],
-    ] as const;
-
-    const faceDefs: { idx: number[]; uv: { x: number; y: number; w: number; h: number }; shade: number }[] = [
-      { idx: [3, 2, 6, 7], uv: uvOrigin.top, shade: 1 },
-      { idx: [0, 1, 2, 3], uv: uvOrigin.front, shade: 0.92 },
-      { idx: [1, 5, 6, 2], uv: uvOrigin.left, shade: 0.78 },
-      { idx: [4, 0, 3, 7], uv: uvOrigin.right, shade: 0.72 },
-      { idx: [5, 4, 7, 6], uv: uvOrigin.back, shade: 0.65 },
-      { idx: [4, 5, 1, 0], uv: uvOrigin.bottom, shade: 0.55 },
-    ];
-
-    for (const f of faceDefs) {
-      const pts3 = f.idx.map((i) => project(c[i][0], c[i][1], c[i][2]));
-      const depth = pts3.reduce((s, p) => s + p[2], 0) / 4;
-      faces.push({
-        pts: pts3.map((p) => [p[0], p[1]] as [number, number]),
-        uv: f.uv,
-        depth,
-        shade: f.shade,
-      });
-    }
-  };
-
-  const armW = model === 'slim' ? 3 : 4;
-  // Minecraft proportions in "pixels"
-  // body center at origin; feet at y=0
-  addCuboid(-4, 12, -2, 8, 12, 4, partUv('body', 'base', model)); // body
-  addCuboid(-4, 24, -4, 8, 8, 8, partUv('head', 'base', model)); // head
-  addCuboid(-4 - armW, 12, -2, armW, 12, 4, partUv('rightArm', 'base', model));
-  addCuboid(4, 12, -2, armW, 12, 4, partUv('leftArm', 'base', model));
-  addCuboid(-4, 0, -2, 4, 12, 4, partUv('rightLeg', 'base', model));
-  addCuboid(0, 0, -2, 4, 12, 4, partUv('leftLeg', 'base', model));
-
-  if (showOverlay) {
-    const inflate = 0.5;
-    addCuboid(-4 - inflate, 24 - inflate, -4 - inflate, 8 + inflate * 2, 8 + inflate * 2, 8 + inflate * 2, partUv('head', 'overlay', model));
-    addCuboid(-4 - 0.25, 12 - 0.25, -2 - 0.25, 8 + 0.5, 12 + 0.5, 4 + 0.5, partUv('body', 'overlay', model));
-    addCuboid(-4 - armW - 0.25, 12 - 0.25, -2 - 0.25, armW + 0.5, 12 + 0.5, 4 + 0.5, partUv('rightArm', 'overlay', model));
-    addCuboid(4 - 0.25, 12 - 0.25, -2 - 0.25, armW + 0.5, 12 + 0.5, 4 + 0.5, partUv('leftArm', 'overlay', model));
-    addCuboid(-4 - 0.25, 0 - 0.25, -2 - 0.25, 4 + 0.5, 12 + 0.5, 4 + 0.5, partUv('rightLeg', 'overlay', model));
-    addCuboid(0 - 0.25, 0 - 0.25, -2 - 0.25, 4 + 0.5, 12 + 0.5, 4 + 0.5, partUv('leftLeg', 'overlay', model));
-  }
-
-  faces.sort((a, b) => a.depth - b.depth);
-
-  for (const f of faces) {
-    // sample average color from UV for solid face (fast + clean at small res)
-    const tmp = document.createElement('canvas');
-    tmp.width = Math.max(1, f.uv.w);
-    tmp.height = Math.max(1, f.uv.h);
-    const tctx = tmp.getContext('2d')!;
-    tctx.clearRect(0, 0, tmp.width, tmp.height);
-    tctx.drawImage(skin, f.uv.x, f.uv.y, f.uv.w, f.uv.h, 0, 0, f.uv.w, f.uv.h);
-    const id = tctx.getImageData(0, 0, tmp.width, tmp.height);
-    let pr = 0, pg = 0, pb = 0, pa = 0, n = 0;
-    for (let i = 0; i < id.data.length; i += 4) {
-      const a = id.data[i + 3];
-      if (a < 16) continue;
-      pr += id.data[i];
-      pg += id.data[i + 1];
-      pb += id.data[i + 2];
-      pa += a;
-      n++;
-    }
-    if (n === 0) continue;
-    pr = Math.round((pr / n) * f.shade);
-    pg = Math.round((pg / n) * f.shade);
-    pb = Math.round((pb / n) * f.shade);
-    const alpha = Math.min(1, pa / n / 255);
-
-    ctx.beginPath();
-    ctx.moveTo(f.pts[0][0], f.pts[0][1]);
-    for (let i = 1; i < f.pts.length; i++) ctx.lineTo(f.pts[i][0], f.pts[i][1]);
-    ctx.closePath();
-    ctx.fillStyle = `rgba(${pr},${pg},${pb},${alpha})`;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-    ctx.lineWidth = 0.6;
-    ctx.stroke();
-  }
-
-  void unit;
-}
-
 export function SkinCreator() {
   const skinRef = useRef<HTMLCanvasElement>(null);
   const editorRef = useRef<HTMLCanvasElement>(null);
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const viewerRef = useRef<SkinViewer | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const paintTimer = useRef<number | null>(null);
 
   const [model, setModel] = useState<SkinModel>('classic');
   const [layer, setLayer] = useState<LayerId>('base');
@@ -194,12 +48,11 @@ export function SkinCreator() {
   const [color, setColor] = useState('#5c4033');
   const [showGrid, setShowGrid] = useState(true);
   const [showOverlay, setShowOverlay] = useState(true);
-  const [rotY, setRotY] = useState(0.45);
-  const [dragging, setDragging] = useState(false);
+  const [anim, setAnim] = useState<'idle' | 'walk' | 'none'>('idle');
   const [painting, setPainting] = useState(false);
   const [history, setHistory] = useState<ImageData[]>([]);
   const [future, setFuture] = useState<ImageData[]>([]);
-  const [hint, setHint] = useState('Paint on the UV map · drag the 3D preview to rotate');
+  const [hint, setHint] = useState('Paint on the UV map · 3D preview uses skinview3d (professional renderer)');
 
   const getSkinCtx = () => skinRef.current?.getContext('2d', { willReadFrequently: true }) ?? null;
 
@@ -211,6 +64,30 @@ export function SkinCreator() {
     setFuture([]);
   }, []);
 
+  const syncViewer = useCallback(async () => {
+    const skin = skinRef.current;
+    const viewer = viewerRef.current;
+    if (!skin || !viewer) return;
+    try {
+      await viewer.loadSkin(skin, {
+        model: model === 'slim' ? 'slim' : 'default',
+      });
+      // toggle outer layer visibility
+      const player = viewer.playerObject;
+      if (player?.skin) {
+        const layerVisible = showOverlay;
+        player.skin.head.outerLayer.visible = layerVisible;
+        player.skin.body.outerLayer.visible = layerVisible;
+        player.skin.leftArm.outerLayer.visible = layerVisible;
+        player.skin.rightArm.outerLayer.visible = layerVisible;
+        player.skin.leftLeg.outerLayer.visible = layerVisible;
+        player.skin.rightLeg.outerLayer.visible = layerVisible;
+      }
+    } catch {
+      /* ignore transient load errors while painting */
+    }
+  }, [model, showOverlay]);
+
   const redrawEditor = useCallback(() => {
     const skin = skinRef.current;
     const ed = editorRef.current;
@@ -219,7 +96,6 @@ export function SkinCreator() {
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, ed.width, ed.height);
 
-    // checkerboard
     const cell = SCALE;
     for (let y = 0; y < 64; y++) {
       for (let x = 0; x < 64; x++) {
@@ -230,7 +106,6 @@ export function SkinCreator() {
 
     ctx.drawImage(skin, 0, 0, 64, 64, 0, 0, 64 * cell, 64 * cell);
 
-    // highlight active part faces
     const uv = partUv(part, layer, model);
     ctx.save();
     ctx.strokeStyle = layer === 'overlay' ? 'rgba(56,189,248,0.95)' : 'rgba(52,211,153,0.95)';
@@ -256,24 +131,46 @@ export function SkinCreator() {
     }
   }, [part, layer, model, showGrid]);
 
-  const redrawPreview = useCallback(() => {
-    const skin = skinRef.current;
-    const prev = previewRef.current;
-    if (!skin || !prev) return;
-    const ctx = prev.getContext('2d')!;
-    drawPreview3d(ctx, skin, model, rotY, showOverlay);
-  }, [model, rotY, showOverlay]);
+  const scheduleViewerSync = useCallback(() => {
+    if (paintTimer.current) window.clearTimeout(paintTimer.current);
+    paintTimer.current = window.setTimeout(() => {
+      void syncViewer();
+    }, 80);
+  }, [syncViewer]);
 
-  // init skin canvas
+  // init skin + viewer
   useEffect(() => {
     const c = skinRef.current;
-    if (!c) return;
+    const pc = previewCanvasRef.current;
+    if (!c || !pc) return;
     c.width = 64;
     c.height = 64;
     const ctx = c.getContext('2d')!;
     ctx.putImageData(createDefaultSkinData(), 0, 0);
+
+    const viewer = new SkinViewer({
+      canvas: pc,
+      width: 360,
+      height: 420,
+      skin: c,
+      model: 'default',
+      background: 0x0b1220,
+      animation: new IdleAnimation(),
+      zoom: 0.85,
+      enableControls: true,
+    });
+    viewer.autoRotate = true;
+    viewer.autoRotateSpeed = 0.6;
+    viewerRef.current = viewer;
+
     redrawEditor();
-    redrawPreview();
+    void syncViewer();
+
+    return () => {
+      viewer.dispose();
+      viewerRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -281,17 +178,16 @@ export function SkinCreator() {
   }, [redrawEditor]);
 
   useEffect(() => {
-    redrawPreview();
-  }, [redrawPreview]);
+    void syncViewer();
+  }, [syncViewer]);
 
-  // auto-spin when idle
   useEffect(() => {
-    if (dragging) return;
-    const id = window.setInterval(() => {
-      setRotY((r) => r + 0.012);
-    }, 40);
-    return () => clearInterval(id);
-  }, [dragging]);
+    const v = viewerRef.current;
+    if (!v) return;
+    if (anim === 'walk') v.animation = new WalkingAnimation();
+    else if (anim === 'idle') v.animation = new IdleAnimation();
+    else v.animation = null;
+  }, [anim]);
 
   const paintAt = (clientX: number, clientY: number, isStart: boolean) => {
     const ed = editorRef.current;
@@ -328,7 +224,7 @@ export function SkinCreator() {
       ctx.putImageData(img, x, y);
     }
     redrawEditor();
-    redrawPreview();
+    scheduleViewerSync();
   };
 
   const onEditorPointer = (e: React.PointerEvent, type: 'down' | 'move' | 'up') => {
@@ -340,6 +236,7 @@ export function SkinCreator() {
       paintAt(e.clientX, e.clientY, false);
     } else if (type === 'up') {
       setPainting(false);
+      scheduleViewerSync();
     }
   };
 
@@ -352,7 +249,7 @@ export function SkinCreator() {
     setFuture((f) => [...f, cloneImageData(current)]);
     ctx.putImageData(prev, 0, 0);
     redrawEditor();
-    redrawPreview();
+    void syncViewer();
   };
 
   const redo = () => {
@@ -364,7 +261,7 @@ export function SkinCreator() {
     setHistory((h) => [...h, cloneImageData(current)]);
     ctx.putImageData(next, 0, 0);
     redrawEditor();
-    redrawPreview();
+    void syncViewer();
   };
 
   const resetDefault = () => {
@@ -373,7 +270,7 @@ export function SkinCreator() {
     pushHistory();
     ctx.putImageData(createDefaultSkinData(), 0, 0);
     redrawEditor();
-    redrawPreview();
+    void syncViewer();
     setHint('Reset to default Steve-style template');
   };
 
@@ -387,7 +284,7 @@ export function SkinCreator() {
       a.download = `cubenest-skin-${model}.png`;
       a.click();
       URL.revokeObjectURL(a.href);
-      setHint(`Exported 64×64 PNG (${model}). Import in Minecraft Launcher → Skins.`);
+      setHint(`Exported 64×64 PNG (${model}). Java Launcher → Skins → upload · match Classic/Slim.`);
     }, 'image/png');
   };
 
@@ -398,11 +295,10 @@ export function SkinCreator() {
       if (!ctx) return;
       pushHistory();
       ctx.clearRect(0, 0, 64, 64);
-      // support 64x32 legacy by drawing and leaving lower half empty / user fills
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0, Math.min(img.width, 64), Math.min(img.height, 64), 0, 0, Math.min(img.width, 64), Math.min(img.height, 64));
       redrawEditor();
-      redrawPreview();
+      void syncViewer();
       setHint('Skin imported');
     };
     img.src = URL.createObjectURL(file);
@@ -438,31 +334,25 @@ export function SkinCreator() {
         >
           <div className="absolute -right-10 -top-16 w-64 h-64 rounded-full bg-fuchsia-400/15 blur-3xl pointer-events-none" />
           <span className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/10 px-3 py-1 text-xs text-fuchsia-200">
-            <Sparkles className="w-3.5 h-3.5" /> In-browser · 64×64 PNG · no upload required
+            <Sparkles className="w-3.5 h-3.5" /> Preview powered by skinview3d · export stays on CubeNest
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-mc-white mt-3">
             Skin <span className="text-fuchsia-300">Creator</span>
           </h1>
           <p className="text-sm text-mc-muted mt-2 max-w-2xl">
-            Paint a classic Steve or slim Alex skin, preview it in 3D, then export a ready-to-use Minecraft PNG.
-            Everything stays on CubeNest.
+            Paint Classic or Slim skins with a professional WebGL 3D preview (same engine many skin sites use).
+            Export a ready 64×64 PNG — no need to leave CubeNest.
           </p>
           <p className="text-xs text-fuchsia-200/80 mt-3">{hint}</p>
         </motion.section>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-5">
-          {/* Left: editor + preview */}
           <div className="space-y-5">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* UV editor */}
               <div className="rounded-2xl border border-mc-border bg-mc-surface overflow-hidden">
                 <div className="flex items-center justify-between px-3 py-2 border-b border-mc-border">
                   <span className="text-xs font-semibold text-mc-white">UV map · 64×64</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowGrid((v) => !v)}
-                    className="inline-flex items-center gap-1 text-[11px] text-mc-muted hover:text-mc-white"
-                  >
+                  <button type="button" onClick={() => setShowGrid((v) => !v)} className="inline-flex items-center gap-1 text-[11px] text-mc-muted hover:text-mc-white">
                     <Grid3x3 className="w-3.5 h-3.5" /> Grid
                   </button>
                 </div>
@@ -481,43 +371,35 @@ export function SkinCreator() {
                 </div>
               </div>
 
-              {/* 3D preview */}
               <div className="rounded-2xl border border-mc-border bg-mc-surface overflow-hidden">
-                <div className="flex items-center justify-between px-3 py-2 border-b border-mc-border">
-                  <span className="text-xs font-semibold text-mc-white">3D preview</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowOverlay((v) => !v)}
-                    className="inline-flex items-center gap-1 text-[11px] text-mc-muted hover:text-mc-white"
-                  >
-                    {showOverlay ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                    Overlay
-                  </button>
+                <div className="flex items-center justify-between px-3 py-2 border-b border-mc-border gap-2 flex-wrap">
+                  <span className="text-xs font-semibold text-mc-white">3D preview · skinview3d</span>
+                  <div className="flex items-center gap-1">
+                    {(['idle', 'walk', 'none'] as const).map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setAnim(a)}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border capitalize ${
+                          anim === a ? 'bg-fuchsia-500 border-fuchsia-400 text-slate-950' : 'border-mc-border text-mc-muted'
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                    <button type="button" onClick={() => setShowOverlay((v) => !v)} className="inline-flex items-center gap-1 text-[11px] text-mc-muted hover:text-mc-white ml-1">
+                      {showOverlay ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                      Overlay
+                    </button>
+                  </div>
                 </div>
-                <div className="p-3 flex justify-center bg-gradient-to-b from-black/40 to-emerald-950/20">
-                  <canvas
-                    ref={previewRef}
-                    width={360}
-                    height={420}
-                    className="max-w-full rounded-lg cursor-grab active:cursor-grabbing touch-none"
-                    style={{ width: 'min(100%, 360px)' }}
-                    onPointerDown={(e) => {
-                      setDragging(true);
-                      (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-                    }}
-                    onPointerMove={(e) => {
-                      if (!dragging && e.buttons !== 1) return;
-                      setRotY((r) => r + e.movementX * 0.01);
-                    }}
-                    onPointerUp={() => setDragging(false)}
-                    onPointerLeave={() => setDragging(false)}
-                  />
+                <div className="p-3 flex justify-center bg-gradient-to-b from-[#0b1220] to-emerald-950/30">
+                  <canvas ref={previewCanvasRef} className="max-w-full rounded-lg" style={{ width: 'min(100%, 360px)', height: 'auto' }} />
                 </div>
-                <p className="text-[11px] text-mc-muted text-center pb-3">Drag to rotate · auto-spins when idle</p>
+                <p className="text-[11px] text-mc-muted text-center pb-3">Drag to orbit · scroll to zoom · idle/walk animation</p>
               </div>
             </div>
 
-            {/* Tools bar */}
             <div className="rounded-2xl border border-mc-border bg-mc-surface p-3 sm:p-4 flex flex-wrap gap-2 items-center">
               {tools.map((t) => (
                 <button
@@ -546,17 +428,12 @@ export function SkinCreator() {
               <button type="button" onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs border border-mc-border bg-mc-gray">
                 <Upload className="w-3.5 h-3.5" /> Import
               </button>
-              <button
-                type="button"
-                onClick={exportPng}
-                className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400"
-              >
+              <button type="button" onClick={exportPng} className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400">
                 <Download className="w-3.5 h-3.5" /> Export PNG
               </button>
             </div>
           </div>
 
-          {/* Right panel */}
           <aside className="space-y-4">
             <div className="rounded-2xl border border-mc-border bg-mc-surface p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-mc-muted mb-3">Model</p>
@@ -570,9 +447,7 @@ export function SkinCreator() {
                     type="button"
                     onClick={() => setModel(m.id)}
                     className={`text-left rounded-xl border px-3 py-3 transition-colors ${
-                      model === m.id
-                        ? 'border-fuchsia-400/60 bg-fuchsia-500/15'
-                        : 'border-mc-border bg-mc-gray hover:border-fuchsia-500/30'
+                      model === m.id ? 'border-fuchsia-400/60 bg-fuchsia-500/15' : 'border-mc-border bg-mc-gray hover:border-fuchsia-500/30'
                     }`}
                   >
                     <span className="flex items-center gap-2 text-sm font-bold text-mc-white">
@@ -596,9 +471,7 @@ export function SkinCreator() {
                     type="button"
                     onClick={() => setLayer(l.id)}
                     className={`rounded-xl border px-3 py-2 text-xs font-semibold ${
-                      layer === l.id
-                        ? 'border-cyan-400/60 bg-cyan-500/15 text-cyan-200'
-                        : 'border-mc-border bg-mc-gray text-mc-text'
+                      layer === l.id ? 'border-cyan-400/60 bg-cyan-500/15 text-cyan-200' : 'border-mc-border bg-mc-gray text-mc-text'
                     }`}
                   >
                     {l.label}
@@ -606,7 +479,7 @@ export function SkinCreator() {
                 ))}
               </div>
               <p className="text-[11px] text-mc-muted mt-2 leading-relaxed">
-                Base = body colors. Overlay = hat, jacket, sleeves (use eraser for transparency).
+                Base = body colors. Overlay = hat / jacket / sleeves (eraser = transparent).
               </p>
             </div>
 
@@ -619,9 +492,7 @@ export function SkinCreator() {
                     type="button"
                     onClick={() => setPart(p)}
                     className={`rounded-lg border px-2 py-1.5 text-[11px] font-medium text-left ${
-                      part === p
-                        ? 'border-emerald-400/50 bg-emerald-500/15 text-emerald-200'
-                        : 'border-mc-border bg-mc-gray text-mc-muted hover:text-mc-white'
+                      part === p ? 'border-emerald-400/50 bg-emerald-500/15 text-emerald-200' : 'border-mc-border bg-mc-gray text-mc-muted hover:text-mc-white'
                     }`}
                   >
                     {PART_LABELS[p]}
@@ -633,20 +504,11 @@ export function SkinCreator() {
             <div className="rounded-2xl border border-mc-border bg-mc-surface p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-mc-muted mb-3">Color</p>
               <div className="flex items-center gap-3 mb-3">
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="h-11 w-14 rounded-lg border border-mc-border bg-transparent cursor-pointer"
-                />
+                <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-11 w-14 rounded-lg border border-mc-border bg-transparent cursor-pointer" />
                 <input
                   type="text"
                   value={color}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    if (/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v);
-                    else setColor(v);
-                  }}
+                  onChange={(e) => setColor(e.target.value)}
                   className="flex-1 rounded-xl bg-mc-gray border border-mc-border px-3 py-2 text-sm font-mono text-mc-white"
                 />
               </div>
@@ -665,11 +527,11 @@ export function SkinCreator() {
             </div>
 
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/30 p-4 text-xs text-mc-muted leading-relaxed">
-              <p className="font-semibold text-emerald-200 mb-1">How to use the skin</p>
+              <p className="font-semibold text-emerald-200 mb-1">How to use</p>
               <ol className="list-decimal list-inside space-y-1">
                 <li>Export PNG from CubeNest.</li>
-                <li>Java: Launcher → Skins → New skin → upload file · pick Classic or Slim to match.</li>
-                <li>Bedrock: use a skin pack / character creator import where supported.</li>
+                <li>Java: Launcher → Skins → New skin → upload · pick Classic or Slim.</li>
+                <li>Bedrock: character creator / skin pack import where supported.</li>
               </ol>
             </div>
           </aside>

@@ -55,11 +55,19 @@ export function Skins() {
   const renders = useMemo(() => {
     if (!result) return null;
     const id = result.uuid.replace(/-/g, '');
+    const dashed = result.uuid;
+    const view = pose === 'head' ? 'head' : pose === 'bust' ? 'bust' : 'body';
     return {
       head: `https://mc-heads.net/avatar/${id}/128`,
-      body: `https://mc-heads.net/body/${id}/180`,
-      /** Crafty 3D-style isometric renders (public CDN) */
-      crafty3d: `https://render.crafty.gg/3d/${pose === 'head' ? 'head' : pose === 'bust' ? 'bust' : 'full'}/${encodeURIComponent(result.username)}?width=300&height=360`,
+      body: `https://mc-heads.net/body/${id}/220`,
+      /** High-quality public render CDNs (mc-heads + crafatar) */
+      crafty3d:
+        pose === 'head'
+          ? `https://mc-heads.net/head/${id}/280`
+          : pose === 'bust'
+            ? `https://mc-heads.net/player/${id}/280`
+            : `https://crafatar.com/renders/body/${dashed}?scale=10&overlay&default=MHF_Steve`,
+      iso: `https://mc-heads.net/player/${id}/280`,
       skinPng: result.skinUrl,
     };
   }, [result, pose]);
@@ -109,7 +117,7 @@ export function Skins() {
             Buat skin sendiri
           </Link>
           <p className="text-sm text-mc-muted mt-1 max-w-2xl">
-            Search a Java username, preview in 2D & 3D-style render, download the PNG, or create a new skin on Nova Skin.
+            Search a Java username, preview with mc-heads / Crafatar renders, download the PNG, or open Skin Creator on CubeNest.
           </p>
         </div>
 
@@ -163,7 +171,7 @@ export function Skins() {
                   }}
                 />
               </div>
-              <p className="text-[10px] text-mc-muted mt-2 text-center">Render via public skin CDN · model {result.model}</p>
+              <p className="text-[10px] text-mc-muted mt-2 text-center">Render: mc-heads + Crafatar · model {result.model}</p>
             </div>
 
             {/* Info + 2D + actions */}
