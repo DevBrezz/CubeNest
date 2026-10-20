@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FormEvent, useMemo, useState } from 'react';
 import { Search, Download, ExternalLink, User, Palette, Box, Sparkles, Paintbrush } from 'lucide-react';
+import steveSkinUrl from '../assets/skins/steve.png';
+import alexSkinUrl from '../assets/skins/alex.png';
 
 type SkinResult = {
   username: string;
@@ -9,10 +11,13 @@ type SkinResult = {
   model: 'classic' | 'slim';
 };
 
-/** Load from public/images/skins/ (your HD uploads). */
+const BUNDLED_SKINS = {
+  steve: steveSkinUrl,
+  alex: alexSkinUrl,
+} as const;
+
 function skinAsset(id: 'steve' | 'alex'): string {
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
-  return `${base}images/skins/${id}.png`;
+  return BUNDLED_SKINS[id];
 }
 
 async function mojangUuid(name: string): Promise<string | null> {

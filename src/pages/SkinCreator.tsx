@@ -16,6 +16,8 @@ import {
   floodFill,
   partUv,
 } from '../lib/minecraftSkin';
+import steveSkinUrl from '../assets/skins/steve.png';
+import alexSkinUrl from '../assets/skins/alex.png';
 
 type Tool = 'pencil' | 'eraser' | 'fill' | 'eyedropper';
 type TemplateId = 'steve' | 'alex' | 'blank';
@@ -24,8 +26,14 @@ const BASE_SCALE = 8;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
 
-/** Load from public/images/skins/ (Vite BASE_URL safe for GitHub Pages). */
-function templateUrl(id: 'steve' | 'alex'): string {
+/** Bundled by Vite — always present in the build. */
+const BUNDLED_SKINS: Record<'steve' | 'alex', string> = {
+  steve: steveSkinUrl,
+  alex: alexSkinUrl,
+};
+
+/** Optional HD override from public/images/skins/ if you deploy those files. */
+function publicSkinUrl(id: 'steve' | 'alex'): string {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
   return `${base}images/skins/${id}.png`;
 }
@@ -41,15 +49,28 @@ function rgbaToHex(r: number, g: number, b: number): string {
   return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
-async function loadSkinImage(url: string): Promise<HTMLImageElement> {
+function loadSkinImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    // Only set CORS for http(s) URLs; data: URLs must not use crossOrigin
-    if (url.startsWith('http')) img.crossOrigin = 'anonymous';
+    if (/^https?:/i.test(url)) img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Failed to load skin template`));
+    img.onerror = () => reject(new Error(`Failed to load ${url}`));
     img.src = url;
   });
+}
+
+/** Prefer public HD files, fall back to bundled assets. */
+async function loadTemplateImage(id: 'steve' | 'alex'): Promise<HTMLImageElement> {
+  const candidates = [publicSkinUrl(id), BUNDLED_SKINS[id]];
+  let lastErr: unknown;
+  for (const url of candidates) {
+    try {
+      return await loadSkinImage(url);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr ?? new Error('No skin template found');
 }
 
 export function SkinCreator() {
@@ -210,9 +231,8 @@ export function SkinCreator() {
         return;
       }
 
-      const url = templateUrl(id);
       try {
-        const img = await loadSkinImage(url);
+        const img = await loadTemplateImage(id);
         if (dirtyRef.current) pushHistory();
         applyImageToSkin(img, img.width, img.height);
         setTemplate(id);
@@ -261,10 +281,10 @@ export function SkinCreator() {
     viewerRef.current = viewer;
     setPreviewReady(true);
 
-    // Load Steve by default
+    // Load Steve by default (bundled asset — no 404)
     void (async () => {
       try {
-        const img = await loadSkinImage(templateUrl('steve'));
+        const img = await loadTemplateImage('steve');
         const ctx = c.getContext('2d', { willReadFrequently: true })!;
         ctx.clearRect(0, 0, 64, 64);
         ctx.imageSmoothingEnabled = false;
