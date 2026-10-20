@@ -4,7 +4,11 @@ import {
   RotateCcw, User, Eye, EyeOff, X, Play, Pause, RotateCw, Hand,
 } from 'lucide-react';
 import { SkinViewer, WalkingAnimation, IdleAnimation, RunningAnimation } from 'skinview3d';
-import { Raycaster, Vector2, Box3, Vector3, type Object3D, type Intersection } from 'three';
+import {
+  Raycaster, Vector2, Box3, Vector3,
+  DirectionalLight, PlaneGeometry, Mesh, ShadowMaterial,
+  type Object3D, type Intersection,
+} from 'three';
 import {
   PRESET_COLORS,
   SkinModel,
@@ -205,6 +209,66 @@ function isObjectVisibleInTree(obj: Object3D): boolean {
 }
 
 
+
+function makeViewerBackdropTransparent(viewer: SkinViewer): void {
+  try {
+    // skinview3d paints scene.background as solid color — clear it
+    viewer.scene.background = null;
+    viewer.renderer.setClearColor(0x000000, 0);
+    viewer.renderer.setClearAlpha(0);
+  } catch {
+    /* ignore */
+  }
+}
+
+function enablePreviewShadows(viewer: SkinViewer): void {
+  try {
+    const renderer = viewer.renderer;
+    renderer.shadowMap.enabled = true;
+    // soft-ish default
+    const scene = viewer.scene;
+    // Directional light for a soft drop shadow
+    const key = new DirectionalLight(0xffffff, 1.15);
+    key.position.set(2.5, 6, 3);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.camera.near = 0.5;
+    key.shadow.camera.far = 40;
+    key.shadow.camera.left = -6;
+    key.shadow.camera.right = 6;
+    key.shadow.camera.top = 6;
+    key.shadow.camera.bottom = -6;
+    key.shadow.bias = -0.0005;
+    scene.add(key);
+
+    // Ground plane that only draws shadow
+    const ground = new Mesh(
+      new PlaneGeometry(20, 20),
+      new ShadowMaterial({ opacity: 0.35 }),
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -1.0; // under Minecraft player feet (approx)
+    ground.receiveShadow = true;
+    ground.name = 'shadowGround';
+    scene.add(ground);
+
+    // Enable cast/receive on player meshes
+    const root = viewer.playerObject;
+    if (root) {
+      root.traverse((obj) => {
+        const m = obj as Object3D & { isMesh?: boolean; castShadow?: boolean; receiveShadow?: boolean };
+        if (m.isMesh) {
+          m.castShadow = true;
+          m.receiveShadow = true;
+        }
+      });
+    }
+  } catch {
+    /* shadows optional */
+  }
+}
+
+
 export function SkinCreator() {
   const skinCanvasRef = useRef<HTMLCanvasElement>(null);
   const editorCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -278,6 +342,7 @@ export function SkinCreator() {
     if (!canvas || !viewer) return;
     try {
       await viewer.loadSkin(canvas, { model: model === 'slim' ? 'slim' : 'default' });
+      makeViewerBackdropTransparent(viewer);
       // After texture reload, restore isolation; skip camera jump while painting
       applyVisibility(viewer, partFilter, showOuter, opts?.focus !== false);
     } catch {
@@ -444,13 +509,7 @@ export function SkinCreator() {
         zoom: 0.85,
         enableControls: true,
       });
-      // Transparent clear so CSS background image shows through
-      try {
-        viewer.renderer.setClearColor(0x000000, 0);
-        viewer.renderer.setClearAlpha(0);
-      } catch {
-        /* ignore */
-      }
+      makeViewerBackdropTransparent(viewer);
     } catch {
       setWebglError('WebGL is not available on this device. Skin Creator needs WebGL.');
       return;
@@ -481,6 +540,7 @@ export function SkinCreator() {
       }
       try {
         await viewer.loadSkin(skinEl, { model: 'default' });
+        makeViewerBackdropTransparent(viewer);
         applyVisibility(viewer, 'all', true, true);
       } catch {
         /* ignore */
@@ -541,7 +601,7 @@ export function SkinCreator() {
       width: isMobile ? Math.min(window.innerWidth - 48, 360) : 480,
       height: isMobile ? 420 : 560,
       model: model === 'slim' ? 'slim' : 'default',
-      background: 0x0b1220,
+      background: 0x121820,
       animation: new IdleAnimation(),
       zoom: 0.9,
       enableControls: true,
@@ -558,6 +618,7 @@ export function SkinCreator() {
     void (async () => {
       try {
         await viewer.loadSkin(skinEl, { model: model === 'slim' ? 'slim' : 'default' });
+        enablePreviewShadows(viewer);
         applyVisibility(viewer, inspectPart, showOuter);
       } catch {
         /* ignore */
@@ -775,7 +836,7 @@ export function SkinCreator() {
               >
                 <div
                   className="absolute inset-0 pointer-events-none"
-                  style={{ background: 'rgba(11, 18, 32, 0.35)' }}
+                  style={{ background: 'rgba(11, 18, 32, 0.12)' }}
                   aria-hidden
                 />
                 <canvas
@@ -798,6 +859,39 @@ export function SkinCreator() {
                   ? 'Tap or drag on the character to paint'
                   : 'Drag to rotate · scroll to zoom'}
               </p>
+            </div>
+
+            {/* Color close to canvas for quick picking */}
+            <div className="rounded-2xl border border-mc-border bg-mc-surface p-2.5 flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-semibold text-mc-muted uppercase tracking-wide shrink-0">Color</span>
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="h-10 w-12 rounded-lg border border-mc-border bg-transparent cursor-pointer shrink-0"
+                aria-label="Custom color"
+              />
+              <input
+                type="text"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="w-[6.5rem] rounded-lg bg-mc-gray border border-mc-border px-2 py-2 text-xs font-mono text-mc-white min-h-[40px]"
+                aria-label="Color hex"
+              />
+              <div className="flex flex-wrap gap-1.5 flex-1">
+                {PRESET_COLORS.slice(0, 24).map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    title={c}
+                    onClick={() => setColor(c)}
+                    className={`w-7 h-7 rounded-md border-2 shrink-0 ${
+                      color === c ? 'border-white scale-110' : 'border-transparent'
+                    }`}
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="rounded-2xl border border-mc-border bg-mc-surface p-2 flex flex-wrap gap-2 items-center">
@@ -932,22 +1026,7 @@ export function SkinCreator() {
             </div>
 
             <div className="rounded-2xl border border-mc-border bg-mc-surface p-3">
-              <p className="text-xs font-bold uppercase tracking-wider text-mc-muted mb-2">Color</p>
-              <div className="flex items-center gap-3 mb-3">
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="h-11 w-14 rounded-lg border border-mc-border bg-transparent cursor-pointer"
-                  aria-label="Custom color"
-                />
-                <input
-                  type="text"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="flex-1 rounded-xl bg-mc-gray border border-mc-border px-3 py-2 text-sm font-mono text-mc-white min-h-[44px]"
-                />
-              </div>
+              <p className="text-xs font-bold uppercase tracking-wider text-mc-muted mb-2">More colors</p>
               <div className="grid grid-cols-8 gap-1.5">
                 {PRESET_COLORS.map((c) => (
                   <button
@@ -1000,8 +1079,12 @@ export function SkinCreator() {
               </button>
             </div>
 
-            <div className="flex justify-center bg-[#0b1220] py-2">
-              <canvas ref={previewCanvasRef} className="max-w-full" />
+            <div className="flex justify-center bg-[#121820] py-4 px-2">
+              <canvas
+                ref={previewCanvasRef}
+                className="max-w-full rounded-lg"
+                style={{ filter: 'drop-shadow(0 12px 18px rgba(0,0,0,0.55))' }}
+              />
             </div>
 
             <div className="p-3 space-y-3">
