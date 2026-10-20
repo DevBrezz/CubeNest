@@ -802,8 +802,54 @@ export default {
     }
 
     if (path === '/download/modrinth' || path === '/download/curseforge' || path === '/download') {
+      const filename = requestUrl.searchParams.get('filename') || 'download.bin';
+      const modIdRaw = requestUrl.searchParams.get('modId');
+      const fileIdRaw = requestUrl.searchParams.get('fileId');
+      const modId = modIdRaw ? Number(modIdRaw) : NaN;
+      const fileId = fileIdRaw ? Number(fileIdRaw) : NaN;
+
+      // CurseForge: prefer modId + fileId (works when catalogue has null downloadUrl)
+      if (path === '/download/curseforge' && Number.isFinite(modId) && modId > 0 && Number.isFinite(fileId) && fileId > 0) {
+        const key = env.CURSEFORGE_API_KEY || env.CF_API_KEY || '';
+        let resolved = null;
+        if (key) {
+          try {
+            const apiRes = await fetch(
+              `https://api.curseforge.com/v1/mods/${modId}/files/${fileId}/download-url`,
+              { headers: { Accept: 'application/json', 'x-api-key': key, 'User-Agent': UA } },
+            );
+            if (apiRes.ok) {
+              const body = await apiRes.json();
+              if (typeof body?.data === 'string' && body.data.startsWith('http')) resolved = body.data;
+            }
+          } catch {
+            /* fall through to ForgeCDN pattern */
+          }
+        }
+        if (!resolved) {
+          // ForgeCDN path layout used by CurseForge CDN
+          const major = Math.floor(fileId / 1000);
+          const minor = fileId % 1000;
+          const name = safeFilename(filename);
+          resolved = `https://edge.forgecdn.net/files/${major}/${minor}/${name}`;
+        }
+        try {
+          const target = new URL(resolved);
+          return streamDownload(target, filename, origin);
+        } catch {
+          return json({ success: false, error: 'Could not resolve CurseForge file URL.' }, 502, origin);
+        }
+      }
+
       const raw = requestUrl.searchParams.get('url');
       if (!raw) {
+        if (path === '/download/curseforge') {
+          return json(
+            { success: false, error: 'Numeric modId and fileId are required, or provide a direct ForgeCDN url parameter.' },
+            400,
+            origin,
+          );
+        }
         return json({ success: false, error: 'Missing url parameter.' }, 400, origin);
       }
       let target;
@@ -830,7 +876,7 @@ export default {
           );
         }
       }
-      return streamDownload(target, requestUrl.searchParams.get('filename') || 'download.bin', origin);
+      return streamDownload(target, filename, origin);
     }
 
     // Fallback: any path with ?url=
