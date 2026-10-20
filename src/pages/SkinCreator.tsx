@@ -16,6 +16,7 @@ import {
   floodFill,
   partUv,
 } from '../lib/minecraftSkin';
+import { DEFAULT_SKIN_URLS } from '../lib/defaultSkins';
 
 type Tool = 'pencil' | 'eraser' | 'fill' | 'eyedropper';
 type TemplateId = 'steve' | 'alex' | 'blank';
@@ -24,10 +25,9 @@ const BASE_SCALE = 8;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
 
-/** Resolve public asset URL (works with Vite base path). */
-function assetUrl(path: string): string {
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
-  return `${base}${path.replace(/^\//, '')}`;
+/** Prefer embedded data URL so Steve/Alex always load even without public assets. */
+function templateUrl(id: 'steve' | 'alex'): string {
+  return DEFAULT_SKIN_URLS[id];
 }
 
 function hexToRgba(hex: string): [number, number, number, number] {
@@ -44,9 +44,10 @@ function rgbaToHex(r: number, g: number, b: number): string {
 async function loadSkinImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // Only set CORS for http(s) URLs; data: URLs must not use crossOrigin
+    if (url.startsWith('http')) img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Failed to load ${url}`));
+    img.onerror = () => reject(new Error(`Failed to load skin template`));
     img.src = url;
   });
 }
@@ -209,7 +210,7 @@ export function SkinCreator() {
         return;
       }
 
-      const url = assetUrl(`images/skins/${id}.png`);
+      const url = templateUrl(id);
       try {
         const img = await loadSkinImage(url);
         if (dirtyRef.current) pushHistory();
@@ -263,7 +264,7 @@ export function SkinCreator() {
     // Load Steve by default
     void (async () => {
       try {
-        const img = await loadSkinImage(assetUrl('images/skins/steve.png'));
+        const img = await loadSkinImage(templateUrl('steve'));
         const ctx = c.getContext('2d', { willReadFrequently: true })!;
         ctx.clearRect(0, 0, 64, 64);
         ctx.imageSmoothingEnabled = false;

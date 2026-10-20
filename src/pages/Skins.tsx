@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FormEvent, useMemo, useState } from 'react';
 import { Search, Download, ExternalLink, User, Palette, Box, Sparkles, Paintbrush } from 'lucide-react';
+import { DEFAULT_SKIN_URLS } from '../lib/defaultSkins';
 
 type SkinResult = {
   username: string;
@@ -8,11 +9,6 @@ type SkinResult = {
   skinUrl: string;
   model: 'classic' | 'slim';
 };
-
-function assetUrl(path: string): string {
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
-  return `${base}${path.replace(/^\//, '')}`;
-}
 
 async function mojangUuid(name: string): Promise<string | null> {
   const r = await fetch(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(name)}`);
@@ -51,17 +47,17 @@ const GALLERIES = [
 
 const DEFAULT_SKINS = [
   {
-    id: 'steve',
+    id: 'steve' as const,
     name: 'Steve',
     model: 'classic' as const,
-    texture: () => assetUrl('images/skins/steve.png'),
+    texture: DEFAULT_SKIN_URLS.steve,
     desc: 'Classic wide-arm default',
   },
   {
-    id: 'alex',
+    id: 'alex' as const,
     name: 'Alex',
     model: 'slim' as const,
-    texture: () => assetUrl('images/skins/alex.png'),
+    texture: DEFAULT_SKIN_URLS.alex,
     desc: 'Slim-arm default',
   },
 ];
@@ -124,9 +120,9 @@ export function Skins() {
     }
   };
 
-  const downloadDefault = async (id: string, name: string) => {
+  const downloadDefault = async (id: 'steve' | 'alex', name: string) => {
     try {
-      const res = await fetch(assetUrl(`images/skins/${id}.png`));
+      const res = await fetch(DEFAULT_SKIN_URLS[id]);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -167,7 +163,7 @@ export function Skins() {
                 className="bg-mc-surface border border-mc-border rounded-xl p-4 flex items-center gap-4"
               >
                 <img
-                  src={s.texture()}
+                  src={s.texture}
                   alt={`${s.name} skin texture`}
                   width={64}
                   height={64}
