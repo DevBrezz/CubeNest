@@ -251,7 +251,7 @@ export function SkinCreator() {
       skin: c,
       model: 'default',
       background: 0x0b1220,
-      animation: reducedMotion ? null : new IdleAnimation(),
+      animation: reducedMotion ? undefined : new IdleAnimation(),
       zoom: 0.9,
       enableControls: true,
     });
@@ -281,7 +281,7 @@ export function SkinCreator() {
       if (!viewerRef.current) return;
       if (document.hidden) {
         viewerRef.current.autoRotate = false;
-        viewerRef.current.animation = null;
+        viewerRef.current.animation = undefined;
       } else if (!reducedMotion) {
         viewerRef.current.autoRotate = !isMobile;
         if (anim === 'walk') viewerRef.current.animation = new WalkingAnimation();
@@ -298,7 +298,7 @@ export function SkinCreator() {
           if (!viewerRef.current) return;
           if (!vis) {
             viewerRef.current.autoRotate = false;
-            viewerRef.current.animation = null;
+            viewerRef.current.animation = undefined;
           } else if (!document.hidden && !reducedMotion) {
             viewerRef.current.autoRotate = !isMobile;
             if (anim === 'walk') viewerRef.current.animation = new WalkingAnimation();
@@ -333,12 +333,12 @@ export function SkinCreator() {
     const reducedMotion =
       typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion || document.hidden) {
-      v.animation = null;
+      v.animation = undefined;
       return;
     }
     if (anim === 'walk') v.animation = new WalkingAnimation();
     else if (anim === 'idle') v.animation = new IdleAnimation();
-    else v.animation = null;
+    else v.animation = undefined;
   }, [anim]);
 
   const paintAt = (clientX: number, clientY: number, isStart: boolean) => {
