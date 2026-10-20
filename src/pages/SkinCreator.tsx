@@ -16,7 +16,6 @@ import {
   floodFill,
   partUv,
 } from '../lib/minecraftSkin';
-import { DEFAULT_SKIN_URLS } from '../lib/defaultSkins';
 
 type Tool = 'pencil' | 'eraser' | 'fill' | 'eyedropper';
 type TemplateId = 'steve' | 'alex' | 'blank';
@@ -25,9 +24,10 @@ const BASE_SCALE = 8;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 2.5;
 
-/** Prefer embedded data URL so Steve/Alex always load even without public assets. */
+/** Load from public/images/skins/ (Vite BASE_URL safe for GitHub Pages). */
 function templateUrl(id: 'steve' | 'alex'): string {
-  return DEFAULT_SKIN_URLS[id];
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
+  return `${base}images/skins/${id}.png`;
 }
 
 function hexToRgba(hex: string): [number, number, number, number] {
