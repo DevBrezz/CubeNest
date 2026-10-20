@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Download, ShieldCheck, UserRound } from 'lucide-react';
+import { Home, Search, Download, ShieldCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const items = [
@@ -7,7 +7,6 @@ const items = [
   { to: '/search', label: 'Search', icon: Search },
   { to: '/downloads', label: 'Downloads', icon: Download },
   { to: '/whitelist', label: 'Whitelist', icon: ShieldCheck },
-  { to: '/profile', label: 'Profile', icon: UserRound },
 ];
 
 export function BottomNav() {
@@ -17,7 +16,7 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-50 border-t border-mc-border bg-mc-black/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
       aria-label="Primary"
     >
-      <div className="max-w-lg mx-auto grid grid-cols-5">
+      <div className="max-w-lg mx-auto grid grid-cols-4">
         {items.map(({ to, label, icon: Icon }) => {
           const active = to === '/' ? pathname === '/' : pathname.startsWith(to);
           return (
