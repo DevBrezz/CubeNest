@@ -1,0 +1,47 @@
+name: CubeNest Environment Check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - '.github/workflows/cubenest-env-check.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_CUBENEST_API_URL: ${{ vars.VITE_CUBENEST_API_URL }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check CubeNest API URL
+        run: |
+          if [ -z "$VITE_CUBENEST_API_URL" ]; then
+            echo "::error::Repository variable VITE_CUBENEST_API_URL is empty or unavailable. Add it under Settings > Secrets and variables > Actions > Variables."
+            exit 1
+          fi
+          case "$VITE_CUBENEST_API_URL" in
+            https://*) echo "CubeNest API URL is configured (HTTPS)." ;;
+            *) echo "::error::VITE_CUBENEST_API_URL must begin with https://"; exit 1 ;;
+          esac
+
+      - name: Sync 9Minecraft catalogue
+        run: node scripts/sync-9minecraft.mjs
+
+      - name: Build frontend
+        run: npm run build
