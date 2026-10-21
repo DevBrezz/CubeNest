@@ -30,7 +30,7 @@ export function UploadPage() {
         <div className="max-w-md mx-auto bg-mc-surface border border-mc-border rounded-xl p-6 text-center">
           <Lock className="w-10 h-10 text-mc-muted mx-auto mb-3" />
           <h1 className="text-xl font-bold text-mc-white">Login required</h1>
-          <p className="text-sm text-mc-muted mt-2">You must sign in with Google before uploading content.</p>
+          <p className="text-sm text-mc-muted mt-2">You must sign in to your CubeNest account before uploading content.</p>
           <Link to="/profile" className="mt-5 inline-flex px-4 py-2.5 rounded-lg bg-mc-red text-white text-sm font-medium">
             Go to Profile / Login
           </Link>
@@ -100,7 +100,7 @@ export function UploadPage() {
           <Upload className="w-6 h-6 text-mc-red" /> Upload content
         </h1>
         <p className="text-sm text-mc-muted mb-5">
-          Name, summary, BBCode description, platform, category, tags, file, and gallery images. Uploads are stored in your Supabase project (pending review).
+          Name, summary, BBCode description, platform, category, tags, file, and gallery images. Uploads require the content-storage endpoint to support resource metadata and gallery images (pending review).
         </p>
 
         <form onSubmit={onSubmit} className="space-y-3 bg-mc-surface border border-mc-border rounded-xl p-4">
