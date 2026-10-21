@@ -4,6 +4,8 @@ name: CubeNest Environment Check
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - 'src/**'
       - 'scripts/**'
@@ -12,12 +14,12 @@ on:
       - 'vite.config.*'
       - '.github/workflows/cubenest-env-check.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      VITE_CUBENEST_API_URL: ${{ vars.VITE_CUBENEST_API_URL }}
 
     steps:
       - name: Checkout repository
@@ -29,28 +31,34 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
-      - name: Check CubeNest API URL
+      - name: Configure CubeNest API URL
+        env:
+          REPOSITORY_API_URL: ${{ vars.VITE_CUBENEST_API_URL }}
         run: |
-          if [ -z "$VITE_CUBENEST_API_URL" ]; then
-            echo "::error::VITE_CUBENEST_API_URL is empty or unavailable."
-            echo "Add it under Settings > Secrets and variables > Actions > Variables."
+          API_URL="${REPOSITORY_API_URL:-}"
+
+          if [ -z "$API_URL" ]; then
+            echo "::warning::Repository variable VITE_CUBENEST_API_URL was not available."
+            echo "Check repository Settings > Secrets and variables > Actions > Variables."
             exit 1
           fi
 
-          case "$VITE_CUBENEST_API_URL" in
-            https://*)
-              echo "CubeNest API URL is configured."
-              ;;
+          case "$API_URL" in
+            https://*) ;;
             *)
-              echo "::error::VITE_CUBENEST_API_URL must begin with https://"
+              echo "::error::VITE_CUBENEST_API_URL must start with https://"
               exit 1
               ;;
           esac
 
-      - name: Sync 9Minecraft catalogue
-        run: node scripts/sync-9minecraft.mjs
+          echo "VITE_CUBENEST_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "CubeNest API URL configured."
 
       - name: Build frontend
         run: npm run build
+        env:
+          VITE_CUBENEST_API_URL: ${{ vars.VITE_CUBENEST_API_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
