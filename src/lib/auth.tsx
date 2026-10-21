@@ -1,7 +1,20 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 const API_BASE = (import.meta.env.VITE_CUBENEST_API_URL || '').replace(/\/$/, '');
-export type CubeNestUser = { id: number; username: string; email: string };
+export type CubeNestUser = {
+  id: number;
+  username: string;
+  email: string;
+  // Optional compatibility fields used by Navbar's former Supabase profile UI.
+  // The CubeNest Storage API may omit these until profile/avatar support is added.
+  user_metadata?: {
+    full_name?: string;
+    name?: string;
+    avatar_url?: string;
+    picture?: string;
+    preferred_username?: string;
+  };
+};
 type Profile = { id: string; display_name: string | null; avatar_url: string | null; bio: string | null };
 type AuthCtx = {
   ready: boolean;
