@@ -5,7 +5,6 @@ import { Menu, X, Languages, ChevronDown, Search, UserRound } from 'lucide-react
 import { cn } from '../lib/utils';
 import { useLanguage } from '../lib/i18n';
 import { useAuth } from '../lib/auth';
-import { useAuth } from '../lib/auth';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -25,9 +24,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { language, setLanguage } = useLanguage();
-  const { ready: authReady, user, profile } = useAuth();
-  const avatar = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
-  const displayName = profile?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Account';
   const { ready: authReady, user, profile } = useAuth();
   const avatar = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const displayName = profile?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Account';
