@@ -13,11 +13,14 @@ const portals = [
   { to: '/skin-creator', icon: Paintbrush, number: '05', title: 'Skin Creator', text: 'Paint classic or slim skins with a live 3D preview and export a ready PNG.', tags: ['Classic', 'Slim', '3D'], tint: 'from-fuchsia-500/20' },
 ];
 const categories = [
-  { to: '/skin-creator', icon: Paintbrush, title: 'Skin Creator', text: 'Design Steve/Alex skins in 3D.' },
-  { to: '/resourcepacks', icon: Palette, title: 'Resource Packs', text: 'Give every block a new look.' },
-  { to: '/shaders', icon: Sun, title: 'Shaders', text: 'Refresh your world’s visuals.' },
-  { to: '/modpacks', icon: Package, title: 'Modpacks', text: 'Big adventures, ready to play.' },
-  { to: '/datapacks', icon: Database, title: 'Data Packs', text: 'More ways to play vanilla.' },
+  { to: '/cubenest-mods/mods', icon: Boxes, title: 'Mods', text: 'Java Edition mods and gameplay changes.', tint: 'from-emerald-500/15' },
+  { to: '/cubenest-mods/plugins', icon: Puzzle, title: 'Plugins', text: 'Tools for Paper and compatible servers.', tint: 'from-violet-500/15' },
+  { to: '/cubenest-mods/addons', icon: Gamepad2, title: 'Bedrock Add-ons', text: 'Add-ons made for Minecraft Bedrock.', tint: 'from-orange-500/15' },
+  { to: '/cubenest-mods/resourcepacks', icon: Palette, title: 'Resource Packs', text: 'Explore textures and visual changes.', tint: 'from-sky-500/15' },
+  { to: '/cubenest-mods/shaders', icon: Sun, title: 'Shaders', text: 'Visual enhancements for Java Edition.', tint: 'from-amber-500/15' },
+  { to: '/cubenest-mods/skins', icon: Paintbrush, title: 'Skins', text: 'Find skins for your Minecraft character.', tint: 'from-fuchsia-500/15' },
+  { to: '/cubenest-mods/modpacks', icon: Package, title: 'Modpacks', text: 'Discover collections of Java mods.', tint: 'from-cyan-500/15' },
+  { to: '/skin-creator', icon: Paintbrush, title: 'Skin Creator', text: 'Create and preview your own skin in 3D.', tint: 'from-pink-500/15' },
 ];
 
 export function Home() {
@@ -84,8 +87,34 @@ export function Home() {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {categories.map((c, i) => <motion.div key={c.to} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .04 }}><Link to={c.to} className="group flex items-center gap-3 rounded-xl border border-mc-border bg-mc-surface/70 p-3 sm:p-4 hover:border-emerald-300/30 hover:bg-mc-surface transition-all"><span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-400/10 grid place-items-center text-emerald-300 group-hover:scale-105 transition-transform"><c.icon className="w-5 h-5" /></span><span className="min-w-0"><span className="block text-xs sm:text-sm font-semibold text-mc-white">{c.title}</span><span className="block text-[10px] sm:text-xs text-mc-muted mt-1">{c.text}</span></span></Link></motion.div>)}
+        <div className="mb-5">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.22em] text-emerald-300">
+            <Boxes className="h-3.5 w-3.5" /> CubeNest Library
+          </div>
+          <h2 className="mt-2 text-2xl font-bold text-mc-white sm:text-3xl">Explore by type</h2>
+          <p className="mt-2 max-w-xl text-sm text-mc-muted">
+            Choose a category to open its own page and browse community resources.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {categories.map((c, i) => (
+            <motion.div key={c.to} initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ delay: i * .04 }}>
+              <Link to={c.to} className={`group relative flex min-h-[155px] items-start gap-3 overflow-hidden rounded-2xl border border-mc-border bg-gradient-to-br ${c.tint} to-mc-surface p-4 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300/40 hover:shadow-lg sm:p-5`}>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/10 bg-black/20 text-emerald-200 transition-transform group-hover:scale-110">
+                  <c.icon className="h-5 w-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-mc-white sm:text-base">{c.title}</span>
+                  <span className="mt-2 block text-xs leading-relaxed text-mc-muted">{c.text}</span>
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300">
+                    Explore <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </span>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </section>
 

@@ -27,6 +27,7 @@ const TYPES = [
   { value: 'Texture Pack', label: 'Resource Packs' },
   { value: 'Shader', label: 'Shaders' },
   { value: 'Skin', label: 'Skins' },
+  { value: 'Modpack', label: 'Modpacks' },
 ];
 
 const CATEGORIES = [
@@ -50,16 +51,19 @@ function compatible(resource: Resource) {
   const platform = resource.platform.toLowerCase();
   const kind = resource.kind.toLowerCase();
 
-  // Mods are Java resources; Add-ons are Bedrock resources.
-  if (kind === 'mod' && platform !== 'java') return false;
+  // Keep Java-only and Bedrock-only resources on compatible platforms.
+  if (['mod', 'plugin', 'shader', 'modpack'].includes(kind) && platform !== 'java') return false;
   if (kind === 'addon' && platform !== 'bedrock') return false;
   return true;
 }
 
-export default function CubeNestMods() {
+export default function CubeNestMods({ fixedType }: { fixedType?: string }) {
   const [resources, setResources] = useState<Resource[]>([]);
-  const [platform, setPlatform] = useState('All');
-  const [type, setType] = useState('All');
+  const [platform, setPlatform] = useState(
+    fixedType === 'Addon' ? 'Bedrock' :
+    ['Mod', 'Plugin', 'Shader', 'Modpack'].includes(fixedType || '') ? 'Java' : 'All'
+  );
+  const [type, setType] = useState(fixedType || 'All');
   const [category, setCategory] = useState('All');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -159,7 +163,7 @@ export default function CubeNestMods() {
               Community resources
             </p>
             <h1 className="text-3xl font-bold text-mc-white sm:text-4xl">
-              CubeNest Mods
+              {fixedType ? `CubeNest ${typeLabel(fixedType)}` : 'CubeNest Mods'}
             </h1>
             <p className="mt-3 max-w-2xl text-sm text-mc-muted">
               Discover community uploads for Minecraft Java and Bedrock.

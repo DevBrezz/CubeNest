@@ -85,6 +85,13 @@ export default function App() {
                   <Route path="/servers" element={<Servers />} />
                   <Route path="/mods" element={<ModsHub />} />
                   <Route path="/cubenest-mods" element={<CubeNestModsPage />} />
+                  <Route path="/cubenest-mods/mods" element={<CubeNestModsPage fixedType="Mod" />} />
+                  <Route path="/cubenest-mods/plugins" element={<CubeNestModsPage fixedType="Plugin" />} />
+                  <Route path="/cubenest-mods/addons" element={<CubeNestModsPage fixedType="Addon" />} />
+                  <Route path="/cubenest-mods/resourcepacks" element={<CubeNestModsPage fixedType="Texture Pack" />} />
+                  <Route path="/cubenest-mods/shaders" element={<CubeNestModsPage fixedType="Shader" />} />
+                  <Route path="/cubenest-mods/skins" element={<CubeNestModsPage fixedType="Skin" />} />
+                  <Route path="/cubenest-mods/modpacks" element={<CubeNestModsPage fixedType="Modpack" />} />
                   <Route path="/bedrock" element={<BedrockHub />} />
                   <Route path="/bedrock/catalog" element={<BedrockCatalog />} />
                   <Route path="/bedrock/resource/:id" element={<BedrockResourceDetail />} />
