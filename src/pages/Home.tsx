@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, ShieldCheck, Gamepad2, Zap, Download, Paintbrush } from 'lucide-react';
+import { ArrowRight, Boxes, Puzzle, Server, Palette, Sun, Package, Database, Search, Sparkles, ShieldCheck, Gamepad2, Zap, Download, Paintbrush, UploadCloud, FileUp } from 'lucide-react';
 import { useResources } from '../hooks/useResources';
 import { ProjectCard } from '../components/ProjectCard';
 
@@ -69,10 +69,33 @@ export function Home() {
         </div>
       </section>
 
+      <section className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 -mt-7 sm:-mt-10 pb-12 sm:pb-16">
+        <Link
+          to="/upload"
+          aria-label="Upload a Minecraft resource to CubeNest"
+          className="group relative flex w-full min-h-[178px] sm:min-h-[206px] items-center gap-5 sm:gap-8 overflow-hidden rounded-3xl border border-emerald-300/35 bg-gradient-to-r from-emerald-950/95 via-slate-900 to-slate-950 p-5 sm:p-8 shadow-2xl shadow-emerald-950/25 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300/70 hover:shadow-emerald-950/40"
+        >
+          <span aria-hidden="true" className="absolute -right-8 -top-16 h-64 w-64 rounded-full bg-emerald-400/10 blur-3xl transition-colors group-hover:bg-emerald-300/20" />
+          <span className="relative grid h-20 w-20 sm:h-28 sm:w-28 shrink-0 place-items-center rounded-2xl sm:rounded-3xl border border-emerald-200/35 bg-emerald-400/15 text-emerald-200 shadow-lg shadow-emerald-950/40 transition-transform duration-300 group-hover:scale-105">
+            <UploadCloud className="h-11 w-11 sm:h-16 sm:w-16" strokeWidth={1.8} aria-hidden="true" />
+          </span>
+          <span className="relative min-w-0 flex-1">
+            <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-[.16em] text-emerald-200">
+              <FileUp className="h-3.5 w-3.5" /> Creator upload
+            </span>
+            <span className="block text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Share your creation</span>
+            <span className="mt-2 block max-w-2xl text-xs sm:text-sm leading-relaxed text-slate-300">Upload Minecraft mods, plugins, add-ons, skins, maps and other resources to CubeNest.</span>
+            <span className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-950/30 transition-all group-hover:bg-emerald-200">
+              Upload a resource <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </span>
+        </Link>
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
           <div><div className="text-[10px] font-bold uppercase tracking-[.22em] text-emerald-300 flex items-center gap-2"><Sparkles className="w-3.5 h-3.5" /> Choose your destination</div><h2 className="text-2xl sm:text-3xl font-bold text-mc-white mt-2">What are you looking for?</h2></div>
-          <p className="text-xs sm:text-sm text-mc-muted max-w-sm leading-relaxed">Four ways to discover, build and upgrade your Minecraft experience.</p>
+          <p className="text-xs sm:text-sm text-mc-muted max-w-sm leading-relaxed">Explore servers, tools, resources and creative tools for your Minecraft experience.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           {portals.map((p, i) => <motion.div key={p.to} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .15 }} transition={{ delay: i * .07, duration: .4 }}>
