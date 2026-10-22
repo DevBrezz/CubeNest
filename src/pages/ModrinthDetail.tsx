@@ -70,7 +70,7 @@ export function ModrinthDetail({ category }: { category: string }) {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex flex-col sm:flex-row gap-6 mb-8">
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-mc-surface border border-mc-border flex-shrink-0 overflow-hidden flex items-center justify-center">
-              {project.icon_url ? <img src={project.icon_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-10 h-10 text-mc-muted" />}
+              {project.icon_url ? <img src={project.icon_url} alt="" className="w-full h-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.parentElement?.querySelector('[data-image-fallback]')?.classList.remove('hidden'); }} /> : null}<Package data-image-fallback className={`w-10 h-10 text-mc-muted ${project.icon_url ? 'hidden' : ''}`} />
             </div>
             <div className="flex-1">
               <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-600/90 text-white">Modrinth · {project.project_type}</span>

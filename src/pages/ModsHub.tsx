@@ -7,6 +7,7 @@ type Platform = 'java' | 'bedrock';
 
 const JAVA_CATS = [
   { id: 'mods', title: 'Mods', desc: 'Modrinth — search & download', to: '/mods/catalog?platform=java', icon: Boxes },
+  { id: 'plugins', title: 'Server Plugins', desc: 'Java server plugins from Modrinth', to: '/modrinth-plugins', icon: Boxes },
   { id: 'maps', title: 'Maps', desc: 'Search map-related projects on Modrinth', to: '/mods/catalog?platform=java&q=map%20world', icon: Map },
   { id: 'textures', title: 'Textures', desc: 'Resource packs on Modrinth', to: '/resourcepacks?platform=java', icon: Palette },
   { id: 'shaders', title: 'Shaders', desc: 'Shaders on Modrinth', to: '/shaders?platform=java', icon: Sun },

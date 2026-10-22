@@ -11,6 +11,7 @@ const TYPE_META: Record<string, { title: string; blurb: string; type: ModrinthPr
   shaders: { title: 'Shaders', blurb: 'Lighting and visual packs from Modrinth.', type: 'shader' },
   modpacks: { title: 'Modpacks', blurb: 'Curated packs from Modrinth.', type: 'modpack' },
   datapacks: { title: 'Data Packs', blurb: 'Vanilla-friendly packs from Modrinth.', type: 'datapack' },
+  modrinthplugins: { title: 'Modrinth Plugins', blurb: 'Server plugins published on Modrinth — inspect versions and download files.', type: 'plugin' },
 };
 
 export function Catalog({ category }: { category: keyof typeof TYPE_META }) {
@@ -74,7 +75,7 @@ export function Catalog({ category }: { category: keyof typeof TYPE_META }) {
   }, [effectiveQuery, sort, offset, meta.type]);
 
   const pages = useMemo(() => Math.ceil(total / limit) || 1, [total]);
-  const detailBase = category === 'mods' ? '/mods' : `/${category}`;
+  const detailBase = category === 'mods' ? '/mods' : category === 'modrinthplugins' ? '/modrinth-plugins' : `/${category}`;
 
   return (
     <div className="pt-20 pb-12 min-h-screen mc-grid-bg">
@@ -142,9 +143,7 @@ export function Catalog({ category }: { category: keyof typeof TYPE_META }) {
                   className="group bg-mc-surface border border-mc-border rounded-xl overflow-hidden hover:border-mc-red/50 transition-colors">
                   <Link to={`${detailBase}/${h.slug}`} className="block">
                     <div className="aspect-[16/10] bg-mc-gray flex items-center justify-center relative">
-                      {h.icon_url ? (
-                        <img src={h.icon_url} alt="" className="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform" loading="lazy" />
-                      ) : <Package className="w-10 h-10 text-mc-muted" />}
+                      {h.icon_url ? <img src={h.icon_url} alt="" className="w-16 h-16 rounded-xl object-cover group-hover:scale-105 transition-transform" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.parentElement?.querySelector('[data-image-fallback]')?.classList.remove('hidden'); }} /> : null}<Package data-image-fallback className={`w-10 h-10 text-mc-muted ${h.icon_url ? 'hidden' : ''}`} />
                       <div className="absolute top-2 left-2 flex flex-wrap gap-1">
                         <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-green-600/90 text-white">Modrinth</span>
                         {platform === 'bedrock' && <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-500/90 text-white">Bedrock</span>}

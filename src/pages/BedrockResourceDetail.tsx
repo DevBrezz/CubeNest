@@ -25,28 +25,14 @@ export function BedrockResourceDetail() {
   useEffect(() => {
     const controller = new AbortController();
     const bust = Date.now();
-    Promise.allSettled([
-      fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { signal: controller.signal, cache: 'no-store' }).then(async (response) => {
+    fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { signal: controller.signal, cache: 'no-store' })
+      .then(async (response) => {
         if (!response.ok) throw new Error(`Catalog unavailable (${response.status})`);
         return response.json() as Promise<BedrockData>;
-      }),
-      fetch(`${import.meta.env.BASE_URL}data/9minecraft-bedrock.json?t=${bust}`, { signal: controller.signal, cache: 'no-store' }).then(async (response) => {
-        if (!response.ok) return { lastSynced: null, resources: [] } as BedrockData;
-        return response.json() as Promise<BedrockData>;
-      }),
-    ]).then((results) => {
-      const curse = results[0].status === 'fulfilled' ? results[0].value : null;
-      const nine = results[1].status === 'fulfilled' ? results[1].value : null;
-      const resources = [
-        ...(curse?.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' })),
-        ...(nine?.resources || []).map((item) => ({ ...item, source: item.source || '9Minecraft' })),
-      ];
-      if (!resources.length && results[0].status === 'rejected') {
-        setError(results[0].reason instanceof Error ? results[0].reason.message : 'Could not load resource details');
-        return;
-      }
-      setData({ lastSynced: curse?.lastSynced || nine?.lastSynced || null, resources });
-    }).catch((reason) => {
+      })
+      .then((catalog) => {
+        setData({ lastSynced: catalog.lastSynced || null, resources: (catalog.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' })) });
+      }).catch((reason) => {
       if (reason?.name !== 'AbortError') setError(reason instanceof Error ? reason.message : 'Could not load resource details');
     }).finally(() => setLoading(false));
     return () => controller.abort();
@@ -80,7 +66,7 @@ export function BedrockResourceDetail() {
       <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/80 via-mc-surface to-cyan-950/30 p-5 sm:p-8 lg:p-10">
         <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
         <div className="relative grid grid-cols-1 md:grid-cols-[180px_minmax(0,1fr)] gap-6 md:gap-8 items-start">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 mx-auto md:mx-0 rounded-2xl overflow-hidden bg-black/25 border border-white/10 shadow-xl flex items-center justify-center">{item.logo ? <img src={item.logo} alt={`${item.name} cover`} className="w-full h-full object-cover" /> : <Package className="w-14 h-14 text-mc-muted" />}</div>
+          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 mx-auto md:mx-0 rounded-2xl overflow-hidden bg-black/25 border border-white/10 shadow-xl flex items-center justify-center">{item.logo ? <img src={item.logo} alt={`${item.name} cover`} className="w-full h-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none'; event.currentTarget.parentElement?.querySelector('[data-image-fallback]')?.classList.remove('hidden'); }} /> : null}<Package data-image-fallback className={`w-14 h-14 text-mc-muted ${item.logo ? 'hidden' : ''}`} /></div>
           <div className="min-w-0 text-center md:text-left">
             <span className="inline-flex rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">{category}</span>
             <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-mc-white break-words">{item.name}</h1>

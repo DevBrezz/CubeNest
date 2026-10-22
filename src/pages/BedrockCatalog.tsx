@@ -66,37 +66,28 @@ export function BedrockCatalog() {
   useEffect(() => {
     let cancelled = false;
     const bust = Date.now();
-    Promise.allSettled([
-      fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { cache: 'no-store' }).then(async (r) => {
-        if (!r.ok) throw new Error(`CurseForge catalog unavailable (${r.status})`);
-        return r.json() as Promise<BedrockData>;
-      }),
-      fetch(`${import.meta.env.BASE_URL}data/9minecraft-bedrock.json?t=${bust}`, { cache: 'no-store' }).then(async (r) => {
-        if (!r.ok) return { lastSynced: null, resources: [] } as BedrockData;
-        return r.json() as Promise<BedrockData>;
-      }),
-    ]).then((results) => {
-      if (cancelled) return;
-      const curse = results[0].status === 'fulfilled' ? results[0].value : null;
-      const nine = results[1].status === 'fulfilled' ? results[1].value : null;
-      const curseResources = (curse?.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' }));
-      const nineResources = (nine?.resources || []).map((item) => ({ ...item, source: item.source || '9Minecraft' }));
-      const merged = [...curseResources, ...nineResources];
-      if (!merged.length) {
-        setError(
-          curse?.error ||
-            (results[0].status === 'rejected' ? (results[0].reason instanceof Error ? results[0].reason.message : 'Catalog unavailable') : 'Catalog is empty'),
-        );
-        setData({ lastSynced: null, resources: [] });
-        return;
-      }
-      const timestamps = [curse?.lastSynced, nine?.lastSynced].filter(Boolean).map((value) => Date.parse(String(value))).filter((n) => Number.isFinite(n));
-      const lastSynced = timestamps.length ? new Date(Math.max(...timestamps)).toISOString() : curse?.lastSynced || nine?.lastSynced || null;
-      setData({ lastSynced, total: merged.length, resources: merged });
-      setError(null);
-    }).finally(() => {
-      if (!cancelled) setLoading(false);
-    });
+    fetch(`${import.meta.env.BASE_URL}data/bedrock-curseforge.json?t=${bust}`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`CurseForge catalog unavailable (${response.status})`);
+        return response.json() as Promise<BedrockData>;
+      })
+      .then((catalog) => {
+        if (cancelled) return;
+        const resources = (catalog.resources || []).map((item) => ({ ...item, source: item.source || 'CurseForge' }));
+        if (!resources.length) {
+          setError(catalog.error || 'CurseForge catalog is empty. Run the Bedrock sync workflow.');
+          setData({ lastSynced: catalog.lastSynced || null, resources: [] });
+          return;
+        }
+        setData({ lastSynced: catalog.lastSynced || null, total: resources.length, resources });
+        setError(null);
+      })
+      .catch((reason) => {
+        if (!cancelled) setError(reason instanceof Error ? reason.message : 'Catalog unavailable');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => { cancelled = true; };
   }, []);
 
@@ -158,13 +149,13 @@ export function BedrockCatalog() {
       {loading ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="skeleton h-64 rounded-2xl" />)}</div> : filtered.length === 0 ? <div className="text-center py-16 text-mc-muted bg-mc-surface border border-mc-border rounded-2xl"><Package className="w-10 h-10 mx-auto mb-3 opacity-50" /><p className="text-mc-white font-semibold">No resources in this category yet</p><p className="text-sm mt-1">Try another category or run the Bedrock sync workflow.</p><button onClick={() => { setCategory('all'); setQuery(''); }} className="text-sm text-emerald-400 mt-3">Show all resources</button></div> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map((m, i) => <motion.article key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i * .012, .18) }} className="group flex flex-col overflow-hidden rounded-2xl border border-mc-border bg-mc-surface hover:border-emerald-500/45 hover:-translate-y-1 transition-all duration-200">
           <Link to={`/bedrock/resource/${m.id}`} className="relative aspect-[16/10] bg-mc-gray flex items-center justify-center overflow-hidden">
-            {m.logo ? <img src={m.logo} alt={`${m.name} icon`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" /> : <Package className="w-12 h-12 text-mc-muted" />}
+            {m.logo ? <img src={m.logo} alt={`${m.name} icon`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; const fallback = event.currentTarget.parentElement?.querySelector('[data-image-fallback]'); fallback?.classList.remove('hidden'); }} /> : null}<Package data-image-fallback className={`w-12 h-12 text-mc-muted ${m.logo ? 'hidden' : ''}`} />
             <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-black/65 text-emerald-300 backdrop-blur">{CATEGORIES.find(c => c.id === inferCategory(m))?.label || m.categoryLabel || 'Bedrock'}</span>
           </Link>
           <div className="p-4 flex flex-col flex-1">
             <h2 className="font-bold text-mc-white text-sm line-clamp-2 min-h-10">{m.name}</h2>
             <p className="text-xs text-mc-muted mt-2 line-clamp-3 flex-1">{m.summary || 'Minecraft Bedrock community resource.'}</p>
-            <div className="flex items-center justify-between text-[11px] text-mc-muted border-t border-mc-border pt-3 mt-4"><span>{m.source === '9Minecraft' ? '9Minecraft' : `${formatNumber(m.downloadCount || 0)} downloads`}</span><span className="truncate max-w-28">{m.source === '9Minecraft' ? (m.authors?.[0] || '9Minecraft') : (m.authors?.[0] || 'Community creator')}</span></div>
+            <div className="flex items-center justify-between text-[11px] text-mc-muted border-t border-mc-border pt-3 mt-4"><span>{formatNumber(m.downloadCount || 0)} downloads</span><span className="truncate max-w-28">{m.authors?.[0] || 'Community creator'}</span></div>
             <div className="grid grid-cols-2 gap-2 mt-3">
               {canDownloadBedrockItem(m) ? (
                 <button
