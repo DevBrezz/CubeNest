@@ -15,6 +15,7 @@ const DownloadsPage = lazy(() => import('./pages/DownloadsPage').then(m => ({ de
 const WhitelistPage = lazy(() => import('./pages/WhitelistPage').then(m => ({ default: m.WhitelistPage })));
 const UploadPage = lazy(() => import('./pages/UploadPage').then(m => ({ default: m.UploadPage })));
 const Projects = lazy(() => import('./pages/Projects').then(m => ({ default: m.Projects })));
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail').then(m => ({ default: m.ProjectDetail })));
 const About = lazy(() => import('./pages/About').then(m => ({ default: m.About })));
 const Contact = lazy(() => import('./pages/Contact').then(m => ({ default: m.Contact })));
@@ -27,6 +28,7 @@ const Servers = lazy(() => import('./pages/Servers').then(m => ({ default: m.Ser
 const Mods = lazy(() => import('./pages/Mods').then(m => ({ default: m.Mods })));
 const ModsHub = lazy(() => import('./pages/ModsHub').then(m => ({ default: m.ModsHub })));
 const CubeNestModsPage = lazy(() => import('./pages/CubeNestMods'));
+const CubeNestResourceDetail = lazy(() => import('./pages/CubeNestResourceDetail'));
 const BedrockHub = lazy(() => import('./pages/BedrockHub').then(m => ({ default: m.BedrockHub })));
 const BedrockCatalog = lazy(() => import('./pages/BedrockCatalog').then(m => ({ default: m.BedrockCatalog })));
 const BedrockResourceDetail = lazy(() => import('./pages/BedrockResourceDetail').then(m => ({ default: m.BedrockResourceDetail })));
@@ -80,11 +82,13 @@ export default function App() {
                   <Route path="/downloads" element={<DownloadsPage />} />
                   <Route path="/whitelist" element={<WhitelistPage />} />
                   <Route path="/upload" element={<UploadPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/plugins" element={<Plugins />} />
                   <Route path="/servers" element={<Servers />} />
                   <Route path="/mods" element={<ModsHub />} />
                   <Route path="/cubenest-mods" element={<CubeNestModsPage />} />
+                  <Route path="/cubenest-mods/resource/:id" element={<CubeNestResourceDetail />} />
                   <Route path="/cubenest-mods/mods" element={<CubeNestModsPage fixedType="Mod" />} />
                   <Route path="/cubenest-mods/plugins" element={<CubeNestModsPage fixedType="Plugin" />} />
                   <Route path="/cubenest-mods/addons" element={<CubeNestModsPage fixedType="Addon" />} />
