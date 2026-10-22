@@ -28,7 +28,6 @@ const Servers = lazy(() => import('./pages/Servers').then(m => ({ default: m.Ser
 const Mods = lazy(() => import('./pages/Mods').then(m => ({ default: m.Mods })));
 const ModsHub = lazy(() => import('./pages/ModsHub').then(m => ({ default: m.ModsHub })));
 const CubeNestModsPage = lazy(() => import('./pages/CubeNestMods'));
-const CubeNestResourceDetail = lazy(() => import('./pages/CubeNestResourceDetail'));
 const BedrockHub = lazy(() => import('./pages/BedrockHub').then(m => ({ default: m.BedrockHub })));
 const BedrockCatalog = lazy(() => import('./pages/BedrockCatalog').then(m => ({ default: m.BedrockCatalog })));
 const BedrockResourceDetail = lazy(() => import('./pages/BedrockResourceDetail').then(m => ({ default: m.BedrockResourceDetail })));
@@ -88,7 +87,6 @@ export default function App() {
                   <Route path="/servers" element={<Servers />} />
                   <Route path="/mods" element={<ModsHub />} />
                   <Route path="/cubenest-mods" element={<CubeNestModsPage />} />
-                  <Route path="/cubenest-mods/resource/:id" element={<CubeNestResourceDetail />} />
                   <Route path="/cubenest-mods/mods" element={<CubeNestModsPage fixedType="Mod" />} />
                   <Route path="/cubenest-mods/plugins" element={<CubeNestModsPage fixedType="Plugin" />} />
                   <Route path="/cubenest-mods/addons" element={<CubeNestModsPage fixedType="Addon" />} />
@@ -111,6 +109,8 @@ export default function App() {
                   <Route path="/modpacks/:slug" element={<ModrinthDetail category="modpacks" />} />
                   <Route path="/datapacks" element={<Catalog category="datapacks" />} />
                   <Route path="/datapacks/:slug" element={<ModrinthDetail category="datapacks" />} />
+                  <Route path="/modrinth-plugins" element={<Catalog category="modrinthplugins" />} />
+                  <Route path="/modrinth-plugins/:slug" element={<ModrinthDetail category="modrinth-plugins" />} />
                   <Route path="/curseforge-mods" element={<Mods />} />
                   <Route path="/project/:id" element={<ProjectDetail />} />
                   <Route path="/about" element={<About />} />
