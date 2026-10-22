@@ -222,7 +222,7 @@ export function Upload() {
 
       setNotice({
         type: 'success',
-        message: 'Submission berhasil dikirim dan berstatus Pending. Resource belum dipublikasikan.'
+        message: 'Upload successful. Your resource will appear in CubeNest Mods in about one minute.'
       });
     } catch (error) {
       setNotice({

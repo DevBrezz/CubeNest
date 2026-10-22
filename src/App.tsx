@@ -26,6 +26,7 @@ const Plugins = lazy(() => import('./pages/Plugins').then(m => ({ default: m.Plu
 const Servers = lazy(() => import('./pages/Servers').then(m => ({ default: m.Servers })));
 const Mods = lazy(() => import('./pages/Mods').then(m => ({ default: m.Mods })));
 const ModsHub = lazy(() => import('./pages/ModsHub').then(m => ({ default: m.ModsHub })));
+const CubeNestModsPage = lazy(() => import('./pages/CubeNestMods'));
 const BedrockHub = lazy(() => import('./pages/BedrockHub').then(m => ({ default: m.BedrockHub })));
 const BedrockCatalog = lazy(() => import('./pages/BedrockCatalog').then(m => ({ default: m.BedrockCatalog })));
 const BedrockResourceDetail = lazy(() => import('./pages/BedrockResourceDetail').then(m => ({ default: m.BedrockResourceDetail })));
@@ -83,6 +84,7 @@ export default function App() {
                   <Route path="/plugins" element={<Plugins />} />
                   <Route path="/servers" element={<Servers />} />
                   <Route path="/mods" element={<ModsHub />} />
+                  <Route path="/cubenest-mods" element={<CubeNestModsPage />} />
                   <Route path="/bedrock" element={<BedrockHub />} />
                   <Route path="/bedrock/catalog" element={<BedrockCatalog />} />
                   <Route path="/bedrock/resource/:id" element={<BedrockResourceDetail />} />

@@ -8,6 +8,8 @@ import { useLanguage } from '../lib/i18n';
 const links = [
   { to: '/', label: 'Home' },
   { to: '/mods', label: 'Mods' },
+  { to: '/cubenest-mods', label: 'CubeNest Mods' },
+  { to: '/upload', label: 'Upload' },
   { to: '/plugins', label: 'Plugins' },
   { to: '/servers', label: 'Servers' },
   { to: '/skin-creator', label: 'Skin Creator' },
