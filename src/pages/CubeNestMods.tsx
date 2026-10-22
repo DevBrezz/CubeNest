@@ -278,9 +278,12 @@ export default function CubeNestMods({ fixedType }: { fixedType?: string }) {
             >
               {resource.image_filename && (
                 <img
-                  src={`${API_BASE}/api/cubenest-mods/${resource.id}/image`}
-                  alt=""
+                  src={`${API_BASE}/api/cubenest-mods/${resource.id}/image?v=${encodeURIComponent(resource.image_filename || '')}`}
+                  alt={`${resource.title} preview`}
                   loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
+                  }}
                   className="h-44 w-full object-cover"
                 />
               )}
