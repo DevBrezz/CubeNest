@@ -86,7 +86,8 @@ export function Upload() {
   } | null>(null);
 
   const apiUrl = String(
-    import.meta.env.VITE_CUBENEST_UPLOAD_API || ''
+    import.meta.env.VITE_CUBENEST_UPLOAD_API ||
+    import.meta.env.VITE_CUBENEST_API_URL || ''
   ).trim().replace(/\/+$/, '');
 
   const apiConfigured = Boolean(apiUrl);
@@ -193,6 +194,17 @@ export function Upload() {
       return;
     }
 
+    const confirmed = window.confirm(
+      `Konfirmasi upload "${title.trim()}"?\n\nFile resource${preview ? ' dan gambar preview' : ''} akan dikirim ke CubeNest. Setelah dikonfirmasi, submission masuk antrean Pending dan diproses oleh server.`
+    );
+    if (!confirmed) {
+      setNotice({
+        type: 'info',
+        message: 'Upload belum dikirim. Periksa kembali detail dan file sebelum mencoba lagi.'
+      });
+      return;
+    }
+
     setSubmitting(true);
     setUploadProgress(0);
     setUploadBytes({ loaded: 0, total: file.size + (preview?.size || 0) });
@@ -239,7 +251,7 @@ export function Upload() {
 
       setNotice({
         type: 'success',
-        message: 'Upload selesai 100% dan diterima server. Resource masuk antrean moderasi sebelum diterbitkan.'
+        message: 'Upload berhasil! Resource dan gambar telah dikirim ke server. Status Pending; penerbitan otomatis dijadwalkan sekitar 1 menit setelah server menerima submission.'
       });
     } catch (error) {
       setNotice({
