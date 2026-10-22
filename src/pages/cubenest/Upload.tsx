@@ -138,10 +138,10 @@ export function Upload() {
       return;
     }
 
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(nextFile.type)) {
+    if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(nextFile.type)) {
       setNotice({
         type: 'error',
-        message: 'Gambar preview harus berupa PNG, JPG, atau WebP.'
+        message: 'Gambar preview harus berupa PNG, JPG, WebP, atau GIF.'
       });
       return;
     }
@@ -209,7 +209,8 @@ export function Upload() {
 
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: 'POST',
-        body
+        body,
+        credentials: 'include'
       });
 
       const data = await response.json().catch(() => ({}));
@@ -462,11 +463,11 @@ export function Upload() {
                 <label className="cn-upload-v2-image-drop" htmlFor="cn-preview-file">
                   <ImagePlus size={25} />
                   <strong>Upload cover image</strong>
-                  <span>PNG, JPG atau WebP · Maksimal 1 MB</span>
+                  <span>PNG, JPG, WebP atau GIF · Maksimal 1 MB</span>
                   <input
                     id="cn-preview-file"
                     type="file"
-                    accept="image/png,image/jpeg,image/webp"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
                     onChange={event => choosePreview(event.target.files?.[0] || null)}
                   />
                 </label>

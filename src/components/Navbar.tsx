@@ -17,6 +17,7 @@ const links = [
   { to: '/cubenest-mods/skins', label: 'CubeNest: Skins' },
   { to: '/cubenest-mods/modpacks', label: 'CubeNest: Modpacks' },
   { to: '/upload', label: 'Upload' },
+  { to: '/profile', label: 'Profile' },
   { to: '/plugins', label: 'Plugins' },
   { to: '/servers', label: 'Servers' },
   { to: '/skin-creator', label: 'Skin Creator' },
