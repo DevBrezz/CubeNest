@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Download, RefreshCw, Search, PackageOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Download, RefreshCw, Search, PackageOpen, Image as ImageIcon, ArrowUpRight } from 'lucide-react';
 
 type Resource = {
   id: number;
@@ -276,17 +277,26 @@ export default function CubeNestMods({ fixedType }: { fixedType?: string }) {
               key={resource.id}
               className="overflow-hidden rounded-2xl border border-mc-border bg-mc-surface transition-colors hover:border-emerald-400/50"
             >
-              {resource.image_filename && (
-                <img
-                  src={`${API_BASE}/api/cubenest-mods/${resource.id}/image?v=${encodeURIComponent(resource.image_filename || '')}`}
-                  alt={`${resource.title} preview`}
-                  loading="lazy"
-                  onError={(event) => {
-                    event.currentTarget.style.display = 'none';
-                  }}
-                  className="h-44 w-full object-cover"
-                />
-              )}
+              <Link to={`/cubenest-mods/resource/${resource.id}`} className="group relative flex h-48 w-full items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-900 to-cyan-950" aria-label={`View ${resource.title}`}>
+                {resource.image_filename ? (
+                  <img
+                    src={`${API_BASE}/api/cubenest-mods/${resource.id}/image`}
+                    alt={`${resource.title} preview`}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    onError={(event) => {
+                      event.currentTarget.style.display = 'none';
+                      const fallback = event.currentTarget.parentElement?.querySelector('[data-image-fallback]');
+                      if (fallback) fallback.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                <div data-image-fallback className={`${resource.image_filename ? 'hidden' : ''} pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-emerald-200/80`}>
+                  <ImageIcon size={34} strokeWidth={1.5} />
+                  <span className="text-xs font-semibold">Preview unavailable</span>
+                </div>
+                <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-lg border border-white/15 bg-black/65 px-3 py-1.5 text-xs font-bold text-white opacity-0 transition group-hover:opacity-100">View details <ArrowUpRight size={14}/></span>
+              </Link>
 
               <div className="p-5">
                 <div className="mb-3 flex flex-wrap gap-2 text-xs">
@@ -303,7 +313,7 @@ export default function CubeNestMods({ fixedType }: { fixedType?: string }) {
                   )}
                 </div>
 
-                <h2 className="text-lg font-semibold text-mc-white">{resource.title}</h2>
+                <Link to={`/cubenest-mods/resource/${resource.id}`} className="text-lg font-semibold text-mc-white transition hover:text-emerald-300">{resource.title}</Link>
                 <p className="mt-2 line-clamp-3 min-h-[4.5rem] whitespace-pre-wrap text-sm text-mc-muted">
                   {resource.description}
                 </p>
@@ -313,13 +323,17 @@ export default function CubeNestMods({ fixedType }: { fixedType?: string }) {
                   <span>{formatSize(resource.size)}</span>
                 </div>
 
-                <a
-                  href={`${API_BASE}/api/cubenest-mods/${resource.id}/download`}
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-400 px-4 py-3 text-sm font-bold text-black transition hover:bg-emerald-300"
-                >
-                  <Download size={16} />
-                  Download {resource.original_name || 'resource'}
-                </a>
+                <div className="mt-5 grid grid-cols-2 gap-2">
+                  <Link to={`/cubenest-mods/resource/${resource.id}`} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg border border-mc-border px-3 py-3 text-sm font-semibold text-mc-white transition hover:border-emerald-400/60 hover:bg-white/5">
+                    Details <ArrowUpRight size={15}/>
+                  </Link>
+                  <a
+                    href={`${API_BASE}/api/cubenest-mods/${resource.id}/download`}
+                    className="inline-flex min-w-0 items-center justify-center gap-2 rounded-lg bg-emerald-400 px-3 py-3 text-sm font-bold text-black transition hover:bg-emerald-300"
+                  >
+                    <Download size={16} /> Download
+                  </a>
+                </div>
               </div>
             </article>
           ))}
