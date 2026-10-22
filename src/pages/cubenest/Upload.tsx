@@ -78,6 +78,8 @@ export function Upload() {
   const [previewUrl, setPreviewUrl] = useState('');
   const [dragging, setDragging] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadBytes, setUploadBytes] = useState({ loaded: 0, total: 0 });
   const [notice, setNotice] = useState<{
     type: 'success' | 'error' | 'info';
     message: string;
@@ -192,6 +194,8 @@ export function Upload() {
     }
 
     setSubmitting(true);
+    setUploadProgress(0);
+    setUploadBytes({ loaded: 0, total: file.size + (preview?.size || 0) });
 
     try {
       const body = new FormData();
@@ -207,23 +211,35 @@ export function Upload() {
         body.append('image', preview);
       }
 
-      const response = await fetch(`${apiUrl}/api/submissions`, {
-        method: 'POST',
-        body,
-        credentials: 'include'
+      const data = await new Promise<Record<string, unknown>>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${apiUrl}/api/submissions`);
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.upload.onprogress = (event) => {
+          if (!event.lengthComputable) return;
+          const percent = Math.min(99, Math.round((event.loaded / event.total) * 100));
+          setUploadProgress(percent);
+          setUploadBytes({ loaded: event.loaded, total: event.total });
+        };
+        xhr.onload = () => {
+          let result: Record<string, unknown> = {};
+          try { result = JSON.parse(xhr.responseText || '{}') as Record<string, unknown>; } catch { /* server may return non-JSON */ }
+          if (xhr.status >= 200 && xhr.status < 300) {
+            setUploadProgress(100);
+            resolve(result);
+          } else {
+            reject(new Error(typeof result.error === 'string' ? result.error : `Upload gagal (HTTP ${xhr.status}).`));
+          }
+        };
+        xhr.onerror = () => reject(new Error('Koneksi upload gagal. Periksa URL API, tunnel, dan konfigurasi CORS.'));
+        xhr.onabort = () => reject(new Error('Upload dibatalkan.'));
+        xhr.send(body);
       });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || `Upload gagal (HTTP ${response.status}).`
-        );
-      }
 
       setNotice({
         type: 'success',
-        message: 'Upload successful. Your resource will appear in CubeNest Mods in about one minute.'
+        message: 'Upload selesai 100% dan diterima server. Resource masuk antrean moderasi sebelum diterbitkan.'
       });
     } catch (error) {
       setNotice({
@@ -486,6 +502,21 @@ export function Upload() {
                 </div>
               </div>
 
+              {submitting && (
+                <div className="cn-upload-progress" role="status" aria-live="polite">
+                  <div className="cn-upload-progress-top">
+                    <span><LoaderCircle size={16} className="cn-upload-v2-spin" /> Mengunggah file dan gambar…</span>
+                    <strong>{uploadProgress}%</strong>
+                  </div>
+                  <div className="cn-upload-progress-track" aria-valuemin={0} aria-valuemax={100} aria-valuenow={uploadProgress} role="progressbar">
+                    <span style={{ width: `${uploadProgress}%` }} />
+                  </div>
+                  <div className="cn-upload-progress-bottom">
+                    <span>{formatSize(uploadBytes.loaded)} / {formatSize(uploadBytes.total || file?.size || 0)}</span>
+                    <span>{uploadProgress === 100 ? 'Menunggu konfirmasi server…' : 'Transfer berlangsung'}</span>
+                  </div>
+                </div>
+              )}
               <button
                 type="submit"
                 className="cn-upload-v2-submit"
