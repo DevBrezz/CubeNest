@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Languages, ChevronDown, Search, UserRound } from 'lucide-react';
+import { Menu, X, Languages, ChevronDown, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLanguage } from '../lib/i18n';
-import { useAuth } from '../lib/auth';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -24,9 +23,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { language, setLanguage } = useLanguage();
-  const { ready: authReady, user, profile } = useAuth();
-  const avatar = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
-  const displayName = profile?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Account';
   const [languageOpen, setLanguageOpen] = useState(false);
   const languages = [
     { code: 'en' as const, flag: '🇬🇧', label: 'English' },
@@ -94,14 +90,6 @@ export function Navbar() {
           <Link to="/mods" className="hidden sm:inline-flex p-2 text-mc-muted hover:text-mc-white" aria-label="Browse mods">
             <Search className="w-4 h-4" />
           </Link>
-          <Link to="/profile" aria-label={user ? 'Open profile' : 'Sign in'} title={user ? displayName : 'Sign in'} className="inline-flex items-center gap-2 rounded-lg border border-mc-border bg-mc-surface/70 px-2.5 py-1.5 text-xs font-medium text-mc-white hover:border-emerald-400/60 transition-colors max-w-[150px]">
-            {user && avatar ? <img src={avatar} alt="" className="h-7 w-7 rounded-full object-cover" /> : <UserRound className="h-4 w-4 text-emerald-400" />}
-            <span className="hidden sm:inline truncate">{!authReady ? 'Account' : user ? displayName : 'Login'}</span>
-          </Link>
-          <Link to="/profile" aria-label={user ? 'Open profile' : 'Sign in'} title={user ? displayName : 'Sign in'} className="inline-flex items-center gap-2 rounded-lg border border-mc-border bg-mc-surface/70 px-2.5 py-1.5 text-xs font-medium text-mc-white hover:border-emerald-400/60 transition-colors max-w-[150px]">
-            {user && avatar ? <img src={avatar} alt="" className="h-7 w-7 rounded-full object-cover" /> : <UserRound className="h-4 w-4 text-emerald-400" />}
-            <span className="hidden sm:inline truncate">{!authReady ? 'Account' : user ? displayName : 'Login'}</span>
-          </Link>
           <div className="relative hidden md:block">
             <button type="button" className="flex items-center gap-1 px-2 py-1.5 rounded-md text-xs text-mc-muted hover:text-mc-white" onClick={() => setLanguageOpen(!languageOpen)}>
               <Languages className="w-3.5 h-3.5" /> {selectedLanguage.flag} <ChevronDown className="w-3 h-3" />
@@ -133,14 +121,6 @@ export function Navbar() {
                   {l.label}
                 </Link>
               ))}
-              <Link to="/profile" className={cn('px-4 py-3 rounded-md text-sm font-medium flex items-center gap-2', location.pathname === '/profile' ? 'bg-mc-surface text-mc-white' : 'text-mc-muted hover:bg-mc-surface hover:text-mc-white')}>
-                {user && avatar ? <img src={avatar} alt="" className="w-6 h-6 rounded-full object-cover" /> : <UserRound className="w-4 h-4" />}
-                {user ? displayName : 'Login / Profile'}
-              </Link>
-              <Link to="/profile" className={cn('px-4 py-3 rounded-md text-sm font-medium flex items-center gap-2', location.pathname === '/profile' ? 'bg-mc-surface text-mc-white' : 'text-mc-muted hover:bg-mc-surface hover:text-mc-white')}>
-                {user && avatar ? <img src={avatar} alt="" className="w-6 h-6 rounded-full object-cover" /> : <UserRound className="w-4 h-4" />}
-                {user ? displayName : 'Login / Profile'}
-              </Link>
             </div>
           </motion.div>
         )}

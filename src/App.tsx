@@ -13,7 +13,6 @@ const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })))
 const SearchPage = lazy(() => import('./pages/SearchPage').then(m => ({ default: m.SearchPage })));
 const DownloadsPage = lazy(() => import('./pages/DownloadsPage').then(m => ({ default: m.DownloadsPage })));
 const WhitelistPage = lazy(() => import('./pages/WhitelistPage').then(m => ({ default: m.WhitelistPage })));
-const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const UploadPage = lazy(() => import('./pages/UploadPage').then(m => ({ default: m.UploadPage })));
 const Projects = lazy(() => import('./pages/Projects').then(m => ({ default: m.Projects })));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail').then(m => ({ default: m.ProjectDetail })));
@@ -79,7 +78,6 @@ export default function App() {
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/downloads" element={<DownloadsPage />} />
                   <Route path="/whitelist" element={<WhitelistPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/upload" element={<UploadPage />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/plugins" element={<Plugins />} />
