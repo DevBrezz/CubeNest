@@ -43,12 +43,18 @@ function statusClass(status: string) {
 
 export function ProfilePage() {
   const {
-    ready, configured, user, profile, signIn, signOut,
-    refreshProfile, updateProfile,
+    ready, configured, user, profile, signIn, registerAccount,
+    verifyEmail, resendVerification, signOut, refreshProfile, updateProfile,
   } = useAuth();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'verify'>('login');
+  const [registerUsername, setRegisterUsername] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [pendingEmail, setPendingEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [projects, setProjects] = useState<Submission[]>([]);
@@ -120,6 +126,54 @@ export function ProfilePage() {
     }
   };
 
+  const onRegister = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setMessage('');
+    try {
+      const email = registerEmail.trim().toLowerCase();
+      await registerAccount(registerUsername.trim(), email, registerPassword);
+      setPendingEmail(email);
+      setOtpCode('');
+      setAuthMode('verify');
+      setMessage('Jika pendaftaran berhasil diproses, periksa email untuk kode verifikasi.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Pendaftaran gagal.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onVerifyEmail = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setMessage('');
+    try {
+      await verifyEmail(pendingEmail, otpCode.trim());
+      setIdentifier(pendingEmail);
+      setPassword('');
+      setAuthMode('login');
+      setMessage('Email berhasil diverifikasi. Silakan login.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Verifikasi gagal.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onResendVerification = async () => {
+    setBusy(true);
+    setMessage('');
+    try {
+      await resendVerification(pendingEmail);
+      setMessage('Jika email terdaftar dan belum diverifikasi, kode akan dikirim.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Permintaan kode gagal.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const onSave = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -175,41 +229,137 @@ export function ProfilePage() {
         {!user ? (
           <div className="max-w-md mx-auto bg-mc-surface border border-mc-border rounded-xl p-6">
             <UserRound className="w-12 h-12 text-mc-muted mx-auto mb-3" />
-            <h1 className="text-xl font-bold text-mc-white text-center">Sign in to CubeNest</h1>
+            <h1 className="text-xl font-bold text-mc-white text-center">
+              {authMode === 'login' ? 'Sign in to CubeNest' :
+               authMode === 'register' ? 'Create your CubeNest account' : 'Verify your email'}
+            </h1>
             <p className="text-sm text-mc-muted text-center mt-2 mb-5">
-              Masuk untuk mengedit profil dan melihat proyek yang diunggah dengan akun ini.
+              {authMode === 'login'
+                ? 'Masuk untuk mengedit profil dan melihat proyek yang diunggah dengan akun ini.'
+                : authMode === 'register'
+                  ? 'Buat akun untuk menggunakan fitur akun CubeNest. Email harus dapat menerima kode verifikasi.'
+                  : `Masukkan kode 5 digit yang dikirim ke ${pendingEmail}. Kode berlaku selama 10 menit.`}
             </p>
-            <form onSubmit={onLogin} className="space-y-3">
-              <div>
-                <label className="text-xs text-mc-muted">Username atau email</label>
-                <input
-                  required
-                  autoComplete="username"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-mc-muted">Password</label>
-                <input
-                  required
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
-                />
-              </div>
-              <button
-                disabled={busy}
-                type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mc-red text-white text-sm font-medium disabled:opacity-50"
-              >
-                <LogIn className="w-4 h-4" />
-                {busy ? 'Signing in…' : 'Sign in'}
-              </button>
-            </form>
+
+            {authMode === 'login' && (
+              <form onSubmit={onLogin} className="space-y-3">
+                <div>
+                  <label className="text-xs text-mc-muted">Username atau email</label>
+                  <input
+                    required
+                    autoComplete="username"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-mc-muted">Password</label>
+                  <input
+                    required
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
+                  />
+                </div>
+                <button
+                  disabled={busy}
+                  type="submit"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mc-red text-white text-sm font-medium disabled:opacity-50"
+                >
+                  <LogIn className="w-4 h-4" />
+                  {busy ? 'Signing in…' : 'Sign in'}
+                </button>
+                <p className="text-sm text-center text-mc-muted">
+                  Belum punya akun?{' '}
+                  <button type="button" disabled={busy} onClick={() => { setAuthMode('register'); setMessage(''); }}
+                    className="text-mc-white underline disabled:opacity-50">
+                    Create account
+                  </button>
+                </p>
+              </form>
+            )}
+
+            {authMode === 'register' && (
+              <form onSubmit={onRegister} className="space-y-3">
+                <div>
+                  <label className="text-xs text-mc-muted">Username (3–32 karakter, huruf/angka/_)</label>
+                  <input
+                    required minLength={3} maxLength={32} pattern="[a-zA-Z0-9_]{3,32}"
+                    autoComplete="username"
+                    value={registerUsername}
+                    onChange={(e) => setRegisterUsername(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-mc-muted">Email</label>
+                  <input
+                    required type="email" maxLength={254} autoComplete="email"
+                    value={registerEmail}
+                    onChange={(e) => setRegisterEmail(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-mc-muted">Password (10–128 karakter)</label>
+                  <input
+                    required type="password" minLength={10} maxLength={128}
+                    autoComplete="new-password"
+                    value={registerPassword}
+                    onChange={(e) => setRegisterPassword(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white"
+                  />
+                </div>
+                <button disabled={busy} type="submit"
+                  className="w-full px-4 py-2.5 rounded-lg bg-mc-red text-white text-sm font-medium disabled:opacity-50">
+                  {busy ? 'Creating account…' : 'Create account'}
+                </button>
+                <p className="text-sm text-center text-mc-muted">
+                  Sudah punya akun?{' '}
+                  <button type="button" disabled={busy} onClick={() => { setAuthMode('login'); setMessage(''); }}
+                    className="text-mc-white underline disabled:opacity-50">
+                    Sign in
+                  </button>
+                </p>
+              </form>
+            )}
+
+            {authMode === 'verify' && (
+              <form onSubmit={onVerifyEmail} className="space-y-3">
+                <div>
+                  <label className="text-xs text-mc-muted">Kode verifikasi (5 digit)</label>
+                  <input
+                    required type="text" inputMode="numeric" autoComplete="one-time-code"
+                    pattern="[0-9]{5}" minLength={5} maxLength={5}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                    className="mt-1 w-full px-3 py-2 rounded-lg bg-mc-gray border border-mc-border text-sm text-mc-white tracking-widest"
+                  />
+                </div>
+                <button disabled={busy} type="submit"
+                  className="w-full px-4 py-2.5 rounded-lg bg-mc-red text-white text-sm font-medium disabled:opacity-50">
+                  {busy ? 'Verifying…' : 'Verify email'}
+                </button>
+                <button disabled={busy} type="button" onClick={onResendVerification}
+                  className="w-full px-4 py-2 rounded-lg border border-mc-border text-sm text-mc-white disabled:opacity-50">
+                  Kirim ulang kode
+                </button>
+                <button disabled={busy} type="button"
+                  onClick={() => { setAuthMode('register'); setMessage(''); }}
+                  className="w-full text-sm text-mc-muted underline disabled:opacity-50">
+                  Kembali ke pendaftaran
+                </button>
+              </form>
+            )}
+
+            {message && (
+              <p role="status" aria-live="polite" className="text-sm text-center text-mc-muted mt-4 break-words">
+                {message}
+              </p>
+            )}
           </div>
         ) : (
           <>

@@ -35,6 +35,9 @@ type AuthCtx = {
   user: CubeNestUser | null;
   profile: Profile | null;
   signIn: (identifier: string, password: string) => Promise<void>;
+  registerAccount: (username: string, email: string, password: string) => Promise<void>;
+  verifyEmail: (email: string, code: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -122,6 +125,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const registerAccount = async (username: string, email: string, password: string) => {
+    await api('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ username, email, password }),
+    });
+  };
+
+  const verifyEmail = async (email: string, code: string) => {
+    await api('/api/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify({ email, code }),
+    });
+  };
+
+  const resendVerification = async (email: string) => {
+    await api('/api/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  };
+
   const signOut = async () => {
     await api('/api/auth/logout', {
       method: 'POST',
@@ -170,6 +194,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         profile,
         signIn,
+        registerAccount,
+        verifyEmail,
+        resendVerification,
         signInWithGoogle,
         signOut,
         refreshProfile,
