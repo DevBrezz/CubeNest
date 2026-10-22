@@ -7,6 +7,7 @@ import { useLanguage } from '../lib/i18n';
 
 const links = [
   { to: '/', label: 'Home' },
+  { to: '/upload', label: 'Upload' },
   { to: '/mods', label: 'Mods' },
   { to: '/cubenest-mods', label: 'CubeNest Mods' },
   { to: '/cubenest-mods/mods', label: 'CubeNest: Mods' },
@@ -16,8 +17,6 @@ const links = [
   { to: '/cubenest-mods/shaders', label: 'CubeNest: Shaders' },
   { to: '/cubenest-mods/skins', label: 'CubeNest: Skins' },
   { to: '/cubenest-mods/modpacks', label: 'CubeNest: Modpacks' },
-  { to: '/upload', label: 'Upload' },
-  { to: '/profile', label: 'Profile' },
   { to: '/plugins', label: 'Plugins' },
   { to: '/servers', label: 'Servers' },
   { to: '/skin-creator', label: 'Skin Creator' },
