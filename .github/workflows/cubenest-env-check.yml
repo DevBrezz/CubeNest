@@ -38,6 +38,7 @@ jobs:
           API_URL="${REPOSITORY_API_URL:-}"
           if [ -z "$API_URL" ]; then
             echo "::error::GitHub Secret CUBENEST_API_URL is missing or unavailable."
+            echo "Check repository Settings > Secrets and variables > Actions > Secrets."
             exit 1
           fi
           case "$API_URL" in
@@ -57,3 +58,5 @@ jobs:
         run: npm run build
         env:
           VITE_CUBENEST_API_URL: ${{ secrets.CUBENEST_API_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}

@@ -40,6 +40,7 @@ jobs:
       - name: Build site
         env:
           VITE_CUBENEST_API_URL: ${{ secrets.CUBENEST_API_URL }}
+          VITE_CUBENEST_UPLOAD_API: ${{ secrets.CUBENEST_API_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |

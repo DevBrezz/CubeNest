@@ -13,15 +13,15 @@
     "sync:9minecraft": "node scripts/sync-9minecraft.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.469.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "tailwind-merge": "^2.6.0",
-    "@supabase/supabase-js": "^2.49.1",
     "skinview3d": "^3.4.2",
+    "tailwind-merge": "^2.6.0",
     "three": "^0.170.0"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.2",
+    "typescript": "^5.9.3",
     "vite": "^6.0.5"
   }
 }
